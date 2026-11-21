@@ -427,12 +427,6 @@
   object-fit: contain;
   filter: drop-shadow(2px 2px 0 color-mix(in oklch, var(--ink) 25%, transparent));
 }
-.chip-icon {
-  width: 26px;
-  height: 26px;
-  margin: -6px 0 -6px -6px;
-  filter: none;
-}
 .category-cover {
   border: var(--line);
   border-radius: var(--radius-card);
@@ -1171,13 +1165,55 @@
   border-bottom-color: var(--primary);
 }
 .interest-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin: 20px 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 20px 0 24px;
 }
-.interest-grid button {
-  font-size: 12px;
+.interest-icon {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: var(--radius-card);
+  cursor: pointer;
+  opacity: 0.4;
+  filter: grayscale(0.8);
+  transition:
+    opacity 0.15s,
+    filter 0.15s,
+    transform 0.15s;
+}
+.interest-icon .category-icon {
+  width: 100%;
+  height: 100%;
+}
+.interest-icon:hover {
+  opacity: 0.75;
+  transform: rotate(-3deg);
+}
+.interest-icon.picked {
+  opacity: 1;
+  filter: none;
+}
+.interest-icon:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
+.interest-check {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--lime);
+  border: var(--line);
+  box-shadow: var(--shadow-sm);
+}
+.interest-check svg {
+  width: 15px;
+  height: 15px;
 }
 .settings-row {
   display: flex;

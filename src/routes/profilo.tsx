@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { RotateCcw, Download, LogOut } from "lucide-react";
+import { Check, RotateCcw, Download, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { AppShell, CategoryIcon, SectionTitle, pageHead } from "@/components/factanza/shared";
@@ -65,16 +65,21 @@ function Profile() {
           {topics.map((topic) => {
             const picked = user.interests.includes(topic);
             return (
-              <Button
-                variant="facta"
+              <button
+                type="button"
                 key={topic}
-                className={picked ? "picked" : ""}
+                className={`interest-icon ${picked ? "picked" : ""}`}
                 aria-pressed={picked}
+                aria-label={topic}
                 onClick={() => update({ interests: toggleValue(user.interests, topic) })}
               >
-                <CategoryIcon topic={topic} className="chip-icon" />
-                {topic}
-              </Button>
+                <CategoryIcon topic={topic} />
+                {picked && (
+                  <span className="interest-check" aria-hidden>
+                    <Check />
+                  </span>
+                )}
+              </button>
             );
           })}
         </div>

@@ -113,7 +113,7 @@ splash) · Anton per sticker, tag ed etichette (`font-label`) · Caveat per le n
 - `<Button variant="facta">` per azioni secondarie, `variant="sticker"` (giallo) per la CTA
   principale della schermata. Stato selezionato: classe `picked` + `aria-pressed`.
   Non usare le varianti shadcn `default/outline/secondary` nelle pagine Factanza.
-- `<CategoryIcon topic="Cultura" className="chip-icon|swipe-art" />` per mostrare una
+- `<CategoryIcon topic="Cultura" className="swipe-art" />` per mostrare una
   categoria. Non usare icone lucide per le categorie: usa sempre le illustrazioni pop-art.
 - `<TopicCover topic="…" />` come copertina di notizie, live e contenuti (icona su retino):
   non ci sono foto. `<IconCollage label="…" />` per le illustrazioni grandi (splash, community,
