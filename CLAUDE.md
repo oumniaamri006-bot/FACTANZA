@@ -47,7 +47,7 @@ src/
   server.ts, start.ts     entry SSR e middleware (errori, CSRF); lib/error-page.ts = errore SSR statico
     index.tsx             "Per te": storie categorie, domanda del giorno, feed, banner live
     categoria.$category.tsx  notizie per categoria (`tutte` = tutte le notizie)
-    notizia.tsx           notizia: immagine, testo (body o punti chiave) + sondaggio (?id=)
+    notizia.tsx           notizia: immagine, testo (body o punti chiave) + sondaggio `poll` (?id=)
     live.tsx, evento.tsx  dirette e dibattito con voto prima/dopo (?id=)
     contenuti.tsx, video.tsx  podcast/YouTube e player demo
     community.tsx, factafidelity.tsx, profilo.tsx
@@ -69,6 +69,9 @@ src/
 
 ## Regole di architettura
 
+- Ogni notizia (`src/data/news.ts`) ha un `poll` (domanda + risposte); le percentuali sono
+  simulate e stabili (`src/lib/poll.ts`). La home e la barra categorie mostrano solo i temi scelti
+  dall'utente (tutti, se non ne ha scelto nessuno).
 - Contenuti demo solo in `src/data`; scelte dell'utente solo nel contesto `useFactanza()`.
 - `localStorage` si legge/scrive solo dopo l'idratazione o negli event handler (SSR-safe).
   La home mostra `<div className="phone" />` finché `ready` è `false`.

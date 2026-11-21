@@ -22,7 +22,9 @@ export const Route = createFileRoute("/profilo")({
 function questionName(id: string) {
   if (id === "daily") return dailyQuestion;
   if (id.startsWith("article-"))
-    return news.find((article) => `article-${article.id}` === id)?.title ?? "Sondaggio articolo";
+    return (
+      news.find((article) => `article-${article.id}` === id)?.poll.question ?? "Sondaggio articolo"
+    );
   if (id.startsWith("before-")) return "Il tuo voto prima del live";
   if (id.startsWith("after-")) return "Il tuo voto dopo il live";
   return "Sondaggio durante il live";

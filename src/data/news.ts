@@ -25,6 +25,8 @@ export type NewsItem = {
   opinions: string;
   /** 5 slide: Il punto, Un passo indietro, Cosa cambia?, La vera sfida, E quindi? */
   slides: string[];
+  /** Sondaggio mostrato alla fine dell'articolo. */
+  poll: { question: string; options: string[] };
   /** Testo completo, un paragrafo per elemento (facoltativo). */
   body?: string[];
   /** Immagine di copertina (facoltativa: senza, si usa l'icona della categoria). */
@@ -37,6 +39,10 @@ export type NewsItem = {
 export const news: NewsItem[] = [
   {
     id: "guerra-ibrida",
+    poll: {
+      question: "Ti senti informato su cosa sia la guerra ibrida?",
+      options: ["Sì, abbastanza", "Solo in parte", "Per niente"],
+    },
     topic: "Esteri",
     title: "Guerra ibrida: perché stanno arrivando allarmi bomba in tutta Europa?",
     accent: "allarmi bomba",
@@ -55,6 +61,10 @@ export const news: NewsItem[] = [
   },
   {
     id: "therapy-culture",
+    poll: {
+      question: "Ti capita di usare parole come «ghosting» o «tossico» con gli amici?",
+      options: ["Spesso", "A volte", "Mai"],
+    },
     topic: "Salute",
     title:
       "Ghosting, trauma dumping, triggerato: la therapy culture ci sta rendendo amici peggiori?",
@@ -79,6 +89,10 @@ export const news: NewsItem[] = [
   },
   {
     id: "israele-ai",
+    poll: {
+      question: "L’uso dell’AI in guerra dovrebbe avere regole internazionali?",
+      options: ["Sì, servono regole", "No", "Non so"],
+    },
     topic: "Esteri",
     title:
       "Secondo un nuovo studio, Israele usa l’AI per automatizzare demolizioni ed espulsioni dei palestinesi",
@@ -98,6 +112,10 @@ export const news: NewsItem[] = [
   },
   {
     id: "mangiare-sano",
+    poll: {
+      question: "Cosa ti impedisce di più di mangiare sano?",
+      options: ["Il tempo", "I soldi", "Le informazioni", "Niente, ci riesco"],
+    },
     topic: "Salute",
     title: "Mangiare sano è una questione di sbatti: tempo, possibilità e salute",
     accent: "una questione di sbatti",
@@ -124,6 +142,10 @@ export const news: NewsItem[] = [
   },
   {
     id: "gadget-vita-adulta",
+    poll: {
+      question: "Quale gadget ti servirebbe di più per la vita adulta?",
+      options: ["Uno per la burocrazia", "Uno per le bollette", "Uno per le scadenze"],
+    },
     topic: "AI & Tech",
     title: "10 gadget di cui avremmo assolutamente bisogno per affrontare la vita adulta",
     accent: "la vita adulta",
@@ -145,6 +167,10 @@ export const news: NewsItem[] = [
   },
   {
     id: "cervi-strada",
+    poll: {
+      question: "Servono più passaggi sicuri per la fauna selvatica vicino alle strade?",
+      options: ["Sì", "No", "Non so"],
+    },
     topic: "Ambiente",
     title:
       "Non sono i cervi ad attraversare la nostra strada: è la strada che attraversa il loro bosco",
@@ -164,6 +190,10 @@ export const news: NewsItem[] = [
   },
   {
     id: "evoluzione-umana",
+    poll: {
+      question: "Sapevi che l’uomo non discende dalle scimmie di oggi?",
+      options: ["Sì", "No", "Avevo dei dubbi"],
+    },
     topic: "Cultura",
     title: "L’immagine dell’evoluzione umana che hai in testa è sbagliata",
     accent: "è sbagliata",
@@ -182,6 +212,10 @@ export const news: NewsItem[] = [
   },
   {
     id: "barbie-corpi",
+    poll: {
+      question: "I giocattoli influenzano l’idea di corpo con cui si cresce?",
+      options: ["Molto", "Poco", "Per niente"],
+    },
     topic: "Moda",
     title: "Barbie e Ken oggi hanno corpi più realistici rispetto a 30 anni fa",
     accent: "più realistici",
@@ -200,6 +234,10 @@ export const news: NewsItem[] = [
   },
   {
     id: "asilo-trasferimenti",
+    poll: {
+      question: "I Paesi europei dovrebbero condividere di più l’accoglienza?",
+      options: ["Sì", "No", "Non so"],
+    },
     topic: "Politica",
     title: "Richiedenti asilo, diversi Paesi europei riprendono i trasferimenti verso l’Italia",
     accent: "riprendono i trasferimenti",
@@ -218,6 +256,10 @@ export const news: NewsItem[] = [
   },
   {
     id: "caldo-estate",
+    poll: {
+      question: "D’estate il caldo ti ha mai impedito di uscire di casa?",
+      options: ["Spesso", "Qualche volta", "Mai"],
+    },
     topic: "Ambiente",
     title: "Il cambiamento climatico è anche non poter uscire di casa in estate",
     accent: "non poter uscire di casa",
@@ -236,6 +278,10 @@ export const news: NewsItem[] = [
   },
   {
     id: "confronto",
+    poll: {
+      question: "Ti confronti con chi ha idee diverse dalle tue?",
+      options: ["Spesso", "Raramente", "Evito di farlo"],
+    },
     topic: "Cultura",
     title: "Il confronto con chi ha idee diverse dovrebbe essere la normalità",
     accent: "la normalità",
@@ -254,6 +300,10 @@ export const news: NewsItem[] = [
   },
   {
     id: "non-si-puo-dire",
+    poll: {
+      question: "Secondo te oggi si può dire tutto?",
+      options: ["Sì, anche troppo", "Ci sono più limiti di prima", "Dipende da cosa"],
+    },
     topic: "Politica",
     title: "A forza di dire «non si può più dire niente», stiamo dicendo di tutto",
     accent: "stiamo dicendo di tutto",
@@ -272,6 +322,10 @@ export const news: NewsItem[] = [
   },
   {
     id: "costo-della-vita",
+    poll: {
+      question: "A casa tua lo stipendio basta per arrivare a fine mese?",
+      options: ["Sì", "A fatica", "No"],
+    },
     topic: "Economia",
     title:
       "Il costo della vita mette in ginocchio le famiglie: lavorare non basta più per vivere dignitosamente",
@@ -294,6 +348,10 @@ export const news: NewsItem[] = [
   },
   {
     id: "ricerca-precariato",
+    poll: {
+      question: "Lasceresti l’Italia per un lavoro più stabile all’estero?",
+      options: ["Sì", "No", "Ci sto pensando"],
+    },
     topic: "Lavoro",
     title:
       "Ricerca italiana in crisi: migliaia di professionisti rischiano il futuro tra precariato e pochi finanziamenti",
@@ -316,6 +374,10 @@ export const news: NewsItem[] = [
   },
   {
     id: "midterm-usa",
+    poll: {
+      question: "Le elezioni americane hanno effetti anche sulla tua vita?",
+      options: ["Sì, molti", "Pochi", "Nessuno"],
+    },
     topic: "Esteri",
     title: "Stati Uniti, le elezioni di metà mandato diventano un test decisivo per Donald Trump",
     accent: "un test decisivo",

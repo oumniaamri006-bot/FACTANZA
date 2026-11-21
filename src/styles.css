@@ -1285,6 +1285,21 @@
   padding: 22px;
   margin: 8px 0 22px;
 }
+.poll-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.poll-options button {
+  justify-content: flex-start;
+  height: auto;
+  white-space: normal;
+  text-align: left;
+  padding: 10px 14px;
+}
+.vote-fill.other {
+  background: var(--sky);
+}
 .article-poll h2 {
   font-size: 24px;
   line-height: 1.25;

@@ -25,13 +25,9 @@ function Index() {
   if (!user.onboarded) return <Onboarding />;
 
   const choice = user.votes["daily"];
-  // "Tutti" sempre per primo, poi i temi scelti dall'utente, poi gli altri.
-  const stories = [
-    allCategory,
-    ...[...categories].sort(
-      (a, b) => Number(user.interests.includes(b.name)) - Number(user.interests.includes(a.name)),
-    ),
-  ];
+  // "Tutti" sempre per primo, poi solo i temi scelti (tutti, se non ne è stato scelto nessuno).
+  const chosen = categories.filter((category) => user.interests.includes(category.name));
+  const stories = [allCategory, ...(chosen.length ? chosen : categories)];
   const displayed = news.filter(
     (item) => !user.interests.length || user.interests.includes(item.topic),
   );
