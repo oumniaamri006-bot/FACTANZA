@@ -3,7 +3,6 @@ import {
   Outlet,
   Link,
   createRootRouteWithContext,
-  useRouter,
   HeadContent,
   Scripts,
   type ErrorComponentProps,
@@ -12,6 +11,7 @@ import { useEffect, type ReactNode } from "react";
 import { FactanzaProvider } from "@/components/factanza/context";
 import { Logo } from "@/components/factanza/shared";
 import { Button } from "@/components/ui/button";
+import { isStaleChunkError, reloadOnce } from "@/lib/stale-chunk";
 
 import appCss from "../styles.css?url";
 
@@ -30,10 +30,10 @@ function NotFoundComponent() {
   );
 }
 
-function ErrorComponent({ error, reset }: ErrorComponentProps) {
-  const router = useRouter();
+function ErrorComponent({ error }: ErrorComponentProps) {
   useEffect(() => {
     console.error(error);
+    if (isStaleChunkError(error)) reloadOnce();
   }, [error]);
 
   return (
@@ -45,13 +45,7 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
         Qualcosa è andato storto da parte nostra. Riprova o torna alla home.
       </p>
       <div className="flex flex-col gap-4 mt-8">
-        <Button
-          variant="sticker"
-          onClick={() => {
-            router.invalidate();
-            reset();
-          }}
-        >
+        <Button variant="sticker" onClick={() => window.location.reload()}>
           Riprova
         </Button>
         <Button variant="facta" asChild>
