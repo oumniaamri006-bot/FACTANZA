@@ -1,7 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, Share2 } from "lucide-react";
-import { AppShell, Back, CategoryIcon, PageTitle, pageHead } from "@/components/factanza/shared";
+import {
+  AppShell,
+  Back,
+  CategoryIcon,
+  PageTitle,
+  TopicCover,
+  pageHead,
+} from "@/components/factanza/shared";
 import { Button } from "@/components/ui/button";
 import { news } from "@/data/news";
 import { useFactanza } from "@/components/factanza/context";
@@ -54,7 +61,7 @@ function Article() {
           <span className="topic-tag">{article.topic.toUpperCase()}</span>
         </div>
         <PageTitle>{article.title}</PageTitle>
-        <img src={article.image} alt="" className="event-image mb-5" />
+        <TopicCover topic={article.topic} className="article-cover" />
 
         <div
           className="article-slide"

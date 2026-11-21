@@ -2,8 +2,14 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Play, Pause, X, Headphones, CirclePlay } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { AppShell, CategoryIcon, SectionTitle, pageHead } from "@/components/factanza/shared";
-import { collage, media } from "@/data/factanza";
+import {
+  AppShell,
+  CategoryIcon,
+  SectionTitle,
+  TopicCover,
+  pageHead,
+} from "@/components/factanza/shared";
+import { media } from "@/data/factanza";
 import { useFactanza } from "@/components/factanza/context";
 
 export const Route = createFileRoute("/contenuti")({
@@ -109,8 +115,7 @@ function Content() {
           {featured.map((item) => (
             <article key={item.id} className="content-item">
               <div className="media-cover">
-                <img src={collage} alt="" />
-                <CategoryIcon topic={item.topic} className="news-badge" />
+                <TopicCover topic={item.topic} />
                 <h3>{item.title}</h3>
               </div>
               <div className="news-footer">

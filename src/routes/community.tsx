@@ -1,8 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Bell } from "lucide-react";
-import { AppShell, SectionTitle, pageHead } from "@/components/factanza/shared";
+import { AppShell, IconCollage, SectionTitle, pageHead } from "@/components/factanza/shared";
 import { Button } from "@/components/ui/button";
-import { collage } from "@/data/factanza";
 import { useFactanza } from "@/components/factanza/context";
 
 export const Route = createFileRoute("/community")({
@@ -20,11 +19,7 @@ function Community() {
     <AppShell>
       <div className="page-content">
         <SectionTitle first="La community" second="STA ARRIVANDO" />
-        <img
-          src={collage}
-          alt="Due giovani pronti a dare voce alla community"
-          className="collage empty-collage"
-        />
+        <IconCollage className="empty-collage" label="I temi di cui parlerà la community" />
         <p className="hand text-primary text-right mt-4">(e ci sarai anche tu) ↗</p>
         <p className="body-copy mt-5 mb-6">
           Presto potrai discutere e confrontarti con chi ha i tuoi stessi interessi.

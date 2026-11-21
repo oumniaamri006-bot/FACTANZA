@@ -2,15 +2,15 @@ import { Link, useLocation } from "@tanstack/react-router";
 import { Home, Users, CalendarDays, CirclePlay, CreditCard, ArrowLeft } from "lucide-react";
 import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
-import { getCategoryByName } from "@/data/categories";
-import logoAsset from "@/assets/factanza-logo.asset.json";
+import { categories, getCategoryByName } from "@/data/categories";
+import logoUrl from "@/assets/factanza-logo.png";
 
 export type StickerColor = "lime" | "yellow" | "lilac" | "magenta";
 
 export function Logo() {
   return (
     <div className="brand">
-      <img className="logo" src={logoAsset.url} alt="Logo Factanza" />
+      <img className="logo" src={logoUrl} alt="Logo Factanza" />
       <span>
         factanza<span className="brand-dot">.</span>
       </span>
@@ -46,6 +46,36 @@ export function CategoryIcon({ topic, className = "" }: { topic: string; classNa
   const category = getCategoryByName(topic);
   if (!category) return null;
   return <img className={`category-icon ${className}`} src={category.icon} alt="" aria-hidden />;
+}
+
+/** Copertina illustrata di un contenuto: l'icona pop-art del tema su retino. */
+export function TopicCover({ topic, className = "" }: { topic: string; className?: string }) {
+  return (
+    <div className={`topic-cover pop-bg ${className}`}>
+      <CategoryIcon topic={topic} />
+    </div>
+  );
+}
+
+const collageSlugs = ["politica", "ai-tech", "cultura", "sport", "ambiente"];
+
+/** Composizione di icone pop-art inclinate: sostituisce il collage fotografico. */
+export function IconCollage({ className = "", label }: { className?: string; label?: string }) {
+  const icons = collageSlugs
+    .map((slug) => categories.find((category) => category.slug === slug))
+    .filter((category) => category !== undefined);
+  return (
+    <div
+      className={`icon-collage pop-bg ${className}`}
+      role={label ? "img" : undefined}
+      aria-label={label}
+      aria-hidden={label ? undefined : true}
+    >
+      {icons.map((category) => (
+        <img key={category.slug} src={category.icon} alt="" />
+      ))}
+    </div>
+  );
 }
 
 const tabs = [

@@ -1,29 +1,32 @@
-# Welcome to your Lovable project
+# Factanza
 
-This project was built with [Lovable](https://lovable.dev).
+**Non solo news. La tua voce.** Web app mobile-first che aiuta i giovani a capire le notizie che
+influenzano la loro vita: feed personalizzato, domanda del giorno, notizie spiegate in 5 slide,
+dibattiti live con voto prima/dopo, podcast e video, carta FactaFidelity.
 
-## Build with Lovable
+È una demo: non c'è backend, i contenuti sono dimostrativi e le scelte dell'utente restano nel
+browser (`localStorage`).
 
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
+## Sviluppo
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+Serve [Bun](https://bun.sh) (oppure Node.js 22+ con npm).
 
 ```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
+bun install
+bun run dev      # http://localhost:3000
+bun run test
+bun run lint
+bun run build    # output in .output/
+node .output/server/index.mjs   # avvia la build di produzione
 ```
 
-## Built with
+## Deploy
 
-- TanStack Start
-- TypeScript
-- React
-- Tailwind CSS
+La build usa [Nitro](https://nitro.build): su Vercel, Netlify o Cloudflare il preset viene
+rilevato automaticamente; altrove produce un server Node (`.output/server/index.mjs`).
+
+## Stack
+
+TanStack Start · React 19 · TypeScript · Tailwind CSS v4 · shadcn/Radix · framer-motion · Vitest
+
+Regole di architettura e sistema visivo: vedi [`CLAUDE.md`](./CLAUDE.md).

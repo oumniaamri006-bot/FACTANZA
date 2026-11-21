@@ -1,6 +1,3 @@
-import collageAsset from "@/assets/factanza-collage.asset.json";
-
-export const collage = collageAsset.url;
 export const topics = [
   "AI & Tech",
   "Politica",

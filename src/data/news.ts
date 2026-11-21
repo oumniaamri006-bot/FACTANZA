@@ -1,6 +1,3 @@
-import aiAsset from "@/assets/factanza-ai.asset.json";
-import { collage } from "./factanza";
-export const aiImage = aiAsset.url;
 export const news = [
   {
     id: "ai-lavoro",
@@ -9,7 +6,6 @@ export const news = [
     accent: "siamo pronti?",
     minutes: 4,
     opinions: "2.3k",
-    image: aiImage,
     slides: [
       "L’intelligenza artificiale è già entrata nelle nostre vite. E nel nostro lavoro.",
       "Non solo robot: l’AI scrive, analizza dati, crea immagini e aiuta a prendere decisioni.",
@@ -25,7 +21,6 @@ export const news = [
     accent: "La nostra voce conta.",
     minutes: 3,
     opinions: "1.8k",
-    image: collage,
     slides: [
       "Votare a 16 anni: un’idea che fa discutere.",
       "In alcuni Paesi europei i sedicenni possono già votare.",
@@ -41,7 +36,6 @@ export const news = [
     accent: "E noi?",
     minutes: 5,
     opinions: "946",
-    image: collage,
     slides: [
       "Il clima cambia e le nuove generazioni chiedono risposte.",
       "Trasporti, energia e consumi: le scelte quotidiane contano.",
@@ -57,7 +51,6 @@ export const news = [
     accent: "Non un lusso.",
     minutes: 3,
     opinions: "712",
-    image: collage,
     slides: [
       "Un museo, un concerto, un libro: la cultura cambia il modo di vedere il mondo.",
       "I prezzi possono diventare una barriera.",

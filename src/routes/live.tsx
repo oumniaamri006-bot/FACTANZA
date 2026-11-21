@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Bell, Check, CirclePlay, Send, MessageCircle } from "lucide-react";
-import { AppShell, CategoryIcon, SectionTitle, pageHead } from "@/components/factanza/shared";
+import { AppShell, SectionTitle, TopicCover, pageHead } from "@/components/factanza/shared";
 import { Button } from "@/components/ui/button";
-import { events, collage } from "@/data/factanza";
+import { events } from "@/data/factanza";
 import { useFactanza } from "@/components/factanza/context";
 import { toggleValue } from "@/lib/factanza-state";
 
@@ -42,10 +42,7 @@ function Live() {
               .map((event) => (
                 <article className="event" key={event.id}>
                   {status === "live" && <span className="live-badge">IN DIRETTA</span>}
-                  <div className="event-media">
-                    <img src={collage} alt={event.guest} className="event-image" />
-                    <CategoryIcon topic={event.topic} className="news-badge" />
-                  </div>
+                  <TopicCover topic={event.topic} className="event-media" />
                   <h3>{event.title}</h3>
                   <p className="event-meta">
                     {event.date}

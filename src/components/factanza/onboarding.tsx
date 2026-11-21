@@ -12,8 +12,8 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useFactanza } from "./context";
-import { CategoryIcon, Logo, SectionTitle } from "./shared";
-import { collage, topics, formats } from "@/data/factanza";
+import { CategoryIcon, IconCollage, Logo, SectionTitle } from "./shared";
+import { topics, formats } from "@/data/factanza";
 import { toggleValue } from "@/lib/factanza-state";
 
 const formatIcons = [BookOpen, CirclePlay, Headphones];
@@ -62,7 +62,7 @@ export function Onboarding({ redo = false, onDone }: { redo?: boolean; onDone?: 
             </h1>
             <span className="hand">(quella buona) ↗</span>
           </div>
-          <img className="splash-art" src={collage} alt="Collage di giovani, microfono e notizie" />
+          <IconCollage className="splash-art" label="Collage di icone dei temi Factanza" />
           <div className="splash-bottom">
             <p>NON SOLO NEWS.</p>
             <span className="sticker yellow">LA TUA VOCE.</span>

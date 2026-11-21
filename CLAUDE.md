@@ -1,7 +1,9 @@
 # CLAUDE.md — Factanza
 
-Guida per Claude (e per chiunque sviluppi) su questo repository. Leggi anche `AGENTS.md`:
-il blocco `LOVABLE` contiene regole vincolanti sul collegamento con Lovable.
+Guida per Claude (e per chiunque sviluppi) su questo repository.
+
+Il progetto è nato su Lovable ma ora è **indipendente**: niente pacchetti `@lovable.dev`, niente
+asset ospitati su Lovable, niente telemetria dell'editor. Non reintrodurli.
 
 ## Il progetto
 
@@ -10,8 +12,8 @@ i giovani a capire le notizie che influenzano la loro vita: feed personalizzato,
 giorno, notizie spiegate in 5 slide, dibattiti live con voto prima/dopo, podcast/video, carta
 FactaFidelity e area personale.
 
-- Stella polare (`.lovable/north-star/north-star.md`): minuti totali passati a leggere le notizie
-  ogni giorno.
+- Stella polare: _i giovani capiscono le notizie che influenzano la loro vita_. Metrica: minuti
+  totali passati a leggere le notizie ogni giorno.
 - Lingua dell'interfaccia: **italiano**. Tutti i testi visibili, i `head()` e le etichette ARIA
   sono in italiano.
 - È una demo: **nessun backend**. Contenuti finti in `src/data`, stato utente in `localStorage`.
@@ -25,11 +27,12 @@ Il package manager è **bun** (`bun.lock`); funziona anche npm.
 
 ```sh
 bun install
-bun run dev          # vite dev (se IPv6 non è disponibile: npx vite dev --host 127.0.0.1)
+bun run dev          # vite dev su :3000 (se IPv6 non è disponibile: aggiungi --host 127.0.0.1)
 bun run test         # vitest run
 bun run lint         # eslint + prettier
 npx tsc --noEmit     # typecheck
-bun run build
+bun run build        # Nitro: preset auto-rilevato (Vercel/Netlify/Cloudflare) o server Node
+node .output/server/index.mjs   # avvia la build in locale
 bun run format       # prettier --write .
 ```
 
@@ -41,6 +44,7 @@ Prima di ogni commit esegui test, typecheck e lint: devono passare senza errori.
 src/
   routes/                 una route TanStack per pagina (vedi src/routes/README.md)
     __root.tsx            shell HTML, font, meta globali, pagine 404/errore in stile Factanza
+  server.ts, start.ts     entry SSR e middleware (errori, CSRF); lib/error-page.ts = errore SSR statico
     index.tsx             "Per te": storie categorie, domanda del giorno, feed, banner live
     categoria.$category.tsx  notizie per categoria (`tutte` = tutte le notizie)
     notizia.tsx           notizia in 5 slide + sondaggio (?id=)
@@ -48,14 +52,15 @@ src/
     contenuti.tsx, video.tsx  podcast/YouTube e player demo
     community.tsx, factafidelity.tsx, profilo.tsx
   components/factanza/    componenti dell'app
-    shared.tsx            AppShell, Logo, SectionTitle, PageTitle, CategoryIcon, Back, pageHead
+    shared.tsx            AppShell, Logo, SectionTitle, PageTitle, CategoryIcon, TopicCover,
+                          IconCollage, Back, pageHead
     context.tsx           FactanzaProvider / useFactanza (stato utente, voti, toast)
     news-card.tsx, onboarding.tsx
   components/ui/          primitive shadcn (non modificarle per lo stile dell'app)
   data/                   contenuti demo: categories.ts, news.ts, factanza.ts
   lib/factanza-state.ts   tipo UserState, parsing sicuro del localStorage, toggleValue
   assets/categorie/       le 11 icone pop-art delle categorie (PNG trasparenti 320×320)
-  assets/*.asset.json     puntatori ad asset caricati su Lovable (logo, collage, immagine AI)
+  assets/factanza-logo.png  logo (la "F" multicolore, uguale a public/favicon.png)
   styles.css              token Tailwind + TUTTO il sistema visivo Factanza
   test/                   test Vitest
 ```
@@ -74,8 +79,8 @@ src/
   La voce "Tutti" è `allCategory` (slug `tutte`) e ha una sua icona.
 - Il nome di una categoria (`'AI & Tech'`, `'Politica'`, …) è la chiave usata da notizie, eventi e
   media nel campo `topic`; usa `getCategoryByName()` / `<CategoryIcon topic=…/>` per l'icona.
-- Gli asset `.asset.json` puntano a URL `/__l5e/...` serviti solo dall'hosting Lovable: in locale
-  logo/collage/immagine AI possono non caricarsi. Non è un bug del codice.
+- Tutti gli asset sono file locali in `src/assets` importati con `import url from "…png"`:
+  niente URL esterni per le immagini.
 
 ## Sistema visivo (da rispettare per mantenere la grafica omogenea)
 
@@ -85,17 +90,17 @@ inclinati, retino a puntini.
 
 **Token** (in `src/styles.css`, mai colori hardcoded):
 
-| Ruolo | Token |
-| --- | --- |
-| Blocchi forti (domanda del giorno, splash, carta, tab attiva) | `--brand-navy` |
-| Sticker / accenti / stato "scelto" | `--lime`, `--yellow`, `--magenta`, `--lilac` |
-| Offerte | `--brand-orange` |
-| Card e superfici | `--paper` su sfondo `--background` |
-| Link, focus, icone lineari | `--primary` |
-| Contorno | `--line` (2px nero) · separatori leggeri `--hairline` |
-| Ombre piatte | `--shadow-sm` (2px) · `--shadow` (3px) · `--shadow-lg` (5px) |
-| Raggio card | `--radius-card` (8px) · bottoni 6px |
-| Retino pop-art | `.pop-bg` (lilac + `--halftone`) |
+| Ruolo                                                         | Token                                                        |
+| ------------------------------------------------------------- | ------------------------------------------------------------ |
+| Blocchi forti (domanda del giorno, splash, carta, tab attiva) | `--brand-navy`                                               |
+| Sticker / accenti / stato "scelto"                            | `--lime`, `--yellow`, `--magenta`, `--lilac`                 |
+| Offerte                                                       | `--brand-orange`                                             |
+| Card e superfici                                              | `--paper` su sfondo `--background`                           |
+| Link, focus, icone lineari                                    | `--primary`                                                  |
+| Contorno                                                      | `--line` (2px nero) · separatori leggeri `--hairline`        |
+| Ombre piatte                                                  | `--shadow-sm` (2px) · `--shadow` (3px) · `--shadow-lg` (5px) |
+| Raggio card                                                   | `--radius-card` (8px) · bottoni 6px                          |
+| Retino pop-art                                                | `.pop-bg` (lilac + `--halftone`)                             |
 
 **Tipografia**: Unbounded 300 per i titoli di sezione (`.section-title`, `.subsection-title`,
 splash) · Anton per sticker, tag ed etichette (`font-label`) · Caveat per le note a mano
@@ -108,8 +113,11 @@ splash) · Anton per sticker, tag ed etichette (`font-label`) · Caveat per le n
 - `<Button variant="facta">` per azioni secondarie, `variant="sticker"` (giallo) per la CTA
   principale della schermata. Stato selezionato: classe `picked` + `aria-pressed`.
   Non usare le varianti shadcn `default/outline/secondary` nelle pagine Factanza.
-- `<CategoryIcon topic="Cultura" className="news-badge|chip-icon|swipe-art" />` per mostrare una
+- `<CategoryIcon topic="Cultura" className="chip-icon|swipe-art" />` per mostrare una
   categoria. Non usare icone lucide per le categorie: usa sempre le illustrazioni pop-art.
+- `<TopicCover topic="…" />` come copertina di notizie, live e contenuti (icona su retino):
+  non ci sono foto. `<IconCollage label="…" />` per le illustrazioni grandi (splash, community,
+  sfondo del player live).
 - `.sticker` (+ `.small`), `.topic-tag`, `.live-badge`, `.hand`, `.body-copy`, `.demo-label`.
 - Card: bordo `--line`, `--radius-card`, ombra `--shadow` (vedi `.news-card`, `.benefit`).
 

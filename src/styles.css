@@ -427,14 +427,6 @@
   object-fit: contain;
   filter: drop-shadow(2px 2px 0 color-mix(in oklch, var(--ink) 25%, transparent));
 }
-.category-icon.news-badge {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 68px;
-  height: 68px;
-  transform: rotate(4deg);
-}
 .chip-icon {
   width: 26px;
   height: 26px;
@@ -676,10 +668,14 @@
   overflow: hidden;
   border-bottom: var(--line);
 }
-.news-image > img {
-  width: 100%;
+.news-image > .topic-cover {
   height: 100%;
-  object-fit: cover;
+  align-items: start;
+  padding-top: 26px;
+}
+.news-image > .topic-cover .category-icon {
+  width: 150px;
+  height: 150px;
 }
 .news-image .topic-tag {
   position: absolute;
@@ -753,16 +749,17 @@
   color: var(--muted-foreground);
   margin-bottom: 16px;
 }
-.event-media {
-  position: relative;
-  margin-top: 14px;
-}
-.event-image {
+.event-media,
+.article-cover {
   height: 175px;
-  object-fit: cover;
-  width: 100%;
+  margin-top: 14px;
   border: var(--line);
   border-radius: var(--radius-card);
+}
+.article-cover {
+  height: 200px;
+  margin: 0 0 20px;
+  box-shadow: var(--shadow);
 }
 .link-row {
   display: flex;
@@ -792,15 +789,14 @@
   border: var(--line);
   border-radius: var(--radius-card);
 }
-.video-screen img {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0.5;
-}
-.video-screen > *:not(img) {
+.video-screen > *:not(.video-backdrop) {
   position: relative;
+}
+.video-backdrop {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  opacity: 0.45;
 }
 .video-frame {
   width: 100%;
@@ -885,10 +881,14 @@
   position: relative;
   border-bottom: var(--line);
 }
-.media-cover > img {
-  width: 100%;
+.media-cover > .topic-cover {
   height: 230px;
-  object-fit: cover;
+  align-items: start;
+  padding-top: 18px;
+}
+.media-cover > .topic-cover .category-icon {
+  width: 140px;
+  height: 140px;
 }
 .media-cover h3 {
   position: absolute;
@@ -954,12 +954,49 @@
   accent-color: var(--brand-navy);
 }
 
-/* ---------- Collage ---------- */
+/* ---------- Copertine illustrate e collage di icone ---------- */
 
-.collage {
+/* Copertina di notizie, live e contenuti: icona del tema su retino lilla. */
+.topic-cover {
   width: 100%;
-  object-fit: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
 }
+.topic-cover .category-icon {
+  width: 140px;
+  height: 140px;
+  transform: rotate(-4deg);
+}
+
+/* Composizione di icone inclinate e sovrapposte (splash, community, live). */
+.icon-collage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 240px;
+  overflow: hidden;
+}
+.icon-collage img {
+  width: 34%;
+  max-width: 150px;
+  aspect-ratio: 1;
+  object-fit: contain;
+  margin: 0 -5%;
+  flex-shrink: 0;
+}
+.icon-collage img:nth-child(odd) {
+  transform: rotate(-8deg) translateY(-10%);
+}
+.icon-collage img:nth-child(even) {
+  transform: rotate(7deg) translateY(12%);
+}
+.icon-collage img:nth-child(3) {
+  z-index: 1;
+  transform: scale(1.15);
+}
+
 .empty-collage {
   margin: 20px calc(var(--gutter) * -1) 0;
   width: calc(100% + var(--gutter) * 2);
@@ -1239,10 +1276,7 @@
 .splash-art {
   margin: 22px -26px 0;
   width: calc(100% + 52px);
-  max-width: none;
   height: 260px;
-  object-fit: cover;
-  object-position: center 42%;
   border-block: var(--line);
 }
 .splash-bottom {

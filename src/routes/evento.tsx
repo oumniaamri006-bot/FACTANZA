@@ -1,9 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, useRef } from "react";
 import { Play, ArrowRight, Send } from "lucide-react";
-import { AppShell, Back, PageTitle, SectionTitle, pageHead } from "@/components/factanza/shared";
+import {
+  AppShell,
+  Back,
+  IconCollage,
+  PageTitle,
+  SectionTitle,
+  pageHead,
+} from "@/components/factanza/shared";
 import { Button } from "@/components/ui/button";
-import { events, chatMessages, collage } from "@/data/factanza";
+import { events, chatMessages } from "@/data/factanza";
 import { useFactanza } from "@/components/factanza/context";
 
 export const Route = createFileRoute("/evento")({
@@ -95,7 +102,7 @@ function Event() {
         {phase === 1 && (
           <>
             <div className="video-screen">
-              <img src={collage} alt="Ospiti del dibattito dimostrativo" />
+              <IconCollage className="video-backdrop" />
               <Play size={46} />
               <span className="live-badge">LIVE DEMO</span>
             </div>
