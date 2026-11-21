@@ -75,7 +75,11 @@ export function NewsCard({
       <article className={`news-card ${item.image ? "has-photo" : ""}`}>
         <div className="news-image">
           {item.image ? (
-            <img className="news-photo" src={item.image} alt="" loading="lazy" />
+            <>
+              {/* Sfondo: la stessa copertina sfocata, così l'immagine intera non ha bande vuote. */}
+              <img className="news-photo-bg" src={item.image} alt="" aria-hidden loading="lazy" />
+              <img className="news-photo" src={item.image} alt="" loading="lazy" />
+            </>
           ) : (
             <TopicCover topic={item.topic} />
           )}
