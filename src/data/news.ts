@@ -315,26 +315,6 @@ export const news: NewsItem[] = [
     ],
   },
   {
-    id: "longevita",
-    topic: "Salute",
-    title:
-      "Vivere più a lungo non deve essere un privilegio: la sfida della longevità accessibile a tutti",
-    accent: "non deve essere un privilegio",
-    minutes: 2,
-    opinions: "1.5k",
-    slides: [
-      "Vivere più a lungo e in buona salute è uno dei temi centrali della medicina e delle politiche sociali.",
-      "Check-up avanzati, analisi personalizzate, monitoraggio della salute: gli strumenti di prevenzione sono aumentati.",
-      "Ma molti hanno costi elevati e rischiano di restare accessibili soprattutto a chi può permetterseli.",
-      "La sfida è far invecchiare tutti con autonomia e benessere, ripensando sanità, welfare e assistenza sul territorio.",
-      "La prevenzione deve diventare una priorità pubblica: vivere più a lungo non può essere un lusso per pochi.",
-    ],
-    body: [
-      "La possibilità di vivere più a lungo e in buona salute sta diventando uno dei temi centrali della medicina e delle politiche sociali. Negli ultimi anni sono aumentati gli strumenti dedicati alla prevenzione, dai check-up avanzati alle analisi personalizzate, fino ai programmi di monitoraggio della salute. Tuttavia, molte di queste opportunità hanno costi elevati e rischiano di rimanere accessibili soprattutto alle fasce più abbienti della popolazione.",
-      "La vera sfida non consiste soltanto nell’allungare la durata della vita, ma nel garantire a tutti la possibilità di invecchiare mantenendo autonomia, benessere fisico e qualità della vita. L’invecchiamento progressivo della popolazione richiederà infatti un ripensamento dei servizi sanitari, del welfare e dell’assistenza territoriale. Anche la prevenzione dovrà diventare una priorità pubblica, evitando che il reddito determini la possibilità di ricevere cure adeguate. Il dibattito sulla longevità si sposta così dalla dimensione individuale a quella collettiva: vivere più a lungo dovrebbe essere un’opportunità condivisa e non un lusso riservato a pochi.",
-    ],
-  },
-  {
     id: "midterm-usa",
     topic: "Esteri",
     title: "Stati Uniti, le elezioni di metà mandato diventano un test decisivo per Donald Trump",
