@@ -10,13 +10,13 @@ describe("Podcast e video", () => {
       expect(getCategoryByName(item.topic)).toBeTruthy();
     }
   });
-  it("link to YouTube or Spotify", () => {
-    for (const item of media) {
-      expect(mediaLink(item)).toMatch(
-        item.type === "YouTube"
-          ? /^https:\/\/www\.youtube\.com\//
-          : /^https:\/\/open\.spotify\.com\//,
-      );
+  it("link every video to its YouTube page", () => {
+    const videos = media.filter((item) => item.type === "YouTube");
+    expect(videos.length).toBeGreaterThan(30);
+    for (const item of videos) {
+      expect(item.youtubeId).toMatch(/^[\w-]{11}$/);
+      expect(mediaLink(item)).toBe(`https://www.youtube.com/watch?v=${item.youtubeId}`);
     }
+    expect(new Set(videos.map((item) => item.youtubeId)).size).toBe(videos.length);
   });
 });

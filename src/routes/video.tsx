@@ -26,15 +26,25 @@ function Video() {
         <Back to="/contenuti" />
         <span className="sticker small yellow">YOUTUBE</span>
         <PageTitle>{item.title}</PageTitle>
-        <a
-          className="video-thumb"
-          href={mediaLink(item)}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={`Guarda su YouTube: ${item.title}`}
-        >
-          <img src={item.image} alt="" />
-        </a>
+        {item.youtubeId ? (
+          <iframe
+            className="video-frame"
+            src={`https://www.youtube-nocookie.com/embed/${item.youtubeId}`}
+            title={item.title}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        ) : (
+          <a
+            className="video-thumb"
+            href={mediaLink(item)}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Guarda su YouTube: ${item.title}`}
+          >
+            <img src={item.image} alt="" />
+          </a>
+        )}
         <p className="body-copy mt-4">
           {item.show} · {item.duration} · {item.topic}
         </p>
@@ -43,7 +53,7 @@ function Video() {
             Guarda su YouTube <ExternalLink />
           </a>
         </Button>
-        <p className="demo-label">Il video si apre sul canale YouTube di Factanza Media.</p>
+        <p className="demo-label">Video del canale YouTube di Factanza Media.</p>
       </div>
     </AppShell>
   );

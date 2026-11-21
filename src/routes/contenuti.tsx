@@ -56,6 +56,7 @@ function Content() {
   const [current, setCurrent] = useState<string | null>(null);
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [shown, setShown] = useState(10);
 
   const filtered = media.filter((item) => item.type === tab);
   const recommended = filtered.filter((item) => user.interests.includes(item.topic));
@@ -96,7 +97,10 @@ function Content() {
               role="tab"
               aria-selected={tab === value}
               className={tab === value ? "selected" : ""}
-              onClick={() => setTab(value)}
+              onClick={() => {
+                setTab(value);
+                setShown(10);
+              }}
             >
               {value === "Podcast" ? <Headphones /> : <CirclePlay />}
               {value}
@@ -125,7 +129,7 @@ function Content() {
         </div>
 
         <SectionTitle first="Nuovi" second="ARRIVI" color="lilac" />
-        {filtered.map((item) => (
+        {filtered.slice(0, shown).map((item) => (
           <article key={item.id} className="arrival">
             <img className="arrival-thumb" src={item.image} alt="" loading="lazy" />
             <div className="flex-1 min-w-0">
@@ -137,9 +141,14 @@ function Content() {
             <PlayAction item={item} tab={tab} variant="ghost" onPlay={start} />
           </article>
         ))}
+        {filtered.length > shown && (
+          <Button variant="facta" className="w-full mt-4" onClick={() => setShown(shown + 10)}>
+            Mostra altri ({filtered.length - shown})
+          </Button>
+        )}
         <p className="demo-label">
-          Podcast e video di Factanza Media. Il player qui è dimostrativo: l’episodio completo si
-          ascolta su Spotify (icona ↗ nel player).
+          Podcast e video di Factanza Media. Il player dei podcast qui è dimostrativo: l’episodio
+          completo si apre con l’icona ↗.
         </p>
       </div>
 
@@ -159,7 +168,7 @@ function Content() {
               href={mediaLink(active)}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Ascolta l’episodio completo su Spotify"
+              aria-label="Ascolta l’episodio completo"
             >
               <ExternalLink />
             </a>

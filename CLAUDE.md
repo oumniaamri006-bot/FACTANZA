@@ -77,7 +77,9 @@ src/
   e video, eventi, da `src/data/agenda.ts` (`demoToday` = giorno "oggi" della demo), con
   `DayStrip` e le date di `src/lib/dates.ts`.
 - Podcast e video in `src/data/factanza.ts` (`media`) sono episodi reali di Factanza Media
-  (Generazione Sospesa, Oriana · Unposted, canale YouTube): `mediaLink()` porta a Spotify/YouTube.
+  (Generazione Sospesa, Oriana · Unposted, canale YouTube). Le copertine dei video sono le
+  miniature originali di YouTube (senza durata); `youtubeId` alimenta il player in `/video` e
+  `mediaLink()`.
 - Ogni notizia (`src/data/news.ts`) ha un `poll` (domanda + risposte); le percentuali sono
   simulate e stabili (`src/lib/poll.ts`). La barra categorie mostra solo i temi scelti
   dall'utente (tutti, se non ne ha scelto nessuno).
