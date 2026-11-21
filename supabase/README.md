@@ -53,16 +53,23 @@ utenti, risposte ai sondaggi negli eventi.
 Viste aggregate, non esposte all'API: si leggono dal pannello Supabase (Table Editor → schema
 `analytics`, oppure SQL Editor).
 
-| Vista                       | Domanda a cui risponde                                   |
-| --------------------------- | -------------------------------------------------------- |
-| `reading_minutes_daily`     | Quanti minuti si leggono al giorno? (metrica guida)      |
-| `article_stats`             | Quali articoli si leggono, per quanto, fino a che punto? |
-| `poll_summary`              | Come si dividono le risposte ai sondaggi?                |
-| `opinion_change`            | Quanti cambiano idea dopo un live?                       |
-| `heatmap_taps`, `top_taps`  | Dove toccano le persone?                                 |
-| `daily_activity`            | Utenti attivi, sessioni e pagine viste al giorno         |
-| `swipe_topics`, `interests` | Quali temi interessano?                                  |
-| `event_counts`              | Riepilogo di tutti gli eventi                            |
+| Vista                                          | Domanda a cui risponde                                                                                                                                   |
+| ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `reading_minutes_daily`                        | Quanti minuti si leggono al giorno? (metrica guida)                                                                                                      |
+| `article_stats`                                | Quali articoli si leggono, per quanto, fino a che punto?                                                                                                 |
+| `poll_summary`                                 | Come si dividono le risposte ai sondaggi?                                                                                                                |
+| `opinion_change`                               | Quanti cambiano idea dopo un live?                                                                                                                       |
+| `heatmap_taps`, `top_taps`                     | Dove toccano le persone?                                                                                                                                 |
+| `daily_activity`                               | Utenti attivi, sessioni e pagine viste al giorno                                                                                                         |
+| `swipe_topics`, `interests`                    | Quali temi interessano?                                                                                                                                  |
+| `event_counts`                                 | Riepilogo di tutti gli eventi                                                                                                                            |
+| `user_activity`                                | **Cronologia per utente**: chi, quando, cosa ha fatto (articolo letto e per quanti secondi, video aperto, podcast, voti…); filtra per `utente` o `email` |
+| `users`                                        | **Scheda per utente**: dati dichiarati, provenienza, sessioni, minuti letti, tema preferito, voti, dispositivo                                           |
+| `age_groups`, `demographics`                   | Età, regione, occupazione, genere, come ci hanno conosciuto, campagne                                                                                    |
+| `devices`                                      | Dispositivi, sistemi e browser                                                                                                                           |
+| `feed_ctr`                                     | Notizie viste e aperte nel feed (tasso di click)                                                                                                         |
+| `page_time`, `sessions`                        | Tempo e scroll per pagina, durata delle sessioni                                                                                                         |
+| `media_progress`, `onboarding_steps`, `errors` | Ascolto dei podcast, tempi dell'onboarding, errori                                                                                                       |
 
 Esempio: `select * from analytics.reading_minutes_daily;`
 
