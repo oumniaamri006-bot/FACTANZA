@@ -567,6 +567,90 @@
   box-shadow: var(--shadow-sm);
 }
 
+/* ---------- Calendario delle notizie (home) ---------- */
+
+.news-calendar {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  margin: -6px calc(var(--gutter) * -1) 18px;
+  padding: 6px var(--gutter) 8px;
+}
+.calendar-day {
+  position: relative;
+  flex-shrink: 0;
+  width: 62px;
+  height: 78px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  background: var(--paper);
+  color: var(--ink);
+  border: var(--line);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition:
+    transform 0.15s,
+    background-color 0.15s;
+}
+.calendar-day:hover {
+  transform: translateY(-2px);
+}
+.calendar-day.selected {
+  background: var(--yellow);
+  box-shadow: var(--shadow);
+  transform: rotate(-2deg);
+}
+.calendar-day:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
+.calendar-weekday,
+.calendar-month {
+  font-size: 10px;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--muted-foreground);
+}
+.calendar-day.selected .calendar-weekday,
+.calendar-day.selected .calendar-month {
+  color: var(--ink);
+}
+.calendar-number {
+  font-family: var(--font-label);
+  font-size: 28px;
+  line-height: 1;
+}
+.calendar-all {
+  font-family: var(--font-label);
+  font-size: 17px;
+  line-height: 1;
+}
+.calendar-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--magenta);
+  color: var(--paper);
+  border: 1.5px solid var(--ink);
+  font-size: 11px;
+  font-weight: 700;
+}
+.calendar-label {
+  font-size: 13px;
+  margin: 0 0 16px;
+}
+
 /* ---------- Domanda del giorno e voti ---------- */
 
 .welcome-row {

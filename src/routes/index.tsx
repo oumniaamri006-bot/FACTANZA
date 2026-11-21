@@ -6,6 +6,9 @@ import { AppShell, SectionTitle, pageHead } from "@/components/factanza/shared";
 import { Onboarding } from "@/components/factanza/onboarding";
 import { useFactanza } from "@/components/factanza/context";
 import { NewsCard } from "@/components/factanza/news-card";
+import { NewsCalendar } from "@/components/factanza/news-calendar";
+import { longDate, uniqueDaysDesc } from "@/lib/dates";
+import { useState } from "react";
 import { dailyResults } from "@/data/factanza";
 import { news } from "@/data/news";
 import { allCategory, categories } from "@/data/categories";
@@ -21,6 +24,7 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const { user, ready, vote } = useFactanza();
+  const [day, setDay] = useState<string | null>(null);
   if (!ready) return <div className="phone" />;
   if (!user.onboarded) return <Onboarding />;
 
@@ -28,9 +32,16 @@ function Index() {
   // "Tutti" sempre per primo, poi solo i temi scelti (tutti, se non ne è stato scelto nessuno).
   const chosen = categories.filter((category) => user.interests.includes(category.name));
   const stories = [allCategory, ...(chosen.length ? chosen : categories)];
-  const displayed = news.filter(
-    (item) => !user.interests.length || user.interests.includes(item.topic),
+  // Notizie dei temi scelti (tutte, se non ne è stato scelto nessuno), dalla più recente.
+  const forYou = news
+    .filter((item) => !user.interests.length || user.interests.includes(item.topic))
+    .sort((a, b) => b.date.localeCompare(a.date));
+  const days = uniqueDaysDesc(forYou.map((item) => item.date));
+  const counts = Object.fromEntries(
+    days.map((d) => [d, forYou.filter((item) => item.date === d).length]),
   );
+  const selectedDay = day && days.includes(day) ? day : null;
+  const displayed = selectedDay ? forYou.filter((item) => item.date === selectedDay) : forYou;
 
   return (
     <AppShell>
@@ -106,6 +117,15 @@ function Index() {
         </div>
 
         <SectionTitle first="Scelto" second="PER TE" />
+        {days.length > 0 && (
+          <NewsCalendar days={days} counts={counts} selected={selectedDay} onSelect={setDay} />
+        )}
+        {selectedDay && (
+          <p className="calendar-label">
+            Le notizie del <strong>{longDate(selectedDay)}</strong> · {displayed.length}{" "}
+            {displayed.length === 1 ? "notizia" : "notizie"}
+          </p>
+        )}
         {displayed.length === 0 && (
           <p className="body-copy">
             Le prossime notizie su questo tema stanno arrivando. Nel frattempo, scopri tutti gli

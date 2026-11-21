@@ -18,6 +18,8 @@ export type NewsItem = {
   id: string;
   /** Nome di una categoria di src/data/categories.ts */
   topic: string;
+  /** Data di pubblicazione sul sito (AAAA-MM-GG): usata dal calendario in home. */
+  date: string;
   title: string;
   /** Parte del titolo evidenziata in giallo (deve comparire nel titolo). */
   accent: string;
@@ -39,6 +41,7 @@ export type NewsItem = {
 export const news: NewsItem[] = [
   {
     id: "guerra-ibrida",
+    date: "2026-11-07",
     poll: {
       question: "Ti senti informato su cosa sia la guerra ibrida?",
       options: ["Sì, abbastanza", "Solo in parte", "Per niente"],
@@ -61,6 +64,7 @@ export const news: NewsItem[] = [
   },
   {
     id: "therapy-culture",
+    date: "2026-10-17",
     poll: {
       question: "Ti capita di usare parole come «ghosting» o «tossico» con gli amici?",
       options: ["Spesso", "A volte", "Mai"],
@@ -89,6 +93,7 @@ export const news: NewsItem[] = [
   },
   {
     id: "israele-ai",
+    date: "2026-09-19",
     poll: {
       question: "L’uso dell’AI in guerra dovrebbe avere regole internazionali?",
       options: ["Sì, servono regole", "No", "Non so"],
@@ -112,6 +117,7 @@ export const news: NewsItem[] = [
   },
   {
     id: "mangiare-sano",
+    date: "2026-09-17",
     poll: {
       question: "Cosa ti impedisce di più di mangiare sano?",
       options: ["Il tempo", "I soldi", "Le informazioni", "Niente, ci riesco"],
@@ -142,6 +148,7 @@ export const news: NewsItem[] = [
   },
   {
     id: "gadget-vita-adulta",
+    date: "2026-08-29",
     poll: {
       question: "Quale gadget ti servirebbe di più per la vita adulta?",
       options: ["Uno per la burocrazia", "Uno per le bollette", "Uno per le scadenze"],
@@ -167,6 +174,7 @@ export const news: NewsItem[] = [
   },
   {
     id: "cervi-strada",
+    date: "2026-08-27",
     poll: {
       question: "Servono più passaggi sicuri per la fauna selvatica vicino alle strade?",
       options: ["Sì", "No", "Non so"],
@@ -190,6 +198,7 @@ export const news: NewsItem[] = [
   },
   {
     id: "evoluzione-umana",
+    date: "2026-08-24",
     poll: {
       question: "Sapevi che l’uomo non discende dalle scimmie di oggi?",
       options: ["Sì", "No", "Avevo dei dubbi"],
@@ -212,6 +221,7 @@ export const news: NewsItem[] = [
   },
   {
     id: "barbie-corpi",
+    date: "2026-08-22",
     poll: {
       question: "I giocattoli influenzano l’idea di corpo con cui si cresce?",
       options: ["Molto", "Poco", "Per niente"],
@@ -234,6 +244,7 @@ export const news: NewsItem[] = [
   },
   {
     id: "asilo-trasferimenti",
+    date: "2026-08-21",
     poll: {
       question: "I Paesi europei dovrebbero condividere di più l’accoglienza?",
       options: ["Sì", "No", "Non so"],
@@ -256,6 +267,7 @@ export const news: NewsItem[] = [
   },
   {
     id: "caldo-estate",
+    date: "2026-08-27",
     poll: {
       question: "D’estate il caldo ti ha mai impedito di uscire di casa?",
       options: ["Spesso", "Qualche volta", "Mai"],
@@ -278,6 +290,7 @@ export const news: NewsItem[] = [
   },
   {
     id: "confronto",
+    date: "2026-10-17",
     poll: {
       question: "Ti confronti con chi ha idee diverse dalle tue?",
       options: ["Spesso", "Raramente", "Evito di farlo"],
@@ -300,6 +313,7 @@ export const news: NewsItem[] = [
   },
   {
     id: "non-si-puo-dire",
+    date: "2026-11-07",
     poll: {
       question: "Secondo te oggi si può dire tutto?",
       options: ["Sì, anche troppo", "Ci sono più limiti di prima", "Dipende da cosa"],
@@ -322,6 +336,7 @@ export const news: NewsItem[] = [
   },
   {
     id: "costo-della-vita",
+    date: "2026-11-21",
     poll: {
       question: "A casa tua lo stipendio basta per arrivare a fine mese?",
       options: ["Sì", "A fatica", "No"],
@@ -348,6 +363,7 @@ export const news: NewsItem[] = [
   },
   {
     id: "ricerca-precariato",
+    date: "2026-11-21",
     poll: {
       question: "Lasceresti l’Italia per un lavoro più stabile all’estero?",
       options: ["Sì", "No", "Ci sto pensando"],
@@ -374,6 +390,7 @@ export const news: NewsItem[] = [
   },
   {
     id: "midterm-usa",
+    date: "2026-11-02",
     poll: {
       question: "Le elezioni americane hanno effetti anche sulla tua vita?",
       options: ["Sì, molti", "Pochi", "Nessuno"],

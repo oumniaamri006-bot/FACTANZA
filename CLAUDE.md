@@ -45,7 +45,7 @@ src/
   routes/                 una route TanStack per pagina (vedi src/routes/README.md)
     __root.tsx            shell HTML, font, meta globali, pagine 404/errore in stile Factanza
   server.ts, start.ts     entry SSR e middleware (errori, CSRF); lib/error-page.ts = errore SSR statico
-    index.tsx             "Per te": storie categorie, domanda del giorno, feed, banner live
+    index.tsx             "Per te": storie categorie, domanda del giorno, calendario, feed, banner live
     categoria.$category.tsx  notizie per categoria (`tutte` = tutte le notizie)
     notizia.tsx           notizia: immagine, testo (body o punti chiave) + sondaggio `poll` (?id=)
     live.tsx, evento.tsx  dirette e dibattito con voto prima/dopo (?id=)
@@ -69,6 +69,8 @@ src/
 
 ## Regole di architettura
 
+- Ogni notizia ha una `date` (AAAA-MM-GG): la home la usa per il calendario (`NewsCalendar`,
+  formattazione in `src/lib/dates.ts`) e ordina il feed dalla più recente.
 - Ogni notizia (`src/data/news.ts`) ha un `poll` (domanda + risposte); le percentuali sono
   simulate e stabili (`src/lib/poll.ts`). La home e la barra categorie mostrano solo i temi scelti
   dall'utente (tutti, se non ne ha scelto nessuno).

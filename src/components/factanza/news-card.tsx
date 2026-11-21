@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowUpRight, Flame } from "lucide-react";
 import type { NewsItem } from "@/data/news";
 import { TopicCover } from "./shared";
+import { shortDate } from "@/lib/dates";
 
 /** Titolo con la parte `accent` evidenziata, ovunque si trovi nel titolo. */
 export function AccentTitle({ item }: { item: NewsItem }) {
@@ -41,7 +42,9 @@ export function NewsCard({ item }: { item: NewsItem }) {
           </h3>
         )}
         <div className="news-footer">
-          <span>{item.minutes} min di lettura</span>
+          <span>
+            {shortDate(item.date)} · {item.minutes} min di lettura
+          </span>
           <span className="news-opinions">
             <Flame size={13} className="text-magenta" /> {item.opinions} opinioni{" "}
             <ArrowUpRight size={17} />
