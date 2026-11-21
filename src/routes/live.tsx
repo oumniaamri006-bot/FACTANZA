@@ -22,7 +22,7 @@ export const Route = createFileRoute("/live")({
 const calendarDays = nextDays(demoToday, 14);
 
 function AgendaAction({ item }: { item: AgendaItem }) {
-  const { user, update, notify } = useFactanza();
+  const { user, update, notify, track } = useFactanza();
   const released = item.date <= demoToday;
   const reminded = user.reminders.includes(item.id);
 
@@ -68,6 +68,7 @@ function AgendaAction({ item }: { item: AgendaItem }) {
       aria-pressed={reminded}
       onClick={() => {
         update({ reminders: toggleValue(user.reminders, item.id) });
+        track("reminder", { item_id: item.id, on: !reminded });
         notify(reminded ? "Promemoria rimosso." : "Promemoria salvato su questo dispositivo!");
       }}
     >
@@ -77,7 +78,7 @@ function AgendaAction({ item }: { item: AgendaItem }) {
 }
 
 function Live() {
-  const { notify } = useFactanza();
+  const { notify, track } = useFactanza();
   const [day, setDay] = useState(demoToday);
   const counts = Object.fromEntries(
     calendarDays.map((d) => [d, agenda.filter((item) => item.date === d).length]),
@@ -120,7 +121,10 @@ function Live() {
           days={calendarDays}
           counts={counts}
           selected={day}
-          onSelect={setDay}
+          onSelect={(next) => {
+            setDay(next);
+            track("calendar_day", { day: next });
+          }}
           today={demoToday}
           label="Calendario degli eventi"
         />

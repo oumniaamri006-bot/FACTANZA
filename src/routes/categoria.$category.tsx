@@ -38,8 +38,8 @@ function Category() {
         <p className="body-copy mb-6">
           {articles.length} {articles.length === 1 ? "notizia" : "notizie"}
         </p>
-        {articles.map((item) => (
-          <NewsCard key={item.id} item={item} />
+        {articles.map((item, index) => (
+          <NewsCard key={item.id} item={item} feed={`categoria:${slug}`} position={index + 1} />
         ))}
         {articles.length === 0 && (
           <p className="body-copy">Non ci sono ancora notizie in questa categoria.</p>

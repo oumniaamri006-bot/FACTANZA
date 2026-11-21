@@ -9,6 +9,8 @@ import { useFactanza } from "@/components/factanza/context";
 import { topics, dailyQuestion } from "@/data/factanza";
 import { news } from "@/data/news";
 import { toggleValue } from "@/lib/factanza-state";
+import { AboutYouFields } from "@/components/factanza/about-you";
+import { digitalConsentAge, isMinorForConsent } from "@/data/profile-options";
 
 export const Route = createFileRoute("/profilo")({
   head: () =>
@@ -31,7 +33,8 @@ function questionName(id: string) {
 }
 
 function Profile() {
-  const { user, update, logout, session } = useFactanza();
+  const { user, update, logout, session, track } = useFactanza();
+  const minor = isMinorForConsent(user.birthYear);
   const [redo, setRedo] = useState(false);
   const navigate = useNavigate();
   if (redo) return <Onboarding redo onDone={() => setRedo(false)} />;
@@ -67,6 +70,24 @@ function Profile() {
           maxLength={30}
         />
 
+        <SectionTitle first="Su" second="DI TE" color="lime" />
+        <AboutYouFields
+          idPrefix="profile"
+          value={{
+            birthYear: user.birthYear,
+            region: user.region,
+            occupation: user.occupation,
+            gender: user.gender,
+            referral: user.referral,
+          }}
+          onChange={(patch) => {
+            // Sotto i 14 anni le statistiche d'uso si spengono.
+            const minorNow =
+              patch.birthYear !== undefined && isMinorForConsent(patch.birthYear ?? null);
+            update(minorNow ? { ...patch, analytics: false } : patch);
+          }}
+        />
+
         <SectionTitle first="I tuoi" second="INTERESSI" color="lilac" />
         <div className="interest-grid">
           {topics.map((topic) => {
@@ -78,7 +99,10 @@ function Profile() {
                 className={`interest-icon ${picked ? "picked" : ""}`}
                 aria-pressed={picked}
                 aria-label={topic}
-                onClick={() => update({ interests: toggleValue(user.interests, topic) })}
+                onClick={() => {
+                  update({ interests: toggleValue(user.interests, topic) });
+                  track("interests_change", { topic, on: !picked });
+                }}
               >
                 <CategoryIcon topic={topic} />
                 {picked && (
@@ -121,11 +145,17 @@ function Profile() {
         </p>
         <div className="settings-row">
           <label htmlFor="analytics">
-            Statistiche d’uso anonime (tempo di lettura, tocchi sullo schermo)
+            Statistiche d’uso anonime (tempo di lettura, tocchi, dispositivo)
+            {minor && (
+              <span className="block text-xs mt-1">
+                Non disponibili sotto i {digitalConsentAge} anni.
+              </span>
+            )}
           </label>
           <Switch
             id="analytics"
-            checked={user.analytics}
+            checked={user.analytics && !minor}
+            disabled={minor}
             onCheckedChange={(analytics) => update({ analytics })}
           />
         </div>

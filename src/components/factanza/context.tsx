@@ -11,7 +11,9 @@ import { useLocation } from "@tanstack/react-router";
 import type { Session } from "@supabase/supabase-js";
 import { initialUser, storageKey, type UserState } from "@/lib/factanza-state";
 import { getSupabase, type ProfileRow } from "@/lib/supabase";
-import { flushEvents, queueEvent, tapLabel, type TrackedEvent } from "@/lib/analytics";
+import { flushEvents, queueEvent, sessionId, tapLabel, type TrackedEvent } from "@/lib/analytics";
+import { captureFirstTouch, visitContext } from "@/lib/attribution";
+import { isMinorForConsent } from "@/data/profile-options";
 import { topics } from "@/data/factanza";
 
 type StateContext = {
@@ -29,6 +31,11 @@ type StateContext = {
 
 const Context = createContext<StateContext | null>(null);
 
+/** Statistiche solo con consenso e da 14 anni in su. */
+function canTrack(user: UserState) {
+  return user.analytics && !isMinorForConsent(user.birthYear);
+}
+
 /** Campi del profilo salvati nella tabella `profiles`. */
 const profileColumns = {
   name: "name",
@@ -37,6 +44,11 @@ const profileColumns = {
   onboarded: "onboarded",
   analytics: "analytics_consent",
   notifications: "notifications",
+  birthYear: "birth_year",
+  region: "region",
+  occupation: "occupation",
+  gender: "gender",
+  referral: "referral",
 } as const satisfies Partial<Record<keyof UserState, keyof ProfileRow>>;
 
 function fromRows(
@@ -54,6 +66,11 @@ function fromRows(
       onboarded: profile.onboarded,
       analytics: profile.analytics_consent,
       notifications: profile.notifications,
+      birthYear: profile.birth_year,
+      region: profile.region,
+      occupation: profile.occupation,
+      gender: profile.gender,
+      referral: profile.referral,
     }),
     votes: Object.fromEntries(votes.map((row) => [row.poll_id, row.choice])),
     reminders: reminders.map((row) => row.item_id),
@@ -77,6 +94,7 @@ export function FactanzaProvider({ children }: { children: ReactNode }) {
 
   // Sessione: letta dal browser e aggiornata a ogni accesso o uscita.
   useEffect(() => {
+    captureFirstTouch();
     try {
       localStorage.removeItem(storageKey); // stato della vecchia demo solo-browser
     } catch {
@@ -115,6 +133,10 @@ export function FactanzaProvider({ children }: { children: ReactNode }) {
       }
       setUser(fromRows(profile.data ?? null, votes.data ?? [], reminders.data ?? []));
       setLoadedFor(userId);
+      void supabase
+        .from("profiles")
+        .update({ last_seen_at: new Date().toISOString() })
+        .eq("id", userId);
     })();
     return () => {
       cancelled = true;
@@ -172,7 +194,7 @@ export function FactanzaProvider({ children }: { children: ReactNode }) {
 
   const track = useCallback(
     (name: string, props: TrackedEvent["props"] = {}) => {
-      if (!userId || !userRef.current.analytics) return;
+      if (!userId || !canTrack(userRef.current)) return;
       queueEvent({ name, path: window.location.pathname, props });
     },
     [userId],
@@ -201,13 +223,83 @@ export function FactanzaProvider({ children }: { children: ReactNode }) {
     setUser(initialUser);
   }, []);
 
+  // Statistiche: inizio visita con il contesto del dispositivo (una volta per scheda).
+  const analyticsOn = Boolean(userId) && canTrack(user);
+  useEffect(() => {
+    if (!ready || !analyticsOn) return;
+    try {
+      const key = `factanza-started-${sessionId()}`;
+      if (sessionStorage.getItem(key)) return;
+      sessionStorage.setItem(key, "1");
+    } catch {
+      // senza sessionStorage registriamo comunque l'inizio
+    }
+    track("session_start", visitContext());
+  }, [ready, analyticsOn, track]);
+
+  // Tempo attivo e scroll su ogni pagina (inviato quando si cambia pagina o si nasconde la scheda).
+  useEffect(() => {
+    if (!ready || !analyticsOn) return;
+    const path = pathname;
+    let seconds = 0;
+    let maxScroll = 0;
+    let lastActivity = Date.now();
+    const measure = () => {
+      const page = document.documentElement;
+      const seen = ((window.scrollY + window.innerHeight) / Math.max(page.scrollHeight, 1)) * 100;
+      maxScroll = Math.max(maxScroll, Math.min(100, Math.round(seen)));
+    };
+    const onActivity = () => {
+      lastActivity = Date.now();
+      measure();
+    };
+    const send = () => {
+      if (seconds < 1) return;
+      queueEvent({ name: "page_time", path, props: { seconds, max_scroll: maxScroll } });
+      seconds = 0;
+    };
+    const onVisibility = () => {
+      if (document.visibilityState === "hidden") send();
+      else lastActivity = Date.now();
+    };
+    measure();
+    const tick = setInterval(() => {
+      if (document.visibilityState === "visible" && Date.now() - lastActivity < 30000) seconds++;
+    }, 1000);
+    window.addEventListener("scroll", onActivity, { passive: true });
+    window.addEventListener("pointerdown", onActivity, { passive: true });
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      clearInterval(tick);
+      window.removeEventListener("scroll", onActivity);
+      window.removeEventListener("pointerdown", onActivity);
+      document.removeEventListener("visibilitychange", onVisibility);
+      send();
+    };
+  }, [pathname, ready, analyticsOn]);
+
+  // Errori dell'app (solo il messaggio, troncato), per scoprire cosa non funziona.
+  useEffect(() => {
+    if (!analyticsOn) return;
+    const onError = (event: ErrorEvent) =>
+      track("js_error", { message: String(event.message).slice(0, 160) });
+    const onRejection = (event: PromiseRejectionEvent) =>
+      track("js_error", { message: String(event.reason).slice(0, 160) });
+    window.addEventListener("error", onError);
+    window.addEventListener("unhandledrejection", onRejection);
+    return () => {
+      window.removeEventListener("error", onError);
+      window.removeEventListener("unhandledrejection", onRejection);
+    };
+  }, [analyticsOn, track]);
+
   // Statistiche: pagine viste e tocchi (per la heatmap), solo con consenso.
   useEffect(() => {
     if (ready && userId) track("page_view");
   }, [pathname, ready, userId, track]);
 
   useEffect(() => {
-    if (!userId || !user.analytics) return;
+    if (!userId || !canTrack(user)) return;
     const onTap = (event: PointerEvent) => {
       const phone = document.querySelector(".phone");
       if (!phone) return;
@@ -226,7 +318,7 @@ export function FactanzaProvider({ children }: { children: ReactNode }) {
       document.removeEventListener("pointerdown", onTap);
       document.removeEventListener("visibilitychange", onHide);
     };
-  }, [userId, user.analytics, track]);
+  }, [userId, user, track]);
 
   return (
     <Context.Provider

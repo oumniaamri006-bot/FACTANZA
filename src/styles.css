@@ -713,6 +713,25 @@
   text-decoration: underline;
 }
 
+.profile-nudge {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 22px;
+  padding: 14px 16px;
+  background: var(--lime);
+  border: var(--line);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow);
+}
+.profile-nudge strong {
+  font-family: var(--font-label);
+  font-size: 18px;
+}
+.profile-nudge p {
+  font-size: 12px;
+}
+
 /* ---------- Domanda del giorno e voti ---------- */
 
 .welcome-row {
@@ -1649,6 +1668,16 @@
   font-size: 16px;
   box-shadow: var(--shadow-sm);
 }
+.auth-field select {
+  border: var(--line);
+  border-radius: 6px;
+  background: var(--paper);
+  padding: 12px 14px;
+  font-size: 16px;
+  box-shadow: var(--shadow-sm);
+  color: var(--ink);
+}
+.auth-field select:focus,
 .auth-field input:focus {
   outline: 3px solid var(--primary);
   outline-offset: 1px;

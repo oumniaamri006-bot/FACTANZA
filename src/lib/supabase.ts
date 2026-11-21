@@ -26,6 +26,12 @@ export type ProfileRow = {
   onboarded: boolean;
   analytics_consent: boolean;
   notifications: boolean;
+  birth_year: number | null;
+  region: string | null;
+  occupation: string | null;
+  gender: string | null;
+  referral: string | null;
+  last_seen_at: string | null;
 };
 
 /** Traduce gli errori di Supabase Auth in messaggi in italiano. */

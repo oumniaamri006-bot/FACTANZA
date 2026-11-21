@@ -51,6 +51,7 @@ function Index() {
             to="/categoria/$category"
             params={{ category: category.slug }}
             className="story"
+            onClick={() => track("category_open", { slug: category.slug })}
             aria-label={
               category.slug === allCategory.slug ? "Tutte le notizie" : `Notizie ${category.name}`
             }
@@ -115,6 +116,20 @@ function Index() {
           </div>
         </div>
 
+        {user.birthYear === null && (
+          <div className="profile-nudge">
+            <div className="flex-1">
+              <strong>Parlaci di te</strong>
+              <p>Anno di nascita, città, cosa fai: bastano 20 secondi.</p>
+            </div>
+            <Button variant="sticker" size="sm" asChild>
+              <Link to="/profilo" onClick={() => track("profile_nudge", {})}>
+                Completa
+              </Link>
+            </Button>
+          </div>
+        )}
+
         <SectionTitle first="Le tue" second="NOTIZIE" />
         <div className="tabs" role="tablist" aria-label="Notizie">
           <Button
@@ -164,8 +179,8 @@ function Index() {
               : "Hai scelto tutti gli argomenti: le notizie sono già nella scheda «I tuoi temi»."}
           </p>
         )}
-        {displayed.map((item) => (
-          <NewsCard key={item.id} item={item} />
+        {displayed.map((item, index) => (
+          <NewsCard key={item.id} item={item} feed={feed} position={index + 1} />
         ))}
 
         <div className="live-banner">

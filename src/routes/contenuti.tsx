@@ -187,6 +187,7 @@ function Content() {
             size="icon"
             aria-label="Chiudi player"
             onClick={() => {
+              if (active) track("media_progress", { media_id: active.id, pct: progress });
               setCurrent(null);
               setPlaying(false);
             }}

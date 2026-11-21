@@ -16,15 +16,52 @@ import { CategoryIcon, Logo, SectionTitle } from "./shared";
 import { topics, formats } from "@/data/factanza";
 import { toggleValue } from "@/lib/factanza-state";
 import { queueEvent } from "@/lib/analytics";
+import { AboutYouFields, type AboutYou } from "./about-you";
+import { digitalConsentAge, isMinorForConsent } from "@/data/profile-options";
 
 const formatIcons = [BookOpen, CirclePlay, Headphones];
 
-/** Personalizzazione dopo la registrazione: interessi, formati e consenso alle statistiche. */
+/** Personalizzazione dopo la registrazione: interessi, formati, "Parlaci di te" e consenso. */
 export function Onboarding({ redo = false, onDone }: { redo?: boolean; onDone?: () => void }) {
   const { user, update, track } = useFactanza();
   const [step, setStep] = useState(1);
-  // Le scelte dello swipe si inviano alle statistiche solo dopo il consenso.
-  const swipes = useRef<{ topic: string; liked: boolean }[]>([]);
+  // Swipe e tempi dei passaggi si inviano alle statistiche solo dopo il consenso.
+  const pending = useRef<{ name: string; props: Record<string, string | number | boolean> }[]>([]);
+  const stepStart = useRef(Date.now());
+  const [about, setAbout] = useState<AboutYou>({
+    birthYear: user.birthYear,
+    region: user.region,
+    occupation: user.occupation,
+    gender: user.gender,
+    referral: user.referral,
+  });
+  const minor = isMinorForConsent(about.birthYear);
+
+  const goTo = (next: number) => {
+    pending.current.push({
+      name: "onboarding_step",
+      props: { step, seconds: Math.round((Date.now() - stepStart.current) / 1000) },
+    });
+    stepStart.current = Date.now();
+    setStep(next);
+  };
+  const finish = (consent: boolean) => {
+    update({
+      onboarded: true,
+      interests,
+      formats: selectedFormats,
+      ...about,
+      analytics: consent,
+    });
+    if (consent) {
+      // Consenso appena dato: inviamo anche swipe e tempi dei passaggi.
+      goTo(step);
+      const path = window.location.pathname;
+      for (const event of pending.current) queueEvent({ ...event, path });
+      queueEvent({ name: "onboarding_complete", path, props: { consent: true } });
+    }
+    onDone?.();
+  };
   const [index, setIndex] = useState(0);
   const [interests, setInterests] = useState<string[]>([]);
   const [selectedFormats, setSelectedFormats] = useState(user.formats);
@@ -39,7 +76,7 @@ export function Onboarding({ redo = false, onDone }: { redo?: boolean; onDone?: 
     dragX.set(0);
     if (topic) {
       if (user.analytics) track("swipe", { topic, liked });
-      else swipes.current.push({ topic, liked });
+      else pending.current.push({ name: "swipe", props: { topic, liked } });
     }
     const picked = liked && topic ? [...interests, topic] : interests;
     setInterests(picked);
@@ -51,7 +88,7 @@ export function Onboarding({ redo = false, onDone }: { redo?: boolean; onDone?: 
       update({ interests: picked });
       onDone?.();
     } else {
-      setStep(2);
+      goTo(2);
     }
   };
 
@@ -60,7 +97,7 @@ export function Onboarding({ redo = false, onDone }: { redo?: boolean; onDone?: 
       <div className="onboarding">
         <Logo />
         <div className="progress-line">
-          {[1, 2, 3].map((i) => (
+          {[1, 2, 3, 4].map((i) => (
             <span key={i} className={i <= step ? "done" : ""} />
           ))}
         </div>
@@ -137,7 +174,7 @@ export function Onboarding({ redo = false, onDone }: { redo?: boolean; onDone?: 
                 variant="sticker"
                 className="w-full"
                 disabled={!selectedFormats.length}
-                onClick={() => setStep(3)}
+                onClick={() => goTo(3)}
               >
                 Continua <ArrowRight />
               </Button>
@@ -147,46 +184,60 @@ export function Onboarding({ redo = false, onDone }: { redo?: boolean; onDone?: 
 
         {step === 3 && (
           <>
+            <SectionTitle first="Parlaci" second="DI TE." color="lime" />
+            <p className="body-copy mb-5">
+              Ci aiuta a capire chi legge Factanza e a proporti notizie più vicine a te. Solo l’anno
+              di nascita è obbligatorio.
+            </p>
+            <AboutYouFields
+              idPrefix="onboarding"
+              value={about}
+              onChange={(patch) => setAbout((current) => ({ ...current, ...patch }))}
+            />
+            <div className="onboarding-footer">
+              <Button
+                variant="sticker"
+                className="w-full"
+                disabled={about.birthYear === null}
+                onClick={() => goTo(4)}
+              >
+                Continua <ArrowRight />
+              </Button>
+            </div>
+          </>
+        )}
+
+        {step === 4 && (
+          <>
             <ShieldCheck className="privacy-icon" />
             <SectionTitle first="La tua voce." second="I TUOI DATI." color="lilac" />
             <p className="body-copy">
               Le tue risposte ai sondaggi diventano statistiche anonime e aggregate. Non vendiamo
               mai i dati del singolo.
             </p>
-            <p className="body-copy mt-4">
-              Se vuoi, registriamo anche in forma anonima come usi l’app (tempo di lettura, tocchi)
-              per migliorarla. Puoi cambiare idea quando vuoi dal profilo.
-            </p>
+            {minor ? (
+              <p className="body-copy mt-4">
+                Hai meno di {digitalConsentAge} anni: non raccogliamo statistiche su come usi l’app.
+              </p>
+            ) : (
+              <p className="body-copy mt-4">
+                Se vuoi, registriamo anche in forma anonima come usi l’app (tempo di lettura,
+                tocchi, dispositivo) per migliorarla. Puoi cambiare idea quando vuoi dal profilo.
+              </p>
+            )}
             <p className="hand mt-6">(la fiducia viene prima di tutto)</p>
             <div className="onboarding-footer flex flex-col gap-4">
+              {!minor && (
+                <Button variant="sticker" className="w-full" onClick={() => finish(true)}>
+                  Accetto anche le statistiche <ArrowRight />
+                </Button>
+              )}
               <Button
-                variant="sticker"
+                variant={minor ? "sticker" : "facta"}
                 className="w-full"
-                onClick={() => {
-                  update({ onboarded: true, interests, formats: selectedFormats, analytics: true });
-                  // Consenso appena dato: inviamo anche le scelte fatte nello swipe.
-                  const path = window.location.pathname;
-                  for (const props of swipes.current) queueEvent({ name: "swipe", path, props });
-                  queueEvent({ name: "onboarding_complete", path, props: { consent: true } });
-                  onDone?.();
-                }}
+                onClick={() => finish(false)}
               >
-                Accetto anche le statistiche <ArrowRight />
-              </Button>
-              <Button
-                variant="facta"
-                className="w-full"
-                onClick={() => {
-                  update({
-                    onboarded: true,
-                    interests,
-                    formats: selectedFormats,
-                    analytics: false,
-                  });
-                  onDone?.();
-                }}
-              >
-                Solo il necessario
+                {minor ? "Entra" : "Solo il necessario"}
               </Button>
             </div>
           </>

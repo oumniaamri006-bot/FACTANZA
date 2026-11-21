@@ -17,16 +17,26 @@ email e password, con **conferma automatica** dell'email (`mailer_autoconfirm`).
 
 ## Eventi registrati
 
-| Evento                                                                                            | Dati                                                                                             |
-| ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| `page_view`                                                                                       | pagina                                                                                           |
-| `tap`                                                                                             | posizione del tocco (x in % della larghezza, y in px) ed etichetta dell'elemento: per la heatmap |
-| `article_read`                                                                                    | articolo, tema, secondi di lettura attiva, scroll massimo (%), `read_id`                         |
-| `poll_vote`                                                                                       | quale sondaggio (mai la risposta: quella sta solo in `votes`)                                    |
-| `swipe`                                                                                           | tema e sì/no nell'onboarding (inviati solo dopo il consenso)                                     |
-| `onboarding_complete`, `feed_tab`, `media_play`, `video_open`, `share`, `offer_open`, `code_copy` | identificativo del contenuto                                                                     |
+Solo con consenso e solo da 14 anni in su (controllato anche dalla policy del database).
 
-Il tempo di lettura conta solo con la scheda visibile e attività negli ultimi 30 secondi.
+| Evento                                                                  | Dati                                                                                                                                |
+| ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `session_start`                                                         | tipo di dispositivo, sistema, browser (solo famiglie generiche), schermo, lingua, fuso orario, connessione, tema scuro, provenienza |
+| `page_view`, `page_time`                                                | pagina; secondi di uso attivo e scroll massimo (%)                                                                                  |
+| `tap`                                                                   | posizione del tocco (x in % della larghezza, y in px) ed etichetta dell'elemento: per la heatmap                                    |
+| `card_view`, `article_open`                                             | notizia vista nel feed (metà visibile per 1 s) / aperta, con feed e posizione                                                       |
+| `article_read`                                                          | articolo, tema, secondi di lettura attiva, scroll massimo (%), `read_id`                                                            |
+| `poll_vote`                                                             | quale sondaggio (mai la risposta: quella sta solo in `votes`)                                                                       |
+| `swipe`, `onboarding_step`, `onboarding_complete`                       | tema e sì/no; secondi per passaggio (inviati solo dopo il consenso)                                                                 |
+| `feed_tab`, `category_open`, `calendar_day`, `reminder`                 | scheda, categoria, giorno, promemoria acceso/spento                                                                                 |
+| `media_play`, `media_progress`, `video_open`                            | contenuto; percentuale ascoltata alla chiusura del player                                                                           |
+| `live_phase`, `chat_message`                                            | fase del live; lunghezza del messaggio (mai il testo)                                                                               |
+| `interests_change`, `share`, `offer_open`, `code_copy`, `profile_nudge` | tema o contenuto coinvolto                                                                                                          |
+| `js_error`                                                              | messaggio d'errore (troncato)                                                                                                       |
+
+Il tempo conta solo con la scheda visibile e attività negli ultimi 30 secondi.
+**Non raccogliamo**: indirizzo IP, posizione GPS, impronta del dispositivo, testo scritto dagli
+utenti, risposte ai sondaggi negli eventi.
 
 ## Statistiche (schema `analytics`)
 
@@ -51,4 +61,5 @@ Esempio: `select * from analytics.reading_minutes_daily;`
 - Le risposte ai sondaggi possono rivelare opinioni politiche (art. 9 GDPR): si usano solo in
   forma aggregata e non entrano negli eventi.
 - I visitatori senza account non accedono a nessuna tabella.
-- Il consenso alle statistiche è opt-in (onboarding) e si cambia dal profilo.
+- Il consenso alle statistiche è opt-in (onboarding) e si cambia dal profilo. Sotto i 14 anni
+  (età del consenso digitale in Italia) le statistiche d'uso sono disattivate.

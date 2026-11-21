@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { ArrowLeft, ArrowRight, LogIn, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { authErrorMessage, getSupabase, supabaseConfigured } from "@/lib/supabase";
+import { firstTouch } from "@/lib/attribution";
 import { Logo, SectionTitle } from "./shared";
 
 type Mode = "signup" | "login";
@@ -29,7 +30,7 @@ export function AuthScreen({ onBack }: { onBack?: () => void }) {
         ? await supabase.auth.signUp({
             email: email.trim(),
             password,
-            options: { data: { name: name.trim() || "Facta Lover" } },
+            options: { data: { name: name.trim() || "Facta Lover", first_touch: firstTouch() } },
           })
         : await supabase.auth.signInWithPassword({ email: email.trim(), password });
     setBusy(false);

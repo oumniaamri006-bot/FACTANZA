@@ -7,6 +7,12 @@ export type UserState = {
   reminders: string[];
   analytics: boolean;
   notifications: boolean;
+  /** Dati dichiarati in "Parlaci di te" (facoltativi tranne l'anno di nascita). */
+  birthYear: number | null;
+  region: string | null;
+  occupation: string | null;
+  gender: string | null;
+  referral: string | null;
 };
 export const storageKey = "factanza-user";
 export const initialUser: UserState = {
@@ -19,6 +25,11 @@ export const initialUser: UserState = {
   // Consenso alle statistiche d'uso: opt-in, come nel database.
   analytics: false,
   notifications: false,
+  birthYear: null,
+  region: null,
+  occupation: null,
+  gender: null,
+  referral: null,
 };
 export function parseUser(raw: string | null): UserState {
   if (!raw) return { ...initialUser };
@@ -27,6 +38,7 @@ export function parseUser(raw: string | null): UserState {
     if (!data || typeof data !== "object") return { ...initialUser };
     const d = data as Record<string, unknown>;
     return {
+      ...initialUser,
       onboarded: d["onboarded"] === true,
       name: typeof d["name"] === "string" ? d["name"] : initialUser.name,
       interests: Array.isArray(d["interests"])

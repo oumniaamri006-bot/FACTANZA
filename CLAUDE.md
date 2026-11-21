@@ -94,6 +94,9 @@ src/
   rimanda alla home.
 - Statistiche: usa `track(nome, props)` dal contesto. Parte solo se l'utente ha dato il consenso
   (`analytics`); mai inserire negli eventi le risposte ai sondaggi o testo scritto dall'utente.
+  Niente statistiche sotto i 14 anni (`isMinorForConsent`); niente IP, GPS o impronta del
+  dispositivo. Dati dichiarati in "Parlaci di te" (`about-you.tsx`, opzioni in
+  `src/data/profile-options.ts`). Elenco eventi in `supabase/README.md`.
   Nuove tabelle: migrazione in `supabase/migrations/` con RLS attiva e `grant` espliciti
   (il progetto non concede permessi in automatico).
 - Variabili `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY` (chiave pubblica): su Vercel e in

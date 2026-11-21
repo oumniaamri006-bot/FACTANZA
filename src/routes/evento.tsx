@@ -29,7 +29,7 @@ const phaseLabels = ["PRIMA DEL LIVE", "SIAMO IN DIRETTA", "DOPO IL CONFRONTO", 
 function Event() {
   const { id } = Route.useSearch();
   const event = events.find((item) => item.id === id) ?? events[0];
-  const { user, vote } = useFactanza();
+  const { user, vote, track } = useFactanza();
   const [phase, setPhase] = useState(0);
   const [chat, setChat] = useState(chatMessages.slice(0, 2));
   const [input, setInput] = useState("");
@@ -91,7 +91,13 @@ function Event() {
               variant="sticker"
               className="w-full mt-8"
               disabled={!current}
-              onClick={() => setPhase(phase === 0 ? 1 : 3)}
+              onClick={() => {
+                setPhase(phase === 0 ? 1 : 3);
+                track("live_phase", {
+                  event_id: event.id,
+                  phase: phase === 0 ? "diretta" : "risultati",
+                });
+              }}
             >
               {phase === 0 ? "Entra nella diretta" : "Scopri i risultati"}
               <ArrowRight />
@@ -119,6 +125,8 @@ function Event() {
                 e.preventDefault();
                 if (input.trim()) {
                   setChat((old) => [...old, { name: user.name, text: input.trim() }]);
+                  // Solo che è stato scritto un messaggio e quanto è lungo, mai il testo.
+                  track("chat_message", { event_id: event.id, length: input.trim().length });
                   setInput("");
                 }
               }}
@@ -154,7 +162,14 @@ function Event() {
                 )}
               </div>
             )}
-            <Button variant="sticker" className="w-full mt-6" onClick={() => setPhase(2)}>
+            <Button
+              variant="sticker"
+              className="w-full mt-6"
+              onClick={() => {
+                setPhase(2);
+                track("live_phase", { event_id: event.id, phase: "dopo" });
+              }}
+            >
               Concludi il dibattito <ArrowRight />
             </Button>
           </>
