@@ -1,1 +1,27 @@
-{}
+{
+  "obama": {
+    "author": "Official White House Photo by Pete Souza",
+    "license": "Public domain",
+    "page": "https://commons.wikimedia.org/wiki/File:President_Barack_Obama.jpg"
+  },
+  "mandela": {
+    "author": "Kingkongphoto & www.celebrity-photos.com from Laurel",
+    "license": "CC BY-SA 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Nelson_Mandela_1994.jpg"
+  },
+  "muro-berlino": {
+    "author": "Unknown photographer, Reproduction by Lear 21 at English Wikipedia.",
+    "license": "CC BY-SA 3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:West_and_East_Germans_at_the_Brandenburg_Gate_in_1989.jpg"
+  },
+  "gutenberg": {
+    "author": "NYC Wanderer (Kevin Eng)",
+    "license": "CC BY-SA 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Gutenberg_Bible,_Lenox_Copy,_New_York_Public_Library,_2009._Pic_01.jpg"
+  },
+  "torre-eiffel": {
+    "author": "Benh LIEU SONG",
+    "license": "Public domain",
+    "page": "https://commons.wikimedia.org/wiki/File:Tour_Eiffel_Wikimedia_Commons.jpg"
+  }
+}
