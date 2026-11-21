@@ -76,6 +76,8 @@ src/
 - Il **calendario** sta nella pagina **Eventi** (`/live`, tab in basso): dirette, uscite di podcast
   e video, eventi, da `src/data/agenda.ts` (`demoToday` = giorno "oggi" della demo), con
   `DayStrip` e le date di `src/lib/dates.ts`.
+- Podcast e video in `src/data/factanza.ts` (`media`) sono episodi reali di Factanza Media
+  (Generazione Sospesa, Oriana · Unposted, canale YouTube): `mediaLink()` porta a Spotify/YouTube.
 - Ogni notizia (`src/data/news.ts`) ha un `poll` (domanda + risposte); le percentuali sono
   simulate e stabili (`src/lib/poll.ts`). La barra categorie mostra solo i temi scelti
   dall'utente (tutti, se non ne ha scelto nessuno).
@@ -125,9 +127,10 @@ splash) · Anton per sticker, tag ed etichette (`font-label`) · Caveat per le n
   Non usare le varianti shadcn `default/outline/secondary` nelle pagine Factanza.
 - `<CategoryIcon topic="Cultura" className="swipe-art" />` per mostrare una
   categoria. Non usare icone lucide per le categorie: usa sempre le illustrazioni pop-art.
-- `<TopicCover topic="…" />` come copertina di notizie, live e contenuti (icona su retino):
-  non ci sono foto. `<IconCollage label="…" />` per le illustrazioni grandi (splash, community,
-  sfondo del player live).
+- Notizie, podcast e video usano le **immagini vere** (copertine dei post, degli episodi e dei
+  video, in `src/assets/notizie` e `src/assets/media`). `<TopicCover topic="…" />` (icona su
+  retino) resta per le live e come ripiego senza immagine. `<IconCollage label="…" />` per le
+  illustrazioni grandi (splash, community, sfondo del player live).
 - `.sticker` (+ `.small`), `.topic-tag`, `.live-badge`, `.hand`, `.body-copy`, `.demo-label`.
 - Card: bordo `--line`, `--radius-card`, ombra `--shadow` (vedi `.news-card`, `.benefit`).
 

@@ -50,6 +50,15 @@ function AgendaAction({ item }: { item: AgendaItem }) {
       </Button>
     );
   }
+  if (released && (item.kind === "podcast" || item.kind === "video")) {
+    return (
+      <Button variant="facta" size="icon" asChild>
+        <Link to="/contenuti" aria-label={`Apri i contenuti: ${item.title}`}>
+          <ArrowRight />
+        </Link>
+      </Button>
+    );
+  }
   return (
     <Button
       variant="facta"

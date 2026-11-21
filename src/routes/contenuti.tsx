@@ -1,15 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Play, Pause, X, Headphones, CirclePlay } from "lucide-react";
+import { Play, Pause, X, Headphones, CirclePlay, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  AppShell,
-  CategoryIcon,
-  SectionTitle,
-  TopicCover,
-  pageHead,
-} from "@/components/factanza/shared";
-import { media } from "@/data/factanza";
+import { AppShell, SectionTitle, pageHead } from "@/components/factanza/shared";
+import { media, mediaLink } from "@/data/factanza";
 import { useFactanza } from "@/components/factanza/context";
 
 export const Route = createFileRoute("/contenuti")({
@@ -65,7 +59,7 @@ function Content() {
 
   const filtered = media.filter((item) => item.type === tab);
   const recommended = filtered.filter((item) => user.interests.includes(item.topic));
-  const featured = recommended.length ? recommended : filtered;
+  const featured = (recommended.length ? recommended : filtered).slice(0, 4);
   const active = media.find((item) => item.id === current);
 
   useEffect(() => {
@@ -114,13 +108,15 @@ function Content() {
         <div className="content-carousel">
           {featured.map((item) => (
             <article key={item.id} className="content-item">
-              <div className="media-cover">
-                <TopicCover topic={item.topic} />
-                <h3>{item.title}</h3>
+              <div className={`media-cover ${item.type === "Podcast" ? "podcast" : ""}`}>
+                <img src={item.image} alt="" loading="lazy" />
+                <span className="topic-tag">{item.topic.toUpperCase()}</span>
               </div>
+              <h3 className="media-title">{item.title}</h3>
               <div className="news-footer">
                 <span>
-                  {item.duration} · {item.topic}
+                  {item.show} · {item.duration}
+                  {item.date && ` · ${item.date}`}
                 </span>
                 <PlayAction item={item} tab={tab} variant="facta" onPlay={start} />
               </div>
@@ -131,19 +127,20 @@ function Content() {
         <SectionTitle first="Nuovi" second="ARRIVI" color="lilac" />
         {filtered.map((item) => (
           <article key={item.id} className="arrival">
-            <div className="arrival-thumb pop-bg">
-              <CategoryIcon topic={item.topic} />
-            </div>
-            <div className="flex-1">
+            <img className="arrival-thumb" src={item.image} alt="" loading="lazy" />
+            <div className="flex-1 min-w-0">
               <h3>{item.title}</h3>
               <p>
-                {item.duration} · {item.topic}
+                {item.show} · {item.duration}
               </p>
             </div>
             <PlayAction item={item} tab={tab} variant="ghost" onPlay={start} />
           </article>
         ))}
-        <p className="demo-label">Player podcast dimostrativo, senza traccia audio.</p>
+        <p className="demo-label">
+          Podcast e video di Factanza Media. Il player qui è dimostrativo: l’episodio completo si
+          ascolta su Spotify (icona ↗ nel player).
+        </p>
       </div>
 
       {active && (
@@ -157,6 +154,16 @@ function Content() {
             {playing ? <Pause /> : <Play />}
           </Button>
           <p>{active.title}</p>
+          <Button variant="ghost" size="icon" asChild>
+            <a
+              href={mediaLink(active)}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Ascolta l’episodio completo su Spotify"
+            >
+              <ExternalLink />
+            </a>
+          </Button>
           <input
             type="range"
             min="0"

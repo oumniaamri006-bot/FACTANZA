@@ -19,13 +19,12 @@ export type AgendaItem = {
 /** Calendario degli appuntamenti Factanza: dirette, uscite di podcast e video, eventi. */
 export const agenda: AgendaItem[] = [
   {
-    id: "podcast-tessili",
+    id: "podcast-gs",
     date: "2026-11-21",
     time: "07:30",
     kind: "podcast",
-    title: "Perché gli operai tessili protestano in Bangladesh?",
-    topic: "Esteri",
-    mediaId: "tessili",
+    title: "Generazione Sospesa: nuova puntata",
+    topic: "Lavoro",
   },
   {
     id: "live-ai",
@@ -37,22 +36,12 @@ export const agenda: AgendaItem[] = [
     eventId: "ai",
   },
   {
-    id: "video-ai",
+    id: "video-nuovo-1",
     date: "2026-11-22",
     time: "12:00",
     kind: "video",
-    title: "L’intelligenza artificiale spiegata bene.",
-    topic: "AI & Tech",
-    mediaId: "video-ai",
-  },
-  {
-    id: "podcast-ai",
-    date: "2026-11-23",
-    time: "07:30",
-    kind: "podcast",
-    title: "AI: il futuro è già qui. E noi?",
-    topic: "AI & Tech",
-    mediaId: "ai",
+    title: "Nuovo video su Factanza Media",
+    topic: "Cultura",
   },
   {
     id: "live-voto",
@@ -64,13 +53,12 @@ export const agenda: AgendaItem[] = [
     eventId: "voto",
   },
   {
-    id: "podcast-cultura",
-    date: "2026-11-26",
+    id: "podcast-oriana",
+    date: "2026-11-25",
     time: "07:30",
     kind: "podcast",
-    title: "La cultura non è un lusso.",
+    title: "Oriana · Unposted: nuovo episodio",
     topic: "Cultura",
-    mediaId: "cultura",
   },
   {
     id: "evento-academy",
@@ -81,13 +69,12 @@ export const agenda: AgendaItem[] = [
     topic: "Cultura",
   },
   {
-    id: "video-clima",
+    id: "video-nuovo-2",
     date: "2026-11-28",
     time: "12:00",
     kind: "video",
-    title: "Il clima cambia. E noi?",
-    topic: "Ambiente",
-    mediaId: "video-clima",
+    title: "Nuovo video su Factanza Media",
+    topic: "Politica",
   },
 ];
 
