@@ -58,22 +58,22 @@ export const gameInfo: Record<GameKind, { title: string; blurb: string; family: 
   },
   "piu-grande": {
     title: "Cos’è più grande?",
-    blurb: "Cinque coppie di numeri, 10 secondi l’una.",
+    blurb: "Due numeri: qual è più grande? 10 secondi.",
     family: "Numeri",
   },
   cifra: {
     title: "Indovina la cifra",
-    blurb: "Quattro numeri da indovinare col cursore.",
+    blurb: "Un numero da indovinare col cursore.",
     family: "Numeri",
   },
   "vero-falso": {
     title: "Vero o falso?",
-    blurb: "Cinque affermazioni, 8 secondi l’una.",
+    blurb: "Un’affermazione, 8 secondi.",
     family: "Numeri",
   },
   "chi-l-ha-detto": {
     title: "Chi l’ha detto?",
-    blurb: "Tre frasi, quattro nomi.",
+    blurb: "Una frase, quattro nomi.",
     family: "Persone e parole",
   },
   "chi-e-chi": {
@@ -83,7 +83,7 @@ export const gameInfo: Record<GameKind, { title: string; blurb: string; family: 
   },
   "cosa-significa": {
     title: "Cosa significa?",
-    blurb: "Quattro parole difficili, spiegate.",
+    blurb: "Una parola difficile, spiegata.",
     family: "Persone e parole",
   },
   clickbait: {
@@ -108,12 +108,12 @@ export const gameInfo: Record<GameKind, { title: string; blurb: string; family: 
   },
   collega: {
     title: "Collega i puntini",
-    blurb: "Ogni causa ha il suo effetto.",
+    blurb: "Una causa, quale effetto?",
     family: "Tempo e luoghi",
   },
   riepilogo: {
     title: "Quiz della settimana",
-    blurb: "Dieci domande su quello che è successo.",
+    blurb: "Una domanda su quello che è successo.",
     family: "Domenica",
   },
 };

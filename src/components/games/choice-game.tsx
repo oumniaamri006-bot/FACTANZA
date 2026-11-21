@@ -69,21 +69,7 @@ export function ChoiceGame({ kind, items, timeUp, onFinish }: GameProps<ChoiceIt
   };
 
   const correct = picked === item.answer;
-  const points =
-    kind === "notizia"
-      ? newsScore(correct, answerMs.current ?? 0)
-      : correct
-        ? {
-            "piu-grande": 20,
-            "vero-falso": 20,
-            clickbait: 20,
-            "prima-dopo": 20,
-            "cosa-significa": 25,
-            collega: 25,
-            "chi-l-ha-detto": 30,
-            riepilogo: 40,
-          }[kind as string]
-        : 0;
+  const points = kind === "notizia" ? newsScore(correct, answerMs.current ?? 0) : correct ? 100 : 0;
   const versus = kind === "piu-grande" || kind === "prima-dopo";
   const faces = kind === "chi-l-ha-detto";
 

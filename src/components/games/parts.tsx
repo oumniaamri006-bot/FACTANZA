@@ -79,6 +79,7 @@ export function ItemDots({
   current: number;
   results: boolean[];
 }) {
+  if (total <= 1) return null;
   return (
     <div className="tf-dots" aria-label={`Domanda ${Math.min(current + 1, total)} di ${total}`}>
       {Array.from({ length: total }, (_, i) => (

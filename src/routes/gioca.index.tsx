@@ -46,7 +46,6 @@ function PlayToday() {
   const allDone = doneCount === games.length;
   const todayPoints = todayPlays.reduce((sum, play) => sum + (play?.score ?? 0), 0);
   const percents = todayPlays.map((p) => (p ? (p.score * 100) / maxGameScore[p.game] : undefined));
-  const nextGame = games.find((game) => !played(today, game));
 
   const week = Array.from({ length: 7 }, (_, i) => {
     const day = addDays(monday, i);
@@ -88,62 +87,74 @@ function PlayToday() {
       <div className="page-content">
         <SectionTitle first="Gioca" second="OGGI" color="yellow" />
         <p className="body-copy">
-          Una sessione unica:{" "}
-          {games.length === 2
-            ? "la notizia del giorno e il quiz della settimana"
-            : "un gioco per ogni categoria"}
-          , uno dopo l’altro. Circa 3 minuti, e ogni risposta ti spiega una notizia.
+          {games.length} domande, una per gioco, una dopo l’altra. Circa 3 minuti: i giochi li
+          scopri mentre giochi, e ogni risposta ti spiega una notizia.
         </p>
 
-        <div
-          className="play-progress"
-          aria-label={`${doneCount} giochi su ${games.length} completati`}
-        >
-          {games.map((game, i) => (
-            <span
-              key={game}
-              className={todayPlays[i] ? "done" : game === nextGame ? "current" : ""}
-            />
-          ))}
-        </div>
-        <p className="play-progress-label">
-          <strong>
-            {doneCount}/{games.length}
-          </strong>{" "}
-          completati · {todayPoints} punti oggi
-          {allDone
-            ? ` · +${dayCompleteBonus} giornata completa`
-            : ` · +${dayCompleteBonus} se li fai tutti`}
-        </p>
-
-        <ol className="play-list">
-          {games.map((game, i) => {
-            const play = todayPlays[i];
-            const info = gameInfo[game];
-            return (
-              <li key={game}>
+        {plays && !allDone && (
+          <>
+            {doneCount > 0 && (
+              <>
                 <div
-                  className={`play-card ${play ? "done" : ""} ${game === nextGame ? "next" : ""}`}
+                  className="play-progress"
+                  aria-label={`${doneCount} giochi su ${games.length} completati`}
                 >
-                  <span className="play-number">{play ? <Check /> : i + 1}</span>
-                  <span className="play-text">
-                    <span className="play-family">{info.family}</span>
-                    <strong>{info.title}</strong>
-                    <span>{info.blurb}</span>
-                  </span>
-                  {play && <span className="play-score">{play.score}</span>}
+                  {games.map((game, i) => (
+                    <span key={game} className={todayPlays[i] ? "done" : ""} />
+                  ))}
                 </div>
-              </li>
-            );
-          })}
-        </ol>
+                <p className="play-progress-label">
+                  <strong>
+                    {doneCount}/{games.length}
+                  </strong>{" "}
+                  completati · {todayPoints} punti finora
+                </p>
+              </>
+            )}
+            <Button variant="sticker" size="lg" className="w-full play-start" asChild>
+              <Link to="/gioca/sessione">
+                {doneCount === 0 ? "Inizia il quiz" : "Riprendi il quiz"} <ArrowRight />
+              </Link>
+            </Button>
+          </>
+        )}
 
-        {nextGame && plays && (
-          <Button variant="sticker" className="w-full" asChild>
-            <Link to="/gioca/sessione">
-              {doneCount === 0 ? "Inizia la sessione" : "Riprendi la sessione"} <ArrowRight />
-            </Link>
-          </Button>
+        {/* I giochi del giorno si svelano solo a quiz finito, con il punteggio di ognuno. */}
+        {allDone && (
+          <>
+            <div className="play-progress" aria-label="Quiz di oggi completato">
+              {games.map((game) => (
+                <span key={game} className="done" />
+              ))}
+            </div>
+            <p className="play-progress-label">
+              <strong>
+                {games.length}/{games.length}
+              </strong>{" "}
+              completati · {todayPoints} punti oggi · +{dayCompleteBonus} giornata completa
+            </p>
+            <ol className="play-list">
+              {games.map((game, i) => {
+                const play = todayPlays[i];
+                const info = gameInfo[game];
+                return (
+                  <li key={game}>
+                    <div className="play-card done">
+                      <span className="play-number">
+                        <Check />
+                      </span>
+                      <span className="play-text">
+                        <span className="play-family">{info.family}</span>
+                        <strong>{info.title}</strong>
+                        <span>{info.blurb}</span>
+                      </span>
+                      <span className="play-score">{play?.score ?? 0}</span>
+                    </div>
+                  </li>
+                );
+              })}
+            </ol>
+          </>
         )}
 
         {allDone && (

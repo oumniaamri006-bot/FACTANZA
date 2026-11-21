@@ -18,11 +18,11 @@ export const maxGameScore: Record<GameKind, number> = {
   "dove-succede": 100,
   "metti-in-ordine": 100,
   collega: 100,
-  riepilogo: 400,
+  riepilogo: 100,
 };
 
-/** Durata massima di ogni gioco (il riepilogo della domenica ha 10 domande: 120 s). */
-export const gameSeconds = (kind: GameKind) => (kind === "riepilogo" ? 120 : 45);
+/** Durata massima di ogni gioco (una domanda): 45 secondi. */
+export const gameSeconds = (_kind: GameKind) => 45;
 
 /** Tempo per singola domanda, dove previsto. */
 export const itemSeconds: Partial<Record<GameKind, number>> = {
@@ -31,8 +31,7 @@ export const itemSeconds: Partial<Record<GameKind, number>> = {
 };
 
 /** Tempo minimo plausibile per completare un gioco (controllo antibaro), in ms. */
-export const minDurationMs = (kind: GameKind, items: number) =>
-  kind === "notizia" ? 1500 : Math.max(2000, items * 800);
+export const minDurationMs = (_kind: GameKind, items: number) => Math.max(1000, items * 400);
 
 /** Notizia del giorno: 70 se giusta + fino a 30 di bonus velocità, lineare sul tempo. */
 export function newsScore(correct: boolean, elapsedMs: number, limitMs = 45_000) {
@@ -41,25 +40,25 @@ export function newsScore(correct: boolean, elapsedMs: number, limitMs = 45_000)
   return 70 + Math.round(30 * left);
 }
 
-/** Indovina la cifra: punti per fasce di errore relativo. */
+/** Indovina la cifra (una domanda): punti per fasce di errore relativo. */
 export function sliderPoints(guess: number, answer: number) {
   const error = Math.abs(guess - answer) / Math.abs(answer || 1);
-  if (error <= 0.05) return 25;
-  if (error <= 0.1) return 20;
-  if (error <= 0.2) return 15;
-  if (error <= 0.35) return 10;
-  if (error <= 0.5) return 5;
+  if (error <= 0.05) return 100;
+  if (error <= 0.1) return 80;
+  if (error <= 0.2) return 60;
+  if (error <= 0.35) return 40;
+  if (error <= 0.5) return 20;
   return 0;
 }
 
 /** Chi è chi: 100 al primo indizio, poi 80, 60, 40, 20. */
 export const cluePoints = (clueIndex: number) => Math.max(0, 100 - 20 * clueIndex);
 
-/** Dove succede: Paese esatto 25, entro 1.000 km 15, stesso continente 5. */
+/** Dove succede (una domanda): Paese esatto 100, entro 1.000 km 60, stesso continente 20. */
 export function mapPoints(exact: boolean, km: number, sameContinent: boolean) {
-  if (exact) return 25;
-  if (km <= 1000) return 15;
-  if (sameContinent) return 5;
+  if (exact) return 100;
+  if (km <= 1000) return 60;
+  if (sameContinent) return 20;
   return 0;
 }
 
@@ -80,16 +79,16 @@ export function gameScore(kind: GameKind, answers: Answer[], elapsedMs = 0): num
   switch (kind) {
     case "notizia":
       return newsScore(answers[0]?.correct ?? false, elapsedMs);
+    // Ogni gioco ha una sola domanda: giusta = 100.
     case "piu-grande":
     case "vero-falso":
     case "clickbait":
     case "prima-dopo":
-      return Math.min(100, right * 20);
     case "cosa-significa":
     case "collega":
-      return Math.min(100, right * 25);
     case "chi-l-ha-detto":
-      return Math.min(100, right * 30 + (answers.length > 0 && right === answers.length ? 10 : 0));
+    case "riepilogo":
+      return right > 0 ? 100 : 0;
     case "cifra":
       return Math.min(
         100,
@@ -113,8 +112,6 @@ export function gameScore(kind: GameKind, answers: Answer[], elapsedMs = 0): num
       );
     case "metti-in-ordine":
       return Math.min(100, (answers[0]?.inPlace ?? 0) * 25);
-    case "riepilogo":
-      return Math.min(400, right * 40);
   }
 }
 
@@ -150,10 +147,10 @@ export function weeklyTotal(days: DayPlays[], invitedFriends = 0) {
 }
 
 /**
- * Massimo teorico settimanale (senza inviti): 6 giorni × (4 × 100 + 50) + domenica (100 + 400 + 50)
- * + 200 di costanza = 3.450. Il brief indicava 3.350: vedi nota in GIOCHI.md.
+ * Massimo teorico settimanale (senza inviti): 6 giorni × (4 × 100 + 50) + domenica (2 × 100 + 50)
+ * + 200 di costanza = 3.150. Vedi GIOCHI.md.
  */
-export const weeklyMax = 6 * (4 * 100 + dayCompleteBonus) + (100 + 400 + dayCompleteBonus) + 200;
+export const weeklyMax = 6 * (4 * 100 + dayCompleteBonus) + (2 * 100 + dayCompleteBonus) + 200;
 
 /** Spareggi: più giorni, meno tempo totale, più Notizie del giorno indovinate. */
 export type Ranked = { points: number; days: number; totalMs: number; newsCorrect: number };

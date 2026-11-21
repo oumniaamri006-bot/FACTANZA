@@ -1069,10 +1069,15 @@ function mc(
   return { prompt, options, answer, explanation, source };
 }
 
-/** Contenuto del gioco per una data: i set ruotano per settimana così non si ripetono di fila. */
+/**
+ * Contenuto del gioco per una data: **una sola domanda** per gioco. Le domande di tutti i set
+ * ruotano un giorno dopo l'altro, così si ripetono il più tardi possibile.
+ */
 export function contentFor(kind: GameKind, day: string): GameContent | undefined {
-  const sets = gameCatalog[kind];
-  if (!sets.length) return undefined;
-  const index = kind === "notizia" ? dayNumber(day) : Math.floor(dayNumber(day) / 7);
-  return sets[((index % sets.length) + sets.length) % sets.length];
+  const pool = gameCatalog[kind].flatMap((set) => set.items.map((_, index) => ({ set, index })));
+  if (!pool.length) return undefined;
+  const n = dayNumber(day);
+  const pick = pool[((n % pool.length) + pool.length) % pool.length];
+  if (!pick) return undefined;
+  return { ...pick.set, items: [pick.set.items[pick.index]] } as GameContent;
 }

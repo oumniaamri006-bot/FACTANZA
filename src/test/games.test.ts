@@ -43,39 +43,32 @@ describe("Punteggi dei minigiochi", () => {
     expect(gameScore("notizia", [ok], 9_000)).toBe(94);
   });
 
-  it("giochi da 5 domande valgono 20 a risposta", () => {
-    for (const kind of ["piu-grande", "vero-falso", "clickbait", "prima-dopo"] as const) {
-      expect(gameScore(kind, [ok, ok, ko, ok, ko])).toBe(60);
-      expect(gameScore(kind, [ok, ok, ok, ok, ok])).toBe(100);
+  it("una domanda per gioco: giusta vale 100", () => {
+    for (const kind of [
+      "piu-grande",
+      "vero-falso",
+      "clickbait",
+      "prima-dopo",
+      "cosa-significa",
+      "collega",
+      "chi-l-ha-detto",
+      "riepilogo",
+    ] as const) {
+      expect(gameScore(kind, [ok])).toBe(100);
+      expect(gameScore(kind, [ko])).toBe(0);
+      expect(gameScore(kind, [])).toBe(0);
     }
   });
 
-  it("Cosa significa e Collega i puntini: 25 a risposta", () => {
-    expect(gameScore("cosa-significa", [ok, ko, ok, ok])).toBe(75);
-    expect(gameScore("collega", [ok, ok, ok, ok])).toBe(100);
-  });
-
-  it("Chi l'ha detto: 30 a frase + 10 se tutte giuste", () => {
-    expect(gameScore("chi-l-ha-detto", [ok, ok, ok])).toBe(100);
-    expect(gameScore("chi-l-ha-detto", [ok, ok, ko])).toBe(60);
-  });
-
   it("Indovina la cifra: fasce di errore", () => {
-    expect(sliderPoints(100, 100)).toBe(25);
-    expect(sliderPoints(105, 100)).toBe(25);
-    expect(sliderPoints(110, 100)).toBe(20);
-    expect(sliderPoints(80, 100)).toBe(15);
-    expect(sliderPoints(65, 100)).toBe(10);
-    expect(sliderPoints(150, 100)).toBe(5);
+    expect(sliderPoints(100, 100)).toBe(100);
+    expect(sliderPoints(105, 100)).toBe(100);
+    expect(sliderPoints(110, 100)).toBe(80);
+    expect(sliderPoints(80, 100)).toBe(60);
+    expect(sliderPoints(65, 100)).toBe(40);
+    expect(sliderPoints(150, 100)).toBe(20);
     expect(sliderPoints(151, 100)).toBe(0);
-    expect(
-      gameScore("cifra", [
-        { correct: true, error: 0 },
-        { correct: true, error: 0.08 },
-        { correct: true, error: 0.3 },
-        { correct: false, error: 0.9 },
-      ]),
-    ).toBe(55);
+    expect(gameScore("cifra", [{ correct: true, error: 0.08 }])).toBe(80);
   });
 
   it("Chi è chi: 100, 80, 60, 40, 20 secondo l'indizio", () => {
@@ -84,23 +77,17 @@ describe("Punteggi dei minigiochi", () => {
     expect(gameScore("chi-e-chi", [{ correct: false, clue: 4 }])).toBe(0);
   });
 
-  it("Dove succede: esatto 25, entro 1.000 km 15, stesso continente 5", () => {
-    expect(mapPoints(true, 0, true)).toBe(25);
-    expect(mapPoints(false, 900, true)).toBe(15);
-    expect(mapPoints(false, 3000, true)).toBe(5);
+  it("Dove succede: esatto 100, entro 1.000 km 60, stesso continente 20", () => {
+    expect(mapPoints(true, 0, true)).toBe(100);
+    expect(mapPoints(false, 900, true)).toBe(60);
+    expect(mapPoints(false, 3000, true)).toBe(20);
     expect(mapPoints(false, 9000, false)).toBe(0);
     expect(distanceKm({ lat: 41.9, lon: 12.5 }, { lat: 48.86, lon: 2.35 })).toBeGreaterThan(1050);
     expect(distanceKm({ lat: 41.9, lon: 12.5 }, { lat: 48.86, lon: 2.35 })).toBeLessThan(1150);
   });
 
-  it("Metti in ordine: 25 per posizione giusta; Riepilogo: 40 a domanda", () => {
+  it("Metti in ordine: 25 per posizione giusta", () => {
     expect(gameScore("metti-in-ordine", [{ correct: false, inPlace: 2 }])).toBe(50);
-    expect(
-      gameScore(
-        "riepilogo",
-        Array.from({ length: 10 }, (_, i) => (i < 7 ? ok : ko)),
-      ),
-    ).toBe(280);
   });
 
   it("nessun gioco supera il suo massimo", () => {
@@ -117,9 +104,8 @@ describe("Punteggi dei minigiochi", () => {
   });
 
   it("tempo minimo antibaro", () => {
-    expect(minDurationMs("notizia", 1)).toBe(1500);
-    expect(minDurationMs("vero-falso", 5)).toBe(4000);
-    expect(minDurationMs("chi-e-chi", 1)).toBe(2000);
+    expect(minDurationMs("notizia", 1)).toBe(1000);
+    expect(minDurationMs("metti-in-ordine", 4)).toBe(1600);
   });
 });
 
@@ -141,7 +127,7 @@ describe("Bonus e classifica", () => {
   });
 
   it("massimo teorico settimanale", () => {
-    expect(weeklyMax).toBe(3450);
+    expect(weeklyMax).toBe(3150);
   });
 
   it("spareggi: punti, giorni, tempo, notizie giuste", () => {
@@ -262,21 +248,13 @@ describe("Contenuti dei giochi", () => {
     });
   }
 
-  it("numero di domande per gioco come da brief", () => {
-    const sizes: Partial<Record<GameKind, number>> = {
-      notizia: 1,
-      "piu-grande": 5,
-      cifra: 4,
-      "vero-falso": 5,
-      "chi-l-ha-detto": 3,
-      "cosa-significa": 4,
-      clickbait: 5,
-      "prima-dopo": 5,
-      "dove-succede": 4,
-      collega: 4,
-      riepilogo: 10,
-    };
-    for (const [kind, size] of Object.entries(sizes))
-      for (const set of gameCatalog[kind as GameKind]) expect(set.items).toHaveLength(size);
+  it("ogni gioco ha una sola domanda al giorno, e cambia ogni giorno", () => {
+    for (const kind of kinds) {
+      const day1 = contentFor(kind, "2026-11-23");
+      const day2 = contentFor(kind, "2026-11-24");
+      expect(day1?.items).toHaveLength(1);
+      if (gameCatalog[kind].flatMap((set) => set.items as unknown[]).length > 1)
+        expect(day1?.items[0]).not.toEqual(day2?.items[0]);
+    }
   });
 });

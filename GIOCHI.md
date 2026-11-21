@@ -9,35 +9,31 @@ risposta c'è una spiegazione di 1–2 righe con la fonte: è la parte informati
 Ogni giorno: **La notizia del giorno** (fisso) + 3 giochi a rotazione (numeri · persone e
 parole · tempo e luoghi).
 
-| Giorno    | Numeri                                                        | Persone e parole    | Tempo e luoghi    |
-| --------- | ------------------------------------------------------------- | ------------------- | ----------------- |
-| Lunedì    | Cos'è più grande?                                             | Chi l'ha detto?     | Prima o dopo?     |
-| Martedì   | Vero o falso?                                                 | Cosa significa?     | Dove succede?     |
-| Mercoledì | Indovina la cifra                                             | Chi è chi?          | Metti in ordine   |
-| Giovedì   | Cos'è più grande?                                             | Titolo o clickbait? | Dove succede?     |
-| Venerdì   | Vero o falso?                                                 | Chi l'ha detto?     | Prima o dopo?     |
-| Sabato    | Indovina la cifra                                             | Cosa significa?     | Collega i puntini |
-| Domenica  | **Quiz della settimana** (10 domande) al posto dei tre giochi |                     |                   |
+| Giorno    | Numeri                                           | Persone e parole    | Tempo e luoghi    |
+| --------- | ------------------------------------------------ | ------------------- | ----------------- |
+| Lunedì    | Cos'è più grande?                                | Chi l'ha detto?     | Prima o dopo?     |
+| Martedì   | Vero o falso?                                    | Cosa significa?     | Dove succede?     |
+| Mercoledì | Indovina la cifra                                | Chi è chi?          | Metti in ordine   |
+| Giovedì   | Cos'è più grande?                                | Titolo o clickbait? | Dove succede?     |
+| Venerdì   | Vero o falso?                                    | Chi l'ha detto?     | Prima o dopo?     |
+| Sabato    | Indovina la cifra                                | Cosa significa?     | Collega i puntini |
+| Domenica  | **Quiz della settimana** al posto dei tre giochi |                     |                   |
 
 Il codice è in `src/lib/games/schedule.ts`; il giorno è quello di Roma.
 
 ## Punteggi (`src/lib/games/scoring.ts`)
 
-| Gioco                 | Regola                                                                          | Max |
-| --------------------- | ------------------------------------------------------------------------------- | --- |
-| La notizia del giorno | 70 se giusta + fino a 30 di bonus velocità (lineare su 45 s)                    | 100 |
-| Cos'è più grande?     | 5 coppie, 10 s l'una, 20 a risposta                                             | 100 |
-| Indovina la cifra     | 4 cursori; errore ≤5% 25 · ≤10% 20 · ≤20% 15 · ≤35% 10 · ≤50% 5                 | 100 |
-| Vero o falso?         | 5 affermazioni, 8 s l'una, 20 a risposta                                        | 100 |
-| Chi l'ha detto?       | 3 frasi, 4 nomi, 30 a frase + 10 se tutte giuste                                | 100 |
-| Chi è chi?            | indizi 100/80/60/40/20; risposta sbagliata = indizio successivo                 | 100 |
-| Cosa significa?       | 4 parole × 3 definizioni, 25 a parola                                           | 100 |
-| Titolo o clickbait?   | 5 coppie, 20 a risposta                                                         | 100 |
-| Prima o dopo?         | 5 coppie, 20 a risposta                                                         | 100 |
-| Dove succede?         | 4 tocchi sulla mappa: Paese esatto 25 · entro 1.000 km 15 · stesso continente 5 | 100 |
-| Metti in ordine       | 4 elementi, 25 per posizione giusta                                             | 100 |
-| Collega i puntini     | 4 cause → effetti, 25 a collegamento                                            | 100 |
-| Quiz della settimana  | 10 domande × 40                                                                 | 400 |
+**Ogni gioco ha una sola domanda** (decisione del team, 21/11/2026): le domande dei set in
+`content.ts` ruotano un giorno dopo l'altro.
+
+| Gioco                 | Regola (una domanda)                                                                       | Max |
+| --------------------- | ------------------------------------------------------------------------------------------ | --- |
+| La notizia del giorno | 70 se giusta + fino a 30 di bonus velocità (lineare su 45 s)                               | 100 |
+| Indovina la cifra     | errore ≤5% 100 · ≤10% 80 · ≤20% 60 · ≤35% 40 · ≤50% 20                                     | 100 |
+| Chi è chi?            | indizi 100/80/60/40/20; risposta sbagliata = indizio successivo                            | 100 |
+| Dove succede?         | Paese esatto 100 · entro 1.000 km 60 · stesso continente 20                                | 100 |
+| Metti in ordine       | 4 elementi, 25 per posizione giusta                                                        | 100 |
+| Tutti gli altri       | risposta giusta 100, sbagliata o tempo scaduto 0 (Cos'è più grande 10 s, Vero o falso 8 s) | 100 |
 
 Il tempo dà punti solo nella Notizia del giorno; altrove serve per gli spareggi.
 
@@ -50,13 +46,11 @@ L'utente vede sempre la sua posizione ("Sei 128° su 5400: ti mancano 42 punti p
 
 ## Ipotesi (dove il brief non era chiaro)
 
-1. **Massimo settimanale 3.450, non 3.350.** Con le regole del brief: 6 giorni × (4 × 100 + 50)
-   = 2.700; domenica 100 + 400 + 50 = 550; costanza 200 → 3.450. Il 3.350 del brief torna solo se
-   la domenica non avesse il bonus giornata completa (o se il quiz valesse 300). Abbiamo tenuto le
-   regole dei singoli giochi e documentato la differenza: se preferite 3.350 basta togliere il
-   bonus giornata completa alla domenica (in `scoring.ts` e nella funzione SQL).
-2. **Giornata completa la domenica** = Notizia + Quiz (2 giochi).
-3. **Quiz della settimana: 120 secondi** invece di 45 (10 domande in 45 s sono troppo poche).
+1. **Massimo settimanale 3.150**: 6 giorni × (4 × 100 + 50) + domenica (2 × 100 + 50) + 200 di
+   costanza.
+2. **Giornata completa la domenica** = Notizia + Quiz (2 giochi, una domanda ciascuno).
+3. **Quiz svelato giocando**: "Gioca oggi" mostra solo "Inizia il quiz"; i giochi del giorno e i
+   loro punteggi compaiono solo a quiz finito.
 4. **Una sola sessione**: i giochi non si scelgono uno per uno. `/gioca/sessione` li fa giocare
    di fila, uno per categoria (Ogni giorno, Numeri, Persone e parole, Tempo e luoghi); la
    domenica Notizia + Quiz. Se si esce a metà si riprende dal gioco successivo.
@@ -64,11 +58,10 @@ L'utente vede sempre la sua posizione ("Sei 128° su 5400: ti mancano 42 punti p
 6. **Bonus inviti**: 30 punti per ogni amico che si iscrive col link `?invito=codice` e gioca
    nella stessa settimana, massimo 3 (90 punti). La classifica resta individuale.
 7. **Antibaro**: il punteggio si calcola nell'app; il database controlla un tentativo al giorno,
-   il punteggio massimo e un tempo minimo plausibile (1,5 s per la Notizia, altrimenti 0,8 s a
-   domanda, minimo 2 s). Gli account doppi non si possono escludere del tutto senza dati
+   il punteggio massimo e un tempo minimo plausibile (1 s, 0,4 s a elemento in Metti in
+   ordine). Gli account doppi non si possono escludere del tutto senza dati
    identificativi (che non raccogliamo): servirebbe la verifica del numero di telefono.
-8. **Contenuti**: per ora ci sono almeno 2 set reali per gioco (1 per il quiz): ruotano ogni
-   settimana (la Notizia ogni giorno), quindi si ripetono finché la redazione non ne aggiunge
+8. **Contenuti**: tutte le domande dei set di ogni gioco ruotano una al giorno, quindi si ripetono finché la redazione non ne aggiunge
    altri in `src/data/games/content.ts`. Le cifre da indovinare evitano gli anni (troppo facili
    col cursore).
 9. **Premi**: badge per podio e top 10 e uno spazio per i premi dei brand partner, segnalato come

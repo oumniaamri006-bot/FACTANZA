@@ -54,11 +54,11 @@ function Session() {
       <div className="page-content game-page">
         <div className="back-bar">
           <Button variant="facta" size="icon" asChild>
-            <Link to="/gioca" aria-label="Esci dalla sessione">
+            <Link to="/gioca" aria-label="Esci dal quiz">
               <ArrowLeft />
             </Link>
           </Button>
-          <span>Sessione di oggi</span>
+          <span>Quiz di oggi</span>
         </div>
 
         <div
@@ -96,7 +96,7 @@ function Session() {
             {last.error && <p className="game-error">{last.error}</p>}
             {queue && round < queue.length - 1 ? (
               <Button variant="sticker" className="w-full" onClick={() => setRound(round + 1)}>
-                Prossimo: {gameInfo[queue[round + 1] as GameKind].family} <ArrowRight />
+                Prossima domanda <ArrowRight />
               </Button>
             ) : (
               <Button variant="sticker" className="w-full" asChild>

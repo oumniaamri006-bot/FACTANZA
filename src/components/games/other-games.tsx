@@ -91,7 +91,7 @@ export function SliderGame({ items, timeUp, onFinish }: GameProps<SliderItem>) {
         </Button>
       ) : (
         <Explanation
-          ok={points >= 15}
+          ok={points >= 60}
           title={`Errore del ${Math.round(error * 100)}%`}
           points={points}
           text={item.explanation}

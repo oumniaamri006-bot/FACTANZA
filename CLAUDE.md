@@ -119,7 +119,7 @@ src/
   `src/data/profile-options.ts`). Elenco eventi in `supabase/README.md`.
   Nuove tabelle: migrazione in `supabase/migrations/` con RLS attiva e `grant` espliciti
   (il progetto non concede permessi in automatico).
-- **Minigiochi** (vedi `GIOCHI.md`): una sessione al giorno con un gioco per categoria, giocati di fila (domenica 2), un tentativo, 45 s;
+- **Minigiochi** (vedi `GIOCHI.md`): un quiz al giorno: un gioco per categoria con **una domanda ciascuno**, giocati di fila (domenica 2), un tentativo, 45 s; i giochi si svelano solo giocando;
   punteggi solo in `src/lib/games/scoring.ts` (replicati nel database per la classifica).
   Ogni domanda ha spiegazione e fonte; solo fatti verificati. Immagini: asset Factanza o foto
   con licenza libera (Wikimedia Commons) con autore e licenza in `credits.json`; mai minori,
