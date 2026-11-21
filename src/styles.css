@@ -715,6 +715,27 @@
   gap: 4px;
 }
 
+/* ---------- Instagram (embed ufficiale) ---------- */
+
+.instagram-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.instagram-embed {
+  width: 100%;
+  border: var(--line);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow);
+  background: var(--paper);
+}
+.instagram-profile {
+  height: 640px;
+}
+.instagram-post {
+  height: 720px;
+}
+
 /* ---------- Live ed eventi ---------- */
 
 .live-banner {

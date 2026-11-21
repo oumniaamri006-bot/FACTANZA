@@ -79,6 +79,9 @@ src/
   La voce "Tutti" è `allCategory` (slug `tutte`) e ha una sua icona.
 - Il nome di una categoria (`'AI & Tech'`, `'Politica'`, …) è la chiave usata da notizie, eventi e
   media nel campo `topic`; usa `getCategoryByName()` / `<CategoryIcon topic=…/>` per l'icona.
+- I post di @factanza si mostrano **solo con l'incorporamento ufficiale di Instagram**
+  (`src/data/instagram.ts` + `InstagramFeed`): niente scraping né copia di testi/foto.
+  L'account non è del team: per una sincronizzazione vera serve il consenso di Factanza.
 - Tutti gli asset sono file locali in `src/assets` importati con `import url from "…png"`:
   niente URL esterni per le immagini.
 
