@@ -1,5 +1,13 @@
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
-import { Home, Users, CalendarDays, CirclePlay, CreditCard, ArrowLeft } from "lucide-react";
+import {
+  Home,
+  Users,
+  CalendarDays,
+  CirclePlay,
+  CreditCard,
+  ArrowLeft,
+  Settings,
+} from "lucide-react";
 import { useEffect, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { useFactanza } from "./context";
@@ -16,6 +24,16 @@ export function Logo() {
         factanza<span className="brand-dot">.</span>
       </span>
     </div>
+  );
+}
+
+/** Cerchio con l'iniziale del nome: in alto a destra (piccolo) e nel profilo (grande). */
+export function Avatar({ name, size = "sm" }: { name: string; size?: "sm" | "lg" }) {
+  const initial = (name.trim()[0] ?? "F").toUpperCase();
+  return (
+    <span className={`avatar-badge ${size}`} aria-hidden>
+      {initial}
+    </span>
   );
 }
 
@@ -89,7 +107,7 @@ const tabs = [
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
-  const { ready, session } = useFactanza();
+  const { ready, session, user } = useFactanza();
   const navigate = useNavigate();
   // Senza accesso (uscita, account eliminato, sessione scaduta) si torna alla home, una volta.
   useEffect(() => {
@@ -102,11 +120,16 @@ export function AppShell({ children }: { children: ReactNode }) {
         <Link to="/" aria-label="Factanza, home">
           <Logo />
         </Link>
-        <Button asChild variant="ghost" className="avatar">
-          <Link to="/profilo" aria-label="Area personale">
-            F
-          </Link>
-        </Button>
+        <Link
+          to="/profilo"
+          className={`profile-button ${pathname === "/profilo" ? "active" : ""}`}
+          aria-label="Profilo e impostazioni"
+        >
+          <Avatar name={user.name} />
+          <span className="profile-button-gear" aria-hidden>
+            <Settings />
+          </span>
+        </Link>
       </header>
       <main>{children}</main>
       <nav className="bottom-nav" aria-label="Navigazione principale">

@@ -10,6 +10,7 @@ import {
 import { useEffect, type ReactNode } from "react";
 import { FactanzaProvider } from "@/components/factanza/context";
 import { Logo } from "@/components/factanza/shared";
+import { DesktopGate } from "@/components/factanza/desktop-gate";
 import { Button } from "@/components/ui/button";
 import { isStaleChunkError, reloadOnce } from "@/lib/stale-chunk";
 
@@ -62,7 +63,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     // og:image o twitter:image: tutte le pagine senza un'immagine propria la erediterebbero.
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
+      { name: "mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-title", content: "Factanza" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "default" },
       { name: "theme-color", content: "#1b1f5e" },
       { title: "Factanza — Non solo news" },
       {
@@ -87,6 +92,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: appCss,
       },
       { rel: "icon", href: "/favicon.png", type: "image/png" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
+      { rel: "manifest", href: "/manifest.webmanifest" },
     ],
   }),
   shellComponent: RootShell,
@@ -116,8 +123,11 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <FactanzaProvider>
-        <Outlet />
+        <div className="app-root">
+          <Outlet />
+        </div>
       </FactanzaProvider>
+      <DesktopGate />
     </QueryClientProvider>
   );
 }

@@ -52,9 +52,13 @@ src/
     live.tsx              Eventi: diretta in corso, calendario appuntamenti, replay
     evento.tsx            dibattito live con voto prima/dopo (?id=)
     contenuti.tsx, video.tsx  podcast/YouTube e player demo
-    community.tsx, factafidelity.tsx, profilo.tsx
+    community.tsx, factafidelity.tsx
+    profilo.tsx           profilo (?tab=impostazioni): schede "Il mio profilo" e "Impostazioni"
+                          (formati, notifiche, privacy, cambio password, dati, esci, elimina)
+    privacy.tsx           informativa privacy (leggibile senza account)
   components/factanza/    componenti dell'app
-    shared.tsx            AppShell, Logo, SectionTitle, PageTitle, CategoryIcon, TopicCover,
+    shared.tsx            AppShell (avatar con iniziale + rotellina in alto a destra → profilo),
+                          Avatar, Logo, SectionTitle, PageTitle, CategoryIcon, TopicCover,
                           IconCollage, Back, pageHead
     context.tsx           FactanzaProvider / useFactanza (sessione, dati utente su Supabase, track)
     auth.tsx, welcome.tsx accesso (registrazione/login) e splash iniziale
@@ -172,6 +176,11 @@ Conseguenza: una utility Tailwind non può sovrascrivere una proprietà già imp
 Factanza; in quel caso aggiungi una classe/modificatore nel CSS. È organizzato per sezioni
 (Layout, Brand, Tipografia, Sticker, Bottoni, Icone, Nav, …): aggiungi le regole nella sezione
 giusta, una proprietà per riga.
+
+**Solo mobile**: su computer (schermo ≥ 820px con mouse) `.app-root` è nascosta via CSS e si
+vede `DesktopGate` con il QR code per aprire l'app dal telefono. `manifest.webmanifest` e le icone
+in `public/` permettono di aggiungerla alla schermata Home; header, splash e onboarding
+rispettano le aree sicure (`env(safe-area-inset-top)`).
 
 **Layout**: mobile-first in una colonna `.phone` di max 430px; padding laterale `--gutter`
 (22px); la bottom nav è fissa. Rispetta `prefers-reduced-motion` (già gestito globalmente).
