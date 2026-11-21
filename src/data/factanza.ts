@@ -56,7 +56,6 @@ export const topics = [
 ];
 export const formats = ["Leggo", "Guardo", "Ascolto"];
 export const dailyQuestion = "Il voto ai 16enni è una buona idea?";
-export const dailyResults = { Sì: 62, No: 38 };
 export const events = [
   {
     id: "ai",

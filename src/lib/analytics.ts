@@ -29,6 +29,13 @@ export function queueEvent(event: TrackedEvent) {
   else if (!timer) timer = setTimeout(() => void flushEvents(), 5000);
 }
 
+/** Svuota la coda senza inviare (es. dopo aver eliminato l'account). */
+export function clearQueuedEvents() {
+  if (timer) clearTimeout(timer);
+  timer = null;
+  queue = [];
+}
+
 export async function flushEvents() {
   if (timer) clearTimeout(timer);
   timer = null;

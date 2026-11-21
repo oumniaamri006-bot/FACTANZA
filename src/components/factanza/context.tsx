@@ -11,7 +11,14 @@ import { useLocation } from "@tanstack/react-router";
 import type { Session } from "@supabase/supabase-js";
 import { initialUser, storageKey, type UserState } from "@/lib/factanza-state";
 import { getSupabase, type ProfileRow } from "@/lib/supabase";
-import { flushEvents, queueEvent, sessionId, tapLabel, type TrackedEvent } from "@/lib/analytics";
+import {
+  clearQueuedEvents,
+  flushEvents,
+  queueEvent,
+  sessionId,
+  tapLabel,
+  type TrackedEvent,
+} from "@/lib/analytics";
 import { captureFirstTouch, visitContext } from "@/lib/attribution";
 import { isMinorForConsent } from "@/data/profile-options";
 import { topics } from "@/data/factanza";
@@ -24,7 +31,7 @@ type StateContext = {
   update: (patch: Partial<UserState>) => void;
   vote: (id: string, choice: string) => void;
   notify: (text: string) => void;
-  logout: () => Promise<void>;
+  logout: (options?: { accountDeleted?: boolean }) => Promise<void>;
   /** Registra un evento d'uso, solo se l'utente ha dato il consenso alle statistiche. */
   track: (name: string, props?: TrackedEvent["props"]) => void;
 };
@@ -217,9 +224,16 @@ export function FactanzaProvider({ children }: { children: ReactNode }) {
     [userId, track],
   );
 
-  const logout = useCallback(async () => {
-    await flushEvents();
-    await getSupabase()?.auth.signOut();
+  const logout = useCallback(async (options?: { accountDeleted?: boolean }) => {
+    const supabase = getSupabase();
+    if (options?.accountDeleted) clearQueuedEvents();
+    else await flushEvents();
+    // Dopo la cancellazione il server rifiuta l'uscita: basta chiudere la sessione nel browser.
+    const result = options?.accountDeleted
+      ? await supabase?.auth.signOut({ scope: "local" })
+      : await supabase?.auth.signOut();
+    if (result?.error) await supabase?.auth.signOut({ scope: "local" });
+    setSession(null);
     setUser(initialUser);
   }, []);
 

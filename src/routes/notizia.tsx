@@ -11,8 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { news } from "@/data/news";
 import { useFactanza } from "@/components/factanza/context";
-import { percentages, pollResults, realResultsThreshold } from "@/lib/poll";
-import { usePollCounts, useReadingTracker } from "@/lib/reading";
+import { usePollResults, useReadingTracker } from "@/lib/reading";
 
 export const Route = createFileRoute("/notizia")({
   validateSearch: (search: Record<string, unknown>): { id?: string } =>
@@ -28,15 +27,11 @@ function Article() {
   const { user, vote, notify, track } = useFactanza();
   const voteId = `article-${article?.id ?? ""}`;
   const choice = user.votes[voteId];
-  const real = usePollCounts(voteId, choice);
+  const poll = usePollResults(voteId, article?.poll.options ?? [], choice);
   useReadingTracker(article?.id ?? "", article?.topic ?? "", track);
   if (!article) return null;
 
-  const realTotal = real ? Object.values(real).reduce((sum, value) => sum + value, 0) : 0;
-  const showReal = real !== null && realTotal >= realResultsThreshold;
-  const results = showReal
-    ? percentages(article.poll.options.map((option) => real[option] ?? 0))
-    : pollResults(voteId, article.poll.options, choice);
+  const results = poll.percents;
   // Testo completo se c'è, altrimenti i punti chiave della notizia.
   const paragraphs = article.body ?? article.slides;
 
@@ -97,9 +92,9 @@ function Article() {
               ))}
               <p className="hand mt-2">(ogni voce conta, anche la tua)</p>
               <p className="demo-label">
-                {showReal
-                  ? `Risultati della community · ${realTotal} voti`
-                  : "Percentuali simulate finché i voti sono pochi."}
+                {poll.total <= 1
+                  ? "Sei tra i primi a rispondere: i risultati crescono con i voti."
+                  : `Risultati della community · ${poll.total} voti`}
               </p>
             </div>
           ) : (

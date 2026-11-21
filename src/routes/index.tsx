@@ -8,8 +8,8 @@ import { Welcome } from "@/components/factanza/welcome";
 import { useFactanza } from "@/components/factanza/context";
 import { NewsCard } from "@/components/factanza/news-card";
 import { suggestedNews } from "@/lib/recommend";
+import { usePollResults } from "@/lib/reading";
 import { useState } from "react";
-import { dailyResults } from "@/data/factanza";
 import { news } from "@/data/news";
 import { allCategory, categories } from "@/data/categories";
 
@@ -25,6 +25,9 @@ export const Route = createFileRoute("/")({
 function Index() {
   const { user, ready, vote, session, track } = useFactanza();
   const [feed, setFeed] = useState<"temi" | "perte">("temi");
+  const dailyOptions = ["Sì", "No"];
+  // Risultati solo con l'accesso fatto (il database non li mostra ai visitatori).
+  const daily = usePollResults(session ? "daily" : "", dailyOptions, user.votes["daily"]);
   if (!ready) return <div className="phone" />;
   if (!session) return <Welcome />;
   if (!user.onboarded) return <Onboarding />;
@@ -88,29 +91,36 @@ function Index() {
             </div>
           ) : (
             <div aria-label="Risultati del voto">
-              {Object.entries(dailyResults).map(([answer, percent]) => (
+              {dailyOptions.map((answer, index) => (
                 <div key={answer}>
                   <div className="result-row">
                     <span>
                       {answer} {answer === choice && "✓"}
                     </span>
-                    <strong>{percent}%</strong>
+                    <strong>{daily.percents[index]}%</strong>
                   </div>
                   <div className="vote-bar">
                     <motion.div
                       initial={{ width: 0 }}
-                      animate={{ width: `${percent}%` }}
+                      animate={{ width: `${daily.percents[index]}%` }}
                       className={`vote-fill ${answer === "No" ? "no" : ""}`}
                     />
                   </div>
                 </div>
               ))}
-              <p className="hand">(hai votato con il {choice === "Sì" ? 62 : 38}%)</p>
+              <p className="hand">
+                {daily.total <= 1
+                  ? "(sei tra i primi a rispondere)"
+                  : `(hai votato con il ${daily.percents[dailyOptions.indexOf(choice)] ?? 0}%)`}
+              </p>
             </div>
           )}
           <div className="daily-footer">
             <span>
-              <Users size={12} className="inline mr-1" /> 3.842 hanno detto la loro
+              <Users size={12} className="inline mr-1" />{" "}
+              {daily.total === 0
+                ? "Rispondi per primo"
+                : `${daily.total} ${daily.total === 1 ? "ha detto la sua" : "hanno detto la loro"}`}
             </span>
             <span>21 NOV 2026</span>
           </div>

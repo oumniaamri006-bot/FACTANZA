@@ -15,6 +15,16 @@ già applicate, in ordine di nome.
 Il profilo si crea da solo alla registrazione (trigger `on_auth_user_created`). L'accesso è con
 email e password, con **conferma automatica** dell'email (`mailer_autoconfirm`).
 
+## Funzioni
+
+| Funzione                   | A cosa serve                                                                          |
+| -------------------------- | ------------------------------------------------------------------------------------- |
+| `poll_results(poll_id)`    | conteggi anonimi delle risposte di un sondaggio (tutti i risultati in app sono reali) |
+| `opinion_change(event_id)` | votanti prima/dopo un live e quanti hanno cambiato idea                               |
+| `delete_my_account()`      | l'utente elimina account e, a cascata, tutti i suoi dati (GDPR art. 17)               |
+
+Per **azzerare i sondaggi** prima di un lancio: `delete from public.votes;` (SQL Editor).
+
 ## Eventi registrati
 
 Solo con consenso e solo da 14 anni in su (controllato anche dalla policy del database).

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { parseUser, initialUser, toggleValue, hasChangedMind } from "@/lib/factanza-state";
-import { dailyResults, partners, topics } from "@/data/factanza";
+import { partners, topics } from "@/data/factanza";
 describe("Factanza demo rules", () => {
   it("shows onboarding only until the first acceptance", () => {
     expect(parseUser(null).onboarded).toBe(false);
@@ -18,10 +18,6 @@ describe("Factanza demo rules", () => {
     expect(state.interests).toEqual(["AI & Tech"]);
     expect(state.formats).toEqual(["Leggo", "Ascolto"]);
     expect(state.votes["daily"]).toBe("Sì");
-  });
-  it("keeps the daily community yes vote at 62 percent", () => {
-    expect(dailyResults["Sì"]).toBe(62);
-    expect(dailyResults["Sì"] + dailyResults["No"]).toBe(100);
   });
   it("offers all nine swipe topics", () => {
     expect(topics).toEqual([

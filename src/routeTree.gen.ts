@@ -16,6 +16,7 @@ import { Route as EventoRouteImport } from './routes/evento'
 import { Route as FactafidelityRouteImport } from './routes/factafidelity'
 import { Route as LiveRouteImport } from './routes/live'
 import { Route as NotiziaRouteImport } from './routes/notizia'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ProfiloRouteImport } from './routes/profilo'
 import { Route as VideoRouteImport } from './routes/video'
 import { Route as CategoriaCategoryRouteImport } from './routes/categoria.$category'
@@ -55,6 +56,11 @@ const NotiziaRoute = NotiziaRouteImport.update({
   path: '/notizia',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProfiloRoute = ProfiloRouteImport.update({
   id: '/profilo',
   path: '/profilo',
@@ -79,6 +85,7 @@ export interface FileRoutesByFullPath {
   '/factafidelity': typeof FactafidelityRoute
   '/live': typeof LiveRoute
   '/notizia': typeof NotiziaRoute
+  '/privacy': typeof PrivacyRoute
   '/profilo': typeof ProfiloRoute
   '/video': typeof VideoRoute
   '/categoria/$category': typeof CategoriaCategoryRoute
@@ -91,6 +98,7 @@ export interface FileRoutesByTo {
   '/factafidelity': typeof FactafidelityRoute
   '/live': typeof LiveRoute
   '/notizia': typeof NotiziaRoute
+  '/privacy': typeof PrivacyRoute
   '/profilo': typeof ProfiloRoute
   '/video': typeof VideoRoute
   '/categoria/$category': typeof CategoriaCategoryRoute
@@ -104,6 +112,7 @@ export interface FileRoutesById {
   '/factafidelity': typeof FactafidelityRoute
   '/live': typeof LiveRoute
   '/notizia': typeof NotiziaRoute
+  '/privacy': typeof PrivacyRoute
   '/profilo': typeof ProfiloRoute
   '/video': typeof VideoRoute
   '/categoria/$category': typeof CategoriaCategoryRoute
@@ -118,6 +127,7 @@ export interface FileRouteTypes {
     | '/factafidelity'
     | '/live'
     | '/notizia'
+    | '/privacy'
     | '/profilo'
     | '/video'
     | '/categoria/$category'
@@ -130,6 +140,7 @@ export interface FileRouteTypes {
     | '/factafidelity'
     | '/live'
     | '/notizia'
+    | '/privacy'
     | '/profilo'
     | '/video'
     | '/categoria/$category'
@@ -142,6 +153,7 @@ export interface FileRouteTypes {
     | '/factafidelity'
     | '/live'
     | '/notizia'
+    | '/privacy'
     | '/profilo'
     | '/video'
     | '/categoria/$category'
@@ -155,6 +167,7 @@ export interface RootRouteChildren {
   FactafidelityRoute: typeof FactafidelityRoute
   LiveRoute: typeof LiveRoute
   NotiziaRoute: typeof NotiziaRoute
+  PrivacyRoute: typeof PrivacyRoute
   ProfiloRoute: typeof ProfiloRoute
   VideoRoute: typeof VideoRoute
   CategoriaCategoryRoute: typeof CategoriaCategoryRoute
@@ -211,6 +224,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NotiziaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/profilo': {
       id: '/profilo'
       path: '/profilo'
@@ -243,6 +263,7 @@ const rootRouteChildren: RootRouteChildren = {
   FactafidelityRoute: FactafidelityRoute,
   LiveRoute: LiveRoute,
   NotiziaRoute: NotiziaRoute,
+  PrivacyRoute: PrivacyRoute,
   ProfiloRoute: ProfiloRoute,
   VideoRoute: VideoRoute,
   CategoriaCategoryRoute: CategoriaCategoryRoute,

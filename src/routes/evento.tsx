@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { events, chatMessages } from "@/data/factanza";
 import { useFactanza } from "@/components/factanza/context";
+import { useOpinionChange, usePollResults } from "@/lib/reading";
 
 export const Route = createFileRoute("/evento")({
   validateSearch: (search: Record<string, unknown>): { id?: string } =>
@@ -52,9 +53,19 @@ function Event() {
     chatRef.current?.scrollTo({ top: chatRef.current.scrollHeight });
   }, [chat]);
 
+  const eventId = event?.id ?? "";
+  const voteOptions = ["Sì", "No", "Non so"];
+  const before = user.votes[`before-${eventId}`];
+  const after = user.votes[`after-${eventId}`];
+  const beforeResults = usePollResults(`before-${eventId}`, voteOptions, before);
+  const afterResults = usePollResults(`after-${eventId}`, voteOptions, after);
+  const change = useOpinionChange(eventId, phase === 3 ? after : undefined);
+  const livePoll = usePollResults("live-poll", ["Sì", "Non ancora"], user.votes["live-poll"]);
   if (!event) return null;
-  const before = user.votes[`before-${event.id}`];
-  const after = user.votes[`after-${event.id}`];
+  // Se il database non ha ancora risposto, contiamo almeno il tuo voto.
+  const voters = Math.max(change?.voters ?? 0, before && after ? 1 : 0);
+  const changed = change ? change.changed : before && after && before !== after ? 1 : 0;
+  const changedPct = voters ? Math.round((100 * changed) / voters) : 0;
   const current = phase === 0 ? before : after;
 
   return (
@@ -146,7 +157,10 @@ function Event() {
               <div className="mt-6">
                 <h3 className="font-semibold mb-3">Sondaggio live: la scuola prepara all’AI?</h3>
                 {user.votes["live-poll"] ? (
-                  <p className="hand">(il 71% dice: non ancora)</p>
+                  <p className="hand">
+                    (il {livePoll.percents[1]}% dice: non ancora · {livePoll.total}{" "}
+                    {livePoll.total === 1 ? "voto" : "voti"})
+                  </p>
                 ) : (
                   <div className="vote-actions">
                     {["Sì", "Non ancora"].map((choice) => (
@@ -178,26 +192,37 @@ function Event() {
         {phase === 3 && (
           <>
             <span className="sticker yellow my-5">
-              IL 27% HA
+              IL {changedPct}% HA
               <br />
               CAMBIATO IDEA
             </span>
-            <p className="hand mt-4">(ascoltare fa la differenza)</p>
+            <p className="hand mt-4">
+              ({voters} {voters === 1 ? "persona ha" : "persone hanno"} votato prima e dopo)
+            </p>
             <div className="mt-8">
-              <div className="result-row">
-                <span>Prima · Sì</span>
-                <strong>64%</strong>
-              </div>
-              <div className="vote-bar">
-                <div className="vote-fill" style={{ width: "64%" }} />
-              </div>
-              <div className="result-row">
-                <span>Dopo · Sì</span>
-                <strong>37%</strong>
-              </div>
-              <div className="vote-bar">
-                <div className="vote-fill no" style={{ width: "37%" }} />
-              </div>
+              {voteOptions.map((option, index) => (
+                <div key={option}>
+                  <div className="result-row">
+                    <span>{option}</span>
+                    <strong>
+                      prima {beforeResults.percents[index]}% · dopo {afterResults.percents[index]}%
+                    </strong>
+                  </div>
+                  <div className="vote-bar">
+                    <div
+                      className="vote-fill"
+                      style={{ width: `${beforeResults.percents[index]}%` }}
+                    />
+                  </div>
+                  <div className="vote-bar">
+                    <div
+                      className="vote-fill no"
+                      style={{ width: `${afterResults.percents[index]}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
+              <p className="demo-label">Verde: prima del dibattito · rosa: dopo.</p>
             </div>
             <p className="body-copy mt-6">
               Il tuo voto:{" "}
@@ -209,7 +234,7 @@ function Event() {
                 ? "Anche tu hai cambiato prospettiva."
                 : "Hai confermato la tua idea, ascoltando altre voci."}
             </p>
-            <p className="demo-label">Percentuali simulate per il dibattito demo.</p>
+            <p className="demo-label">Risultati reali dei voti della community.</p>
           </>
         )}
       </div>

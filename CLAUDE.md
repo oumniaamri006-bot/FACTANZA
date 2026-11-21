@@ -85,14 +85,18 @@ src/
   (Generazione Sospesa, Oriana · Unposted, canale YouTube). Le copertine dei video sono le
   miniature originali di YouTube (senza durata); `youtubeId` alimenta il player in `/video` e
   `mediaLink()`.
-- Ogni notizia (`src/data/news.ts`) ha un `poll` (domanda + risposte); le percentuali sono
-  simulate e stabili (`src/lib/poll.ts`). La barra categorie mostra solo i temi scelti
+- Ogni notizia (`src/data/news.ts`) ha un `poll` (domanda + risposte). **Tutti i risultati dei
+  sondaggi sono reali** (domanda del giorno, articoli, live, profilo): `usePollResults()` e
+  `useOpinionChange()` in `src/lib/reading.ts`. Non reintrodurre percentuali inventate. La barra categorie mostra solo i temi scelti
   dall'utente (tutti, se non ne ha scelto nessuno).
 - Contenuti in `src/data`; dati dell'utente solo tramite `useFactanza()`, che li carica e salva su
   Supabase (`profiles`, `votes`, `reminders`). Il client Supabase esiste solo nel browser
   (`getSupabase()` restituisce `null` in SSR). La home mostra `<div className="phone" />` finché
   `ready` è `false`; senza sessione mostra `Welcome` (splash + `AuthScreen`), e `AppShell`
-  rimanda alla home.
+  rimanda alla home con un `useEffect` (non usare `<Navigate>`: con la sessione chiusa mentre la
+  pagina è aperta blocca il browser). `/privacy` è l'unica pagina leggibile senza account.
+  Registrazione solo con la casella "Ho almeno 14 anni… e ho letto l'informativa"; nel profilo
+  c'è "Elimina il mio account" (`delete_my_account()`).
 - Statistiche: usa `track(nome, props)` dal contesto. Parte solo se l'utente ha dato il consenso
   (`analytics`); mai inserire negli eventi le risposte ai sondaggi o testo scritto dall'utente.
   Niente statistiche sotto i 14 anni (`isMinorForConsent`); niente IP, GPS o impronta del

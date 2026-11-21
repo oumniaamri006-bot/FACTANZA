@@ -1,6 +1,6 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Check, RotateCcw, Download, LogOut } from "lucide-react";
+import { Check, RotateCcw, Download, LogOut, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { AppShell, CategoryIcon, SectionTitle, pageHead } from "@/components/factanza/shared";
@@ -10,6 +10,8 @@ import { topics, dailyQuestion } from "@/data/factanza";
 import { news } from "@/data/news";
 import { toggleValue } from "@/lib/factanza-state";
 import { AboutYouFields } from "@/components/factanza/about-you";
+import { usePollResults } from "@/lib/reading";
+import { getSupabase } from "@/lib/supabase";
 import { digitalConsentAge, isMinorForConsent } from "@/data/profile-options";
 
 export const Route = createFileRoute("/profilo")({
@@ -33,10 +35,26 @@ function questionName(id: string) {
 }
 
 function Profile() {
-  const { user, update, logout, session, track } = useFactanza();
+  const { user, update, logout, session, track, notify } = useFactanza();
   const minor = isMinorForConsent(user.birthYear);
   const [redo, setRedo] = useState(false);
   const navigate = useNavigate();
+  const daily = usePollResults("daily", ["Sì", "No"], user.votes["daily"]);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const deleteAccount = async () => {
+    const supabase = getSupabase();
+    if (!supabase) return;
+    setDeleting(true);
+    const { error } = await supabase.rpc("delete_my_account");
+    setDeleting(false);
+    if (error) {
+      notify("Non è stato possibile eliminare l’account: riprova.");
+      return;
+    }
+    await logout({ accountDeleted: true });
+    void navigate({ to: "/" });
+  };
   if (redo) return <Onboarding redo onDone={() => setRedo(false)} />;
 
   const download = () => {
@@ -128,7 +146,10 @@ function Profile() {
                 La tua risposta: <strong>{choice}</strong>
               </p>
               {id === "daily" ? (
-                <p className="hand">(come il {choice === "Sì" ? 62 : 38}% della community)</p>
+                <p className="hand">
+                  (come il {daily.percents[choice === "Sì" ? 0 : 1]}% della community ·{" "}
+                  {daily.total} {daily.total === 1 ? "voto" : "voti"})
+                </p>
               ) : (
                 <p className="demo-label">Risposta salvata · confronto community dimostrativo</p>
               )}
@@ -186,6 +207,37 @@ function Profile() {
             <LogOut />
             Esci
           </Button>
+        </div>
+
+        <div className="danger-zone">
+          {!confirmDelete ? (
+            <Button variant="facta" className="w-full" onClick={() => setConfirmDelete(true)}>
+              <Trash2 />
+              Elimina il mio account
+            </Button>
+          ) : (
+            <>
+              <p className="body-copy">
+                Eliminiamo account, profilo, voti, promemoria e statistiche. Non si può annullare.
+              </p>
+              <div className="flex gap-3 mt-3">
+                <Button variant="facta" className="flex-1" onClick={() => setConfirmDelete(false)}>
+                  Annulla
+                </Button>
+                <Button
+                  variant="facta"
+                  className="flex-1 danger"
+                  disabled={deleting}
+                  onClick={() => void deleteAccount()}
+                >
+                  {deleting ? "Elimino…" : "Elimina per sempre"}
+                </Button>
+              </div>
+            </>
+          )}
+          <Link to="/privacy" className="privacy-link">
+            Informativa privacy
+          </Link>
         </div>
       </div>
     </AppShell>

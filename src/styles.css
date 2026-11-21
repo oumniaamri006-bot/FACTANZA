@@ -1817,6 +1817,57 @@
   font-size: 13px;
   font-weight: 600;
 }
+.auth-check {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 13px;
+  line-height: 1.4;
+}
+.auth-check input {
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  accent-color: var(--brand-navy);
+  flex-shrink: 0;
+}
+.auth-check a,
+.privacy-link {
+  color: var(--primary);
+  font-weight: 700;
+  text-decoration: underline;
+}
+.danger-zone {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: var(--hairline);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.facta-button.danger {
+  background: var(--magenta);
+  color: var(--paper);
+}
+.privacy-link {
+  align-self: center;
+  font-size: 13px;
+}
+.privacy h2 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  margin: 26px 0 10px;
+}
+.privacy p,
+.privacy li {
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+.privacy ul {
+  padding-left: 18px;
+  list-style: disc;
+}
 .account-email {
   font-size: 13px;
   color: var(--muted-foreground);

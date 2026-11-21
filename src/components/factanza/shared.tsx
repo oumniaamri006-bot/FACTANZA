@@ -1,6 +1,6 @@
-import { Link, Navigate, useLocation } from "@tanstack/react-router";
+import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { Home, Users, CalendarDays, CirclePlay, CreditCard, ArrowLeft } from "lucide-react";
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { useFactanza } from "./context";
 import { categories, getCategoryByName } from "@/data/categories";
@@ -90,8 +90,12 @@ const tabs = [
 export function AppShell({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
   const { ready, session } = useFactanza();
-  if (!ready) return <div className="phone" />;
-  if (!session) return <Navigate to="/" />;
+  const navigate = useNavigate();
+  // Senza accesso (uscita, account eliminato, sessione scaduta) si torna alla home, una volta.
+  useEffect(() => {
+    if (ready && !session) void navigate({ to: "/", replace: true });
+  }, [ready, session, navigate]);
+  if (!ready || !session) return <div className="phone" />;
   return (
     <div className="phone">
       <header className="app-header">

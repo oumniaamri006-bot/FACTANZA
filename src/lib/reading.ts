@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { flushEvents } from "./analytics";
 import { getSupabase } from "./supabase";
+import { percentages } from "./poll";
 
 /** Dopo quanti secondi senza tocchi o scroll smettiamo di contare il tempo di lettura. */
 export const idleAfterSeconds = 30;
@@ -69,25 +70,64 @@ export function useReadingTracker(articleId: string, topic: string, track: Track
   }, [articleId, topic, track]);
 }
 
-/** Conteggi reali e anonimi di un sondaggio, letti dopo che l'utente ha votato. */
-export function usePollCounts(pollId: string, choice: string | undefined) {
+/**
+ * Conteggi reali e anonimi di un sondaggio (funzione `poll_results` del database).
+ * Si aggiornano quando cambia `refreshKey` (di solito il voto dell'utente).
+ */
+export function usePollCounts(pollId: string, refreshKey?: string) {
   const [counts, setCounts] = useState<Record<string, number> | null>(null);
   useEffect(() => {
     const supabase = getSupabase();
-    if (!supabase || !choice || !pollId) return;
+    if (!supabase || !pollId) return;
     let cancelled = false;
     // Breve attesa: il voto appena dato deve essere già salvato.
+    const timer = setTimeout(
+      () => {
+        void supabase.rpc("poll_results", { p_poll_id: pollId }).then(({ data }) => {
+          if (cancelled || !Array.isArray(data)) return;
+          const rows = data as { choice: string; votes: number }[];
+          setCounts(Object.fromEntries(rows.map((row) => [row.choice, Number(row.votes)])));
+        });
+      },
+      refreshKey ? 600 : 0,
+    );
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [pollId, refreshKey]);
+  return counts;
+}
+
+/** Risultati reali di un sondaggio: percentuali per risposta e numero di voti. */
+export function usePollResults(pollId: string, options: string[], choice?: string) {
+  const counts = usePollCounts(pollId, choice);
+  const values = options.map((option) => counts?.[option] ?? 0);
+  // Il voto appena dato conta subito, anche prima che il database risponda.
+  const mine = choice ? options.indexOf(choice) : -1;
+  if (mine >= 0 && (values[mine] ?? 0) === 0) values[mine] = 1;
+  const total = values.reduce((sum, value) => sum + value, 0);
+  return { percents: percentages(values), total, loaded: counts !== null };
+}
+
+/** Live: votanti prima e dopo il dibattito e quanti hanno cambiato idea. */
+export function useOpinionChange(eventId: string, refreshKey?: string) {
+  const [result, setResult] = useState<{ voters: number; changed: number } | null>(null);
+  useEffect(() => {
+    const supabase = getSupabase();
+    if (!supabase || !eventId || !refreshKey) return;
+    let cancelled = false;
     const timer = setTimeout(() => {
-      void supabase.rpc("poll_results", { p_poll_id: pollId }).then(({ data }) => {
-        if (cancelled || !Array.isArray(data)) return;
-        const rows = data as { choice: string; votes: number }[];
-        setCounts(Object.fromEntries(rows.map((row) => [row.choice, Number(row.votes)])));
+      void supabase.rpc("opinion_change", { p_event_id: eventId }).then(({ data }) => {
+        const row = Array.isArray(data) ? (data[0] as { votanti: number; cambiati: number }) : null;
+        if (!cancelled && row)
+          setResult({ voters: Number(row.votanti), changed: Number(row.cambiati) });
       });
     }, 600);
     return () => {
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [pollId, choice]);
-  return counts;
+  }, [eventId, refreshKey]);
+  return result;
 }

@@ -3,6 +3,8 @@ import { ArrowLeft, ArrowRight, LogIn, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { authErrorMessage, getSupabase, supabaseConfigured } from "@/lib/supabase";
 import { firstTouch } from "@/lib/attribution";
+import { Link } from "@tanstack/react-router";
+import { digitalConsentAge } from "@/data/profile-options";
 import { Logo, SectionTitle } from "./shared";
 
 type Mode = "signup" | "login";
@@ -15,6 +17,7 @@ export function AuthScreen({ onBack }: { onBack?: () => void }) {
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [agreed, setAgreed] = useState(false);
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();
@@ -125,6 +128,21 @@ export function AuthScreen({ onBack }: { onBack?: () => void }) {
             />
           </label>
 
+          {mode === "signup" && (
+            <label className="auth-check" htmlFor="auth-agree">
+              <input
+                id="auth-agree"
+                type="checkbox"
+                checked={agreed}
+                onChange={(event) => setAgreed(event.target.checked)}
+              />
+              <span>
+                Ho almeno {digitalConsentAge} anni (o il consenso di un genitore) e ho letto l’
+                <Link to="/privacy">informativa privacy</Link>.
+              </span>
+            </label>
+          )}
+
           {error && (
             <p className="auth-error" role="alert">
               {error}
@@ -135,7 +153,13 @@ export function AuthScreen({ onBack }: { onBack?: () => void }) {
             variant="sticker"
             className="w-full"
             type="submit"
-            disabled={busy || !supabaseConfigured || !email.trim() || password.length < 6}
+            disabled={
+              busy ||
+              !supabaseConfigured ||
+              !email.trim() ||
+              password.length < 6 ||
+              (mode === "signup" && !agreed)
+            }
           >
             {busy ? "Un attimo…" : mode === "signup" ? "Crea l’account" : "Accedi"}
             {!busy && <ArrowRight />}
