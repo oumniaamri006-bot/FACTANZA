@@ -69,7 +69,7 @@ export const news: NewsItem[] = [
       question: "Ti capita di usare parole come «ghosting» o «tossico» con gli amici?",
       options: ["Spesso", "A volte", "Mai"],
     },
-    topic: "Salute",
+    topic: "Trend",
     title:
       "Ghosting, trauma dumping, triggerato: la therapy culture ci sta rendendo amici peggiori?",
     accent: "amici peggiori?",
@@ -226,7 +226,7 @@ export const news: NewsItem[] = [
       question: "I giocattoli influenzano l’idea di corpo con cui si cresce?",
       options: ["Molto", "Poco", "Per niente"],
     },
-    topic: "Moda",
+    topic: "Trend",
     title: "Barbie e Ken oggi hanno corpi più realistici rispetto a 30 anni fa",
     accent: "più realistici",
     minutes: 2,

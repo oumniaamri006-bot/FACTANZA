@@ -1,8 +1,7 @@
 import aiTech from "@/assets/categorie/ai-tech.png";
 import politica from "@/assets/categorie/politica.png";
 import economia from "@/assets/categorie/economia.png";
-import sport from "@/assets/categorie/sport.png";
-import moda from "@/assets/categorie/moda.png";
+import trend from "@/assets/categorie/trend.png";
 import cultura from "@/assets/categorie/cultura.png";
 import ambiente from "@/assets/categorie/ambiente.png";
 import esteri from "@/assets/categorie/esteri.png";
@@ -14,19 +13,18 @@ import { news } from "./news";
 /**
  * Catalogo unico delle categorie: slug, nome visibile e icona pop-art.
  * Tutte le icone vengono dallo stesso set illustrato (src/assets/categorie),
- * scontornate e centrate su una tela trasparente 320×320.
+ * scontornate e centrate su una tela trasparente 320×320 (Trend è disegnata nello stesso stile).
  */
 export const categories = [
   { slug: "ai-tech", name: "AI & Tech", icon: aiTech },
   { slug: "politica", name: "Politica", icon: politica },
   { slug: "economia", name: "Economia", icon: economia },
-  { slug: "sport", name: "Sport", icon: sport },
-  { slug: "moda", name: "Moda", icon: moda },
   { slug: "cultura", name: "Cultura", icon: cultura },
   { slug: "ambiente", name: "Ambiente", icon: ambiente },
   { slug: "esteri", name: "Esteri", icon: esteri },
   { slug: "lavoro", name: "Lavoro", icon: lavoro },
   { slug: "salute", name: "Salute", icon: salute },
+  { slug: "trend", name: "Trend", icon: trend },
 ];
 
 export type Category = (typeof categories)[number];

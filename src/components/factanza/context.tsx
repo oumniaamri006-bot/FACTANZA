@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { initialUser, parseUser, storageKey, type UserState } from "@/lib/factanza-state";
+import { topics } from "@/data/factanza";
 
 type StateContext = {
   user: UserState;
@@ -15,7 +16,9 @@ export function FactanzaProvider({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false);
   const [toast, setToast] = useState("");
   useEffect(() => {
-    setUser(parseUser(localStorage.getItem(storageKey)));
+    const saved = parseUser(localStorage.getItem(storageKey));
+    // Scarta temi che non esistono più (es. Sport e Moda, rimossi dal catalogo).
+    setUser({ ...saved, interests: saved.interests.filter((topic) => topics.includes(topic)) });
     setReady(true);
   }, []);
   useEffect(() => {

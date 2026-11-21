@@ -3,21 +3,20 @@ import { allCategory, categories, getCategoryByName, getCategoryNews } from "@/d
 import { topics } from "@/data/factanza";
 import { news } from "@/data/news";
 describe("Category news navigation", () => {
-  it("maps each of the ten categories to a unique page and uploaded icon", () => {
+  it("maps each of the nine categories to a unique page and uploaded icon", () => {
     expect(categories.map((category) => category.name)).toEqual([
       "AI & Tech",
       "Politica",
       "Economia",
-      "Sport",
-      "Moda",
       "Cultura",
       "Ambiente",
       "Esteri",
       "Lavoro",
       "Salute",
+      "Trend",
     ]);
-    expect(new Set(categories.map((category) => category.slug)).size).toBe(10);
-    expect(new Set(categories.map((category) => category.icon)).size).toBe(10);
+    expect(new Set(categories.map((category) => category.slug)).size).toBe(9);
+    expect(new Set(categories.map((category) => category.icon)).size).toBe(9);
   });
   for (const category of categories) {
     it(`shows all and only ${category.name} news independently of interests`, () => {
@@ -35,7 +34,7 @@ describe("Category news navigation", () => {
   it("keeps swipe topics and categories in sync, each with a pop-art icon", () => {
     for (const topic of topics) expect(getCategoryByName(topic)?.icon).toBeTruthy();
   });
-  it("gives Tutti its own pop-art icon, distinct from the ten categories", () => {
+  it("gives Tutti its own pop-art icon, distinct from the nine categories", () => {
     expect(allCategory.slug).toBe("tutte");
     expect(categories.map((category) => category.icon)).not.toContain(allCategory.icon);
   });

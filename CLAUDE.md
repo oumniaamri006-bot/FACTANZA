@@ -60,7 +60,7 @@ src/
   components/ui/          primitive shadcn (non modificarle per lo stile dell'app)
   data/                   contenuti demo: categories.ts, news.ts, factanza.ts
   lib/factanza-state.ts   tipo UserState, parsing sicuro del localStorage, toggleValue
-  assets/categorie/       le 11 icone pop-art delle categorie (PNG trasparenti 320×320)
+  assets/categorie/       le 10 icone pop-art (9 categorie + Tutti, PNG trasparenti 320×320)
   assets/factanza-logo.png  logo (la "F" multicolore, uguale a public/favicon.png)
   styles.css              token Tailwind + TUTTO il sistema visivo Factanza
   test/                   test Vitest
@@ -88,6 +88,9 @@ src/
   La home mostra `<div className="phone" />` finché `ready` è `false`.
 - Ogni pagina ha la sua route e il suo `head: () => pageHead(titolo, descrizione)`.
   Non aggiungere `og:image`/`twitter:image` nella root.
+- Categorie: AI & Tech, Politica, Economia, Cultura, Ambiente, Esteri, Lavoro, Salute, **Trend**.
+  Sport e Moda non sono temi Factanza: non reintrodurli. Gli interessi salvati che non esistono
+  più vengono scartati al caricamento (`context.tsx`).
 - Le categorie stanno in **un solo catalogo**: `src/data/categories.ts` (`slug`, `name`, `icon`).
   `topics` in `src/data/factanza.ts` deve restare allineato ai nomi delle categorie (c'è un test).
   La voce "Tutti" è `allCategory` (slug `tutte`) e ha una sua icona.
@@ -136,11 +139,11 @@ splash) · Anton per sticker, tag ed etichette (`font-label`) · Caveat per le n
 - `.sticker` (+ `.small`), `.topic-tag`, `.live-badge`, `.hand`, `.body-copy`, `.demo-label`.
 - Card: bordo `--line`, `--radius-card`, ombra `--shadow` (vedi `.news-card`, `.benefit`).
 
-**Icone di categoria**: le 11 illustrazioni (10 categorie + "Tutti") sono già scontornate,
+**Icone di categoria**: le 10 illustrazioni (9 categorie + "Tutti") sono già scontornate,
 centrate su tela trasparente 320×320 e ridotte a palette 256 colori (~25 KB l'una). Per una nuova
 categoria crea un'illustrazione nello stesso stile (esplosione colorata, contorno nero,
 cartiglio giallo con il nome in maiuscolo), esportala con lo stesso formato e aggiungila al
-catalogo in `categories.ts`.
+catalogo in `categories.ts`. L'icona Trend è disegnata in SVG nello stesso stile (font Anton).
 
 **CSS**: il blocco Factanza in `styles.css` è volutamente **fuori da `@layer`**, così vince sulle
 utility delle varianti shadcn applicate agli stessi elementi (es. `ghost`, `size="icon"`).
@@ -160,6 +163,6 @@ giusta, una proprietà per riga.
 
 ## Test
 
-`src/test/` copre: matching delle route, catalogo categorie (10 categorie + Tutti, icone uniche,
+`src/test/` copre: matching delle route, catalogo categorie (9 categorie + Tutti, icone uniche,
 allineamento con `topics`), regole dello stato utente. Aggiungi un test quando cambi dati,
 catalogo o logica in `lib/`.

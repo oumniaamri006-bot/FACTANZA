@@ -23,18 +23,17 @@ describe("Factanza demo rules", () => {
     expect(dailyResults["Sì"]).toBe(62);
     expect(dailyResults["Sì"] + dailyResults["No"]).toBe(100);
   });
-  it("offers all ten requested swipe topics", () => {
+  it("offers all nine swipe topics", () => {
     expect(topics).toEqual([
       "AI & Tech",
       "Politica",
       "Economia",
-      "Sport",
-      "Moda",
       "Cultura",
       "Ambiente",
       "Esteri",
       "Lavoro",
       "Salute",
+      "Trend",
     ]);
   });
   it("toggles a reminder without duplicates", () => {

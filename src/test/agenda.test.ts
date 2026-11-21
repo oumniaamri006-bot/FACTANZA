@@ -24,16 +24,20 @@ describe("Events calendar", () => {
 
 describe("Suggested news", () => {
   const items = [
-    { topic: "Sport", opinions: "946" },
+    { topic: "Lavoro", opinions: "946" },
     { topic: "Esteri", opinions: "2.3k" },
-    { topic: "Moda", opinions: "1.1k" },
+    { topic: "Trend", opinions: "1.1k" },
   ];
   it("parses opinion counts", () => {
     expect(parseOpinions("2.3k")).toBe(2300);
     expect(parseOpinions("946")).toBe(946);
   });
   it("suggests other topics, most discussed first", () => {
-    expect(suggestedNews(items, ["Esteri"]).map((item) => item.topic)).toEqual(["Moda", "Sport"]);
-    expect(suggestedNews(items, []).map((item) => item.topic)).toEqual(["Esteri", "Moda", "Sport"]);
+    expect(suggestedNews(items, ["Esteri"]).map((item) => item.topic)).toEqual(["Trend", "Lavoro"]);
+    expect(suggestedNews(items, []).map((item) => item.topic)).toEqual([
+      "Esteri",
+      "Trend",
+      "Lavoro",
+    ]);
   });
 });

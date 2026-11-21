@@ -57,7 +57,7 @@ export function TopicCover({ topic, className = "" }: { topic: string; className
   );
 }
 
-const collageSlugs = ["politica", "ai-tech", "cultura", "sport", "ambiente"];
+const collageSlugs = ["politica", "ai-tech", "trend", "cultura", "ambiente"];
 
 /** Composizione di icone pop-art inclinate: sostituisce il collage fotografico. */
 export function IconCollage({ className = "", label }: { className?: string; label?: string }) {
