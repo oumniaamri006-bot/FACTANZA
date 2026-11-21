@@ -9,7 +9,7 @@ asset ospitati su Lovable, niente telemetria dell'editor. Non reintrodurli.
 
 **Factanza — "Non solo news. La tua voce."** Web app mobile-first (demo da hackathon) che porta
 i giovani a capire le notizie che influenzano la loro vita: feed personalizzato, domanda del
-giorno, notizie spiegate in 5 slide, dibattiti live con voto prima/dopo, podcast/video, carta
+giorno, notizie spiegate in breve, dibattiti live con voto prima/dopo, podcast/video, carta
 FactaFidelity e area personale.
 
 - Stella polare: _i giovani capiscono le notizie che influenzano la loro vita_. Metrica: minuti
@@ -47,7 +47,7 @@ src/
   server.ts, start.ts     entry SSR e middleware (errori, CSRF); lib/error-page.ts = errore SSR statico
     index.tsx             "Per te": storie categorie, domanda del giorno, feed, banner live
     categoria.$category.tsx  notizie per categoria (`tutte` = tutte le notizie)
-    notizia.tsx           notizia in 5 slide + sondaggio (?id=)
+    notizia.tsx           notizia: immagine, testo (body o punti chiave) + sondaggio (?id=)
     live.tsx, evento.tsx  dirette e dibattito con voto prima/dopo (?id=)
     contenuti.tsx, video.tsx  podcast/YouTube e player demo
     community.tsx, factafidelity.tsx, profilo.tsx

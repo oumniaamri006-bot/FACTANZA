@@ -1244,22 +1244,18 @@
 
 /* ---------- Articolo a slide ---------- */
 
-.article-slide {
-  min-height: 370px;
+.article-poll {
   background: var(--lilac);
   border: var(--line);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow);
-  padding: 25px;
+  padding: 22px;
+  margin: 8px 0 22px;
 }
-.article-slide h2 {
-  font-size: 29px;
+.article-poll h2 {
+  font-size: 24px;
   line-height: 1.25;
-  margin: 18px 0;
-}
-.article-slide p {
-  font-size: 18px;
-  line-height: 1.55;
+  margin: 14px 0 16px;
 }
 .article-photo {
   margin: 0 0 20px;
@@ -1283,12 +1279,6 @@
   font-size: 16px;
   line-height: 1.65;
   margin-bottom: 14px;
-}
-.slide-controls {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 22px 0;
 }
 
 /* ---------- Splash e onboarding ---------- */
