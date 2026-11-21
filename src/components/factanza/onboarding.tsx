@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { motion, useReducedMotion, useMotionValue, useTransform } from "framer-motion";
 import {
   ArrowRight,
@@ -12,15 +12,19 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useFactanza } from "./context";
-import { CategoryIcon, IconCollage, Logo, SectionTitle } from "./shared";
+import { CategoryIcon, Logo, SectionTitle } from "./shared";
 import { topics, formats } from "@/data/factanza";
 import { toggleValue } from "@/lib/factanza-state";
+import { queueEvent } from "@/lib/analytics";
 
 const formatIcons = [BookOpen, CirclePlay, Headphones];
 
+/** Personalizzazione dopo la registrazione: interessi, formati e consenso alle statistiche. */
 export function Onboarding({ redo = false, onDone }: { redo?: boolean; onDone?: () => void }) {
-  const { user, update } = useFactanza();
-  const [step, setStep] = useState(redo ? 1 : 0);
+  const { user, update, track } = useFactanza();
+  const [step, setStep] = useState(1);
+  // Le scelte dello swipe si inviano alle statistiche solo dopo il consenso.
+  const swipes = useRef<{ topic: string; liked: boolean }[]>([]);
   const [index, setIndex] = useState(0);
   const [interests, setInterests] = useState<string[]>([]);
   const [selectedFormats, setSelectedFormats] = useState(user.formats);
@@ -33,6 +37,10 @@ export function Onboarding({ redo = false, onDone }: { redo?: boolean; onDone?: 
 
   const choose = (liked: boolean) => {
     dragX.set(0);
+    if (topic) {
+      if (user.analytics) track("swipe", { topic, liked });
+      else swipes.current.push({ topic, liked });
+    }
     const picked = liked && topic ? [...interests, topic] : interests;
     setInterests(picked);
     if (index < topics.length - 1) {
@@ -46,34 +54,6 @@ export function Onboarding({ redo = false, onDone }: { redo?: boolean; onDone?: 
       setStep(2);
     }
   };
-
-  if (step === 0) {
-    return (
-      <div className="phone">
-        <div className="splash">
-          <Logo />
-          <div className="splash-copy">
-            <h1>
-              L'informazione
-              <br />
-              che crea
-              <br />
-              <span className="text-yellow">(in)dipendenza.</span>
-            </h1>
-            <span className="hand">(quella buona) ↗</span>
-          </div>
-          <IconCollage className="splash-art" label="Collage di icone dei temi Factanza" />
-          <div className="splash-bottom">
-            <p>NON SOLO NEWS.</p>
-            <span className="sticker yellow">LA TUA VOCE.</span>
-            <Button variant="sticker" onClick={() => setStep(1)}>
-              Inizia <ArrowRight />
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="phone">
@@ -170,20 +150,43 @@ export function Onboarding({ redo = false, onDone }: { redo?: boolean; onDone?: 
             <ShieldCheck className="privacy-icon" />
             <SectionTitle first="La tua voce." second="I TUOI DATI." color="lilac" />
             <p className="body-copy">
-              Le tue risposte diventano statistiche anonime e aggregate. Non vendiamo mai i dati del
-              singolo.
+              Le tue risposte ai sondaggi diventano statistiche anonime e aggregate. Non vendiamo
+              mai i dati del singolo.
+            </p>
+            <p className="body-copy mt-4">
+              Se vuoi, registriamo anche in forma anonima come usi l’app (tempo di lettura, tocchi)
+              per migliorarla. Puoi cambiare idea quando vuoi dal profilo.
             </p>
             <p className="hand mt-6">(la fiducia viene prima di tutto)</p>
-            <div className="onboarding-footer">
+            <div className="onboarding-footer flex flex-col gap-4">
               <Button
                 variant="sticker"
                 className="w-full"
                 onClick={() => {
-                  update({ onboarded: true, interests, formats: selectedFormats });
+                  update({ onboarded: true, interests, formats: selectedFormats, analytics: true });
+                  // Consenso appena dato: inviamo anche le scelte fatte nello swipe.
+                  const path = window.location.pathname;
+                  for (const props of swipes.current) queueEvent({ name: "swipe", path, props });
+                  queueEvent({ name: "onboarding_complete", path, props: { consent: true } });
                   onDone?.();
                 }}
               >
-                Accetto ed entro <ArrowRight />
+                Accetto anche le statistiche <ArrowRight />
+              </Button>
+              <Button
+                variant="facta"
+                className="w-full"
+                onClick={() => {
+                  update({
+                    onboarded: true,
+                    interests,
+                    formats: selectedFormats,
+                    analytics: false,
+                  });
+                  onDone?.();
+                }}
+              >
+                Solo il necessario
               </Button>
             </div>
           </>

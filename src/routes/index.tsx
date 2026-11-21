@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { AppShell, SectionTitle, pageHead } from "@/components/factanza/shared";
 import { Onboarding } from "@/components/factanza/onboarding";
+import { Welcome } from "@/components/factanza/welcome";
 import { useFactanza } from "@/components/factanza/context";
 import { NewsCard } from "@/components/factanza/news-card";
 import { suggestedNews } from "@/lib/recommend";
@@ -22,9 +23,10 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const { user, ready, vote } = useFactanza();
+  const { user, ready, vote, session, track } = useFactanza();
   const [feed, setFeed] = useState<"temi" | "perte">("temi");
   if (!ready) return <div className="phone" />;
+  if (!session) return <Welcome />;
   if (!user.onboarded) return <Onboarding />;
 
   const choice = user.votes["daily"];
@@ -120,7 +122,10 @@ function Index() {
             role="tab"
             aria-selected={feed === "temi"}
             className={feed === "temi" ? "selected" : ""}
-            onClick={() => setFeed("temi")}
+            onClick={() => {
+              setFeed("temi");
+              track("feed_tab", { tab: "temi" });
+            }}
           >
             <Heart />I tuoi temi
           </Button>
@@ -129,7 +134,10 @@ function Index() {
             role="tab"
             aria-selected={feed === "perte"}
             className={feed === "perte" ? "selected" : ""}
-            onClick={() => setFeed("perte")}
+            onClick={() => {
+              setFeed("perte");
+              track("feed_tab", { tab: "perte" });
+            }}
           >
             <Sparkles />
             Per te

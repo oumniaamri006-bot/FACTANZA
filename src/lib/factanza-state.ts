@@ -16,7 +16,8 @@ export const initialUser: UserState = {
   formats: [],
   votes: {},
   reminders: [],
-  analytics: true,
+  // Consenso alle statistiche d'uso: opt-in, come nel database.
+  analytics: false,
   notifications: false,
 };
 export function parseUser(raw: string | null): UserState {

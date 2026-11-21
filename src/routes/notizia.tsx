@@ -11,7 +11,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { news } from "@/data/news";
 import { useFactanza } from "@/components/factanza/context";
-import { pollResults } from "@/lib/poll";
+import { percentages, pollResults, realResultsThreshold } from "@/lib/poll";
+import { usePollCounts, useReadingTracker } from "@/lib/reading";
 
 export const Route = createFileRoute("/notizia")({
   validateSearch: (search: Record<string, unknown>): { id?: string } =>
@@ -24,18 +25,25 @@ export const Route = createFileRoute("/notizia")({
 function Article() {
   const { id } = Route.useSearch();
   const article = news.find((item) => item.id === id) ?? news[0];
-  const { user, vote, notify } = useFactanza();
+  const { user, vote, notify, track } = useFactanza();
+  const voteId = `article-${article?.id ?? ""}`;
+  const choice = user.votes[voteId];
+  const real = usePollCounts(voteId, choice);
+  useReadingTracker(article?.id ?? "", article?.topic ?? "", track);
   if (!article) return null;
 
-  const voteId = `article-${article.id}`;
-  const choice = user.votes[voteId];
-  const results = pollResults(voteId, article.poll.options, choice);
+  const realTotal = real ? Object.values(real).reduce((sum, value) => sum + value, 0) : 0;
+  const showReal = real !== null && realTotal >= realResultsThreshold;
+  const results = showReal
+    ? percentages(article.poll.options.map((option) => real[option] ?? 0))
+    : pollResults(voteId, article.poll.options, choice);
   // Testo completo se c'è, altrimenti i punti chiave della notizia.
   const paragraphs = article.body ?? article.slides;
 
   const share = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
+      track("share", { article_id: article.id });
       notify("Link della notizia copiato!");
     } catch {
       notify("Copia il link dalla barra degli indirizzi.");
@@ -88,7 +96,11 @@ function Article() {
                 </div>
               ))}
               <p className="hand mt-2">(ogni voce conta, anche la tua)</p>
-              <p className="demo-label">Percentuali simulate per la demo.</p>
+              <p className="demo-label">
+                {showReal
+                  ? `Risultati della community · ${realTotal} voti`
+                  : "Percentuali simulate finché i voti sono pochi."}
+              </p>
             </div>
           ) : (
             <div className="poll-options">

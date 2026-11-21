@@ -31,7 +31,7 @@ function questionName(id: string) {
 }
 
 function Profile() {
-  const { user, update, logout } = useFactanza();
+  const { user, update, logout, session } = useFactanza();
   const [redo, setRedo] = useState(false);
   const navigate = useNavigate();
   if (redo) return <Onboarding redo onDone={() => setRedo(false)} />;
@@ -51,6 +51,11 @@ function Profile() {
     <AppShell>
       <div className="page-content">
         <SectionTitle first="Questa è" second="LA TUA VOCE." />
+        {session?.user.email && (
+          <p className="account-email">
+            Account: <strong>{session.user.email}</strong>
+          </p>
+        )}
         <label htmlFor="name" className="eyebrow">
           Il tuo nome
         </label>
@@ -115,7 +120,9 @@ function Profile() {
           singolo.
         </p>
         <div className="settings-row">
-          <label htmlFor="analytics">Consenso alle statistiche aggregate</label>
+          <label htmlFor="analytics">
+            Statistiche d’uso anonime (tempo di lettura, tocchi sullo schermo)
+          </label>
           <Switch
             id="analytics"
             checked={user.analytics}
@@ -131,7 +138,8 @@ function Profile() {
           />
         </div>
         <p className="demo-label">
-          In questa demo tutto resta nel tuo browser: nessun dato viene inviato.
+          I tuoi dati sono salvati nel tuo account e protetti: solo tu puoi vederli. Le statistiche
+          si usano solo in forma aggregata.
         </p>
         <div className="flex flex-col gap-5 mt-7">
           <Button variant="facta" onClick={download}>
@@ -141,7 +149,7 @@ function Profile() {
           <Button
             variant="facta"
             onClick={() => {
-              logout();
+              void logout();
               void navigate({ to: "/" });
             }}
           >

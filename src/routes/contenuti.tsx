@@ -51,7 +51,7 @@ function PlayAction({
 }
 
 function Content() {
-  const { user } = useFactanza();
+  const { user, track } = useFactanza();
   const [tab, setTab] = useState<ContentTab>("Podcast");
   const [current, setCurrent] = useState<string | null>(null);
   const [playing, setPlaying] = useState(false);
@@ -80,6 +80,7 @@ function Content() {
   }, [playing]);
 
   const start = (id: string) => {
+    track("media_play", { media_id: id });
     setCurrent(id);
     setPlaying(true);
     setProgress(0);

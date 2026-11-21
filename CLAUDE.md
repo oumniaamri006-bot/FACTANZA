@@ -16,8 +16,9 @@ FactaFidelity e area personale.
   totali passati a leggere le notizie ogni giorno.
 - Lingua dell'interfaccia: **italiano**. Tutti i testi visibili, i `head()` e le etichette ARIA
   sono in italiano.
-- È una demo: **nessun backend**. Contenuti finti in `src/data`, stato utente in `localStorage`.
-  Ogni dato simulato è segnalato con una `.demo-label`.
+- **Backend: Supabase** (vedi `supabase/README.md`). Accesso con email e password (conferma
+  automatica), dati dell'utente e statistiche d'uso nel database. I contenuti (notizie, video,
+  eventi) restano in `src/data`. Ogni dato simulato è segnalato con una `.demo-label`.
 
 ## Stack e comandi
 
@@ -55,11 +56,14 @@ src/
   components/factanza/    componenti dell'app
     shared.tsx            AppShell, Logo, SectionTitle, PageTitle, CategoryIcon, TopicCover,
                           IconCollage, Back, pageHead
-    context.tsx           FactanzaProvider / useFactanza (stato utente, voti, toast)
+    context.tsx           FactanzaProvider / useFactanza (sessione, dati utente su Supabase, track)
+    auth.tsx, welcome.tsx accesso (registrazione/login) e splash iniziale
     news-card.tsx, onboarding.tsx
   components/ui/          primitive shadcn (non modificarle per lo stile dell'app)
   data/                   contenuti demo: categories.ts, news.ts, factanza.ts
-  lib/factanza-state.ts   tipo UserState, parsing sicuro del localStorage, toggleValue
+  lib/factanza-state.ts   tipo UserState, toggleValue
+  lib/supabase.ts         client Supabase, messaggi di errore dell'accesso in italiano
+  lib/analytics.ts        coda degli eventi d'uso · lib/reading.ts tempo di lettura e sondaggi reali
   assets/categorie/       le 10 icone pop-art (9 categorie + Tutti, PNG trasparenti 320×320)
   assets/factanza-logo.png  logo (la "F" multicolore, uguale a public/favicon.png)
   styles.css              token Tailwind + TUTTO il sistema visivo Factanza
@@ -83,9 +87,17 @@ src/
 - Ogni notizia (`src/data/news.ts`) ha un `poll` (domanda + risposte); le percentuali sono
   simulate e stabili (`src/lib/poll.ts`). La barra categorie mostra solo i temi scelti
   dall'utente (tutti, se non ne ha scelto nessuno).
-- Contenuti demo solo in `src/data`; scelte dell'utente solo nel contesto `useFactanza()`.
-- `localStorage` si legge/scrive solo dopo l'idratazione o negli event handler (SSR-safe).
-  La home mostra `<div className="phone" />` finché `ready` è `false`.
+- Contenuti in `src/data`; dati dell'utente solo tramite `useFactanza()`, che li carica e salva su
+  Supabase (`profiles`, `votes`, `reminders`). Il client Supabase esiste solo nel browser
+  (`getSupabase()` restituisce `null` in SSR). La home mostra `<div className="phone" />` finché
+  `ready` è `false`; senza sessione mostra `Welcome` (splash + `AuthScreen`), e `AppShell`
+  rimanda alla home.
+- Statistiche: usa `track(nome, props)` dal contesto. Parte solo se l'utente ha dato il consenso
+  (`analytics`); mai inserire negli eventi le risposte ai sondaggi o testo scritto dall'utente.
+  Nuove tabelle: migrazione in `supabase/migrations/` con RLS attiva e `grant` espliciti
+  (il progetto non concede permessi in automatico).
+- Variabili `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY` (chiave pubblica): su Vercel e in
+  `.env.local` (non committato).
 - Ogni pagina ha la sua route e il suo `head: () => pageHead(titolo, descrizione)`.
   Non aggiungere `og:image`/`twitter:image` nella root.
 - Categorie: AI & Tech, Politica, Economia, Cultura, Ambiente, Esteri, Lavoro, Salute, **Trend**.

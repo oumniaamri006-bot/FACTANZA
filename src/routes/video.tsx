@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { useFactanza } from "@/components/factanza/context";
 import { ExternalLink } from "lucide-react";
 import { AppShell, Back, PageTitle, pageHead } from "@/components/factanza/shared";
 import { Button } from "@/components/ui/button";
@@ -17,8 +19,12 @@ export const Route = createFileRoute("/video")({
 
 function Video() {
   const { id } = Route.useSearch();
+  const { track } = useFactanza();
   const item =
     media.find((video) => video.id === id) ?? media.find((video) => video.type === "YouTube");
+  useEffect(() => {
+    if (item) track("video_open", { media_id: item.id });
+  }, [item, track]);
   if (!item) return null;
   return (
     <AppShell>

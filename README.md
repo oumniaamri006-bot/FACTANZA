@@ -4,8 +4,8 @@
 influenzano la loro vita: feed personalizzato, domanda del giorno, notizie spiegate in 5 slide,
 dibattiti live con voto prima/dopo, podcast e video, carta FactaFidelity.
 
-È una demo: non c'è backend, i contenuti sono dimostrativi e le scelte dell'utente restano nel
-browser (`localStorage`).
+Gli account e i dati degli utenti sono su [Supabase](https://supabase.com) (vedi
+[`supabase/README.md`](./supabase/README.md)); notizie, video ed eventi sono in `src/data`.
 
 ## Sviluppo
 
@@ -13,6 +13,7 @@ Serve [Bun](https://bun.sh) (oppure Node.js 22+ con npm).
 
 ```sh
 bun install
+# crea .env.local con VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY (chiave pubblica)
 bun run dev      # http://localhost:3000
 bun run test
 bun run lint

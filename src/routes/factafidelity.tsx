@@ -32,7 +32,7 @@ const memberCode = "FACTA-2026-0042";
 type Partner = (typeof partners)[number];
 
 function Fidelity() {
-  const { user, notify } = useFactanza();
+  const { user, notify, track } = useFactanza();
   const [flipped, setFlipped] = useState(false);
   const [partner, setPartner] = useState<Partner | null>(null);
   const reduced = useReducedMotion();
@@ -40,6 +40,7 @@ function Fidelity() {
   const copyCode = async (code: string) => {
     try {
       await navigator.clipboard.writeText(code);
+      track("code_copy", { code });
       notify("Codice copiato! (È un codice demo)");
     } catch {
       notify("Copia manualmente il codice mostrato.");
@@ -95,7 +96,10 @@ function Fidelity() {
                 key={item.id}
                 variant="ghost"
                 className="benefit"
-                onClick={() => setPartner(item)}
+                onClick={() => {
+                  setPartner(item);
+                  track("offer_open", { partner: item.id });
+                }}
               >
                 <div className="flex justify-between w-full">
                   <Icon />
