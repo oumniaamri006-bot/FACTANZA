@@ -11,20 +11,75 @@ import tutti from "@/assets/categorie/tutti.png";
 import { news } from "./news";
 
 /**
- * Catalogo unico delle categorie: slug, nome visibile e icona pop-art.
+ * Catalogo unico delle categorie: slug, nome visibile, icona pop-art, colore (token CSS) e
+ * frase breve mostrata nello swipe dell'onboarding.
  * Tutte le icone vengono dallo stesso set illustrato (src/assets/categorie),
  * scontornate e centrate su una tela trasparente 320×320 (Trend è disegnata nello stesso stile).
  */
 export const categories = [
-  { slug: "ai-tech", name: "AI & Tech", icon: aiTech },
-  { slug: "politica", name: "Politica", icon: politica },
-  { slug: "economia", name: "Economia", icon: economia },
-  { slug: "cultura", name: "Cultura", icon: cultura },
-  { slug: "ambiente", name: "Ambiente", icon: ambiente },
-  { slug: "esteri", name: "Esteri", icon: esteri },
-  { slug: "lavoro", name: "Lavoro", icon: lavoro },
-  { slug: "salute", name: "Salute", icon: salute },
-  { slug: "trend", name: "Trend", icon: trend },
+  {
+    slug: "ai-tech",
+    name: "AI & Tech",
+    icon: aiTech,
+    color: "--yellow",
+    tagline: "Algoritmi, social e futuro: chi decide cosa vedi?",
+  },
+  {
+    slug: "politica",
+    name: "Politica",
+    icon: politica,
+    color: "--magenta",
+    tagline: "Chi decide, come e perché ti cambia la vita.",
+  },
+  {
+    slug: "economia",
+    name: "Economia",
+    icon: economia,
+    color: "--brand-purple",
+    tagline: "Prezzi, stipendi, affitti: i conti che ti riguardano.",
+  },
+  {
+    slug: "cultura",
+    name: "Cultura",
+    icon: cultura,
+    color: "--sky",
+    tagline: "Libri, musica, cinema e le idee che fanno discutere.",
+  },
+  {
+    slug: "ambiente",
+    name: "Ambiente",
+    icon: ambiente,
+    color: "--brand-green",
+    tagline: "Clima e territorio: il pianeta che erediti.",
+  },
+  {
+    slug: "esteri",
+    name: "Esteri",
+    icon: esteri,
+    color: "--brand-orange",
+    tagline: "Il mondo fuori dall’Italia, spiegato bene.",
+  },
+  {
+    slug: "lavoro",
+    name: "Lavoro",
+    icon: lavoro,
+    color: "--brand-teal",
+    tagline: "Stage, contratti, precariato: il tuo futuro.",
+  },
+  {
+    slug: "salute",
+    name: "Salute",
+    icon: salute,
+    color: "--lime",
+    tagline: "Corpo, mente e prevenzione, senza tabù.",
+  },
+  {
+    slug: "trend",
+    name: "Trend",
+    icon: trend,
+    color: "--lilac",
+    tagline: "Social, linguaggi e fenomeni del momento.",
+  },
 ];
 
 export type Category = (typeof categories)[number];

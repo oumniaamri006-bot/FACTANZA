@@ -58,14 +58,15 @@ src/
                           IconCollage, Back, pageHead
     context.tsx           FactanzaProvider / useFactanza (sessione, dati utente su Supabase, track)
     auth.tsx, welcome.tsx accesso (registrazione/login) e splash iniziale
-    news-card.tsx, onboarding.tsx
+    news-card.tsx, onboarding.tsx, swipe-deck.tsx (mazzo di carte dei temi), about-you.tsx
   components/ui/          primitive shadcn (non modificarle per lo stile dell'app)
   data/                   contenuti demo: categories.ts, news.ts, factanza.ts
   lib/factanza-state.ts   tipo UserState, toggleValue
   lib/supabase.ts         client Supabase, messaggi di errore dell'accesso in italiano
   lib/analytics.ts        coda degli eventi d'uso · lib/reading.ts tempo di lettura e sondaggi reali
   assets/categorie/       le 10 icone pop-art (9 categorie + Tutti, PNG trasparenti 320×320)
-  assets/factanza-logo.png  logo (la "F" multicolore, uguale a public/favicon.png)
+  assets/factanza-logo.png  logo: la "F" 3D con i cubetti colorati (anche public/favicon.png);
+                          su fondo blu scuro va su un bollino bianco (.splash/.fidelity-card .logo)
   styles.css              token Tailwind + TUTTO il sistema visivo Factanza
   test/                   test Vitest
 ```
@@ -106,7 +107,8 @@ src/
 - Categorie: AI & Tech, Politica, Economia, Cultura, Ambiente, Esteri, Lavoro, Salute, **Trend**.
   Sport e Moda non sono temi Factanza: non reintrodurli. Gli interessi salvati che non esistono
   più vengono scartati al caricamento (`context.tsx`).
-- Le categorie stanno in **un solo catalogo**: `src/data/categories.ts` (`slug`, `name`, `icon`).
+- Le categorie stanno in **un solo catalogo**: `src/data/categories.ts` (`slug`, `name`, `icon`,
+  `color` = token CSS della carta nello swipe, `tagline`).
   `topics` in `src/data/factanza.ts` deve restare allineato ai nomi delle categorie (c'è un test).
   La voce "Tutti" è `allCategory` (slug `tutte`) e ha una sua icona.
 - Il nome di una categoria (`'AI & Tech'`, `'Politica'`, …) è la chiave usata da notizie, eventi e
@@ -145,7 +147,7 @@ splash) · Anton per sticker, tag ed etichette (`font-label`) · Caveat per le n
 - `<Button variant="facta">` per azioni secondarie, `variant="sticker"` (giallo) per la CTA
   principale della schermata. Stato selezionato: classe `picked` + `aria-pressed`.
   Non usare le varianti shadcn `default/outline/secondary` nelle pagine Factanza.
-- `<CategoryIcon topic="Cultura" className="swipe-art" />` per mostrare una
+- `<CategoryIcon topic="Cultura" />` per mostrare una
   categoria. Non usare icone lucide per le categorie: usa sempre le illustrazioni pop-art.
 - Notizie, podcast e video usano le **immagini vere** (copertine dei post, degli episodi e dei
   video, in `src/assets/notizie` e `src/assets/media`). `<TopicCover topic="…" />` (icona su

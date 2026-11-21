@@ -1,18 +1,9 @@
 import { useRef, useState } from "react";
-import { motion, useReducedMotion, useMotionValue, useTransform } from "framer-motion";
-import {
-  ArrowRight,
-  X,
-  Heart,
-  BookOpen,
-  CirclePlay,
-  Headphones,
-  ShieldCheck,
-  Check,
-} from "lucide-react";
+import { ArrowRight, BookOpen, CirclePlay, Headphones, ShieldCheck, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useFactanza } from "./context";
-import { CategoryIcon, Logo, SectionTitle } from "./shared";
+import { Logo, SectionTitle } from "./shared";
+import { SwipeDeck } from "./swipe-deck";
 import { topics, formats } from "@/data/factanza";
 import { toggleValue } from "@/lib/factanza-state";
 import { queueEvent } from "@/lib/analytics";
@@ -62,34 +53,27 @@ export function Onboarding({ redo = false, onDone }: { redo?: boolean; onDone?: 
     }
     onDone?.();
   };
-  const [index, setIndex] = useState(0);
   const [interests, setInterests] = useState<string[]>([]);
+  const [answered, setAnswered] = useState(0);
   const [selectedFormats, setSelectedFormats] = useState(user.formats);
-  const reduced = useReducedMotion();
-  const dragX = useMotionValue(0);
-  const rotate = useTransform(dragX, [-180, 0, 180], [-15, 0, 15]);
-  const yesOpacity = useTransform(dragX, [0, 60], [0, 1]);
-  const noOpacity = useTransform(dragX, [-60, 0], [1, 0]);
-  const topic = topics[index];
 
-  const choose = (liked: boolean) => {
-    dragX.set(0);
-    if (topic) {
-      if (user.analytics) track("swipe", { topic, liked });
-      else pending.current.push({ name: "swipe", props: { topic, liked } });
-    }
-    const picked = liked && topic ? [...interests, topic] : interests;
+  const choose = (topic: string, liked: boolean) => {
+    if (user.analytics) track("swipe", { topic, liked });
+    else pending.current.push({ name: "swipe", props: { topic, liked } });
+    const picked = liked ? [...interests, topic] : interests;
     setInterests(picked);
-    if (index < topics.length - 1) {
-      setIndex(index + 1);
-      return;
-    }
-    if (redo) {
-      update({ interests: picked });
-      onDone?.();
-    } else {
-      goTo(2);
-    }
+    const done = answered + 1;
+    setAnswered(done);
+    if (done < topics.length) return;
+    // Ultima carta: lasciamo finire l'animazione prima di proseguire.
+    setTimeout(() => {
+      if (redo) {
+        update({ interests: picked });
+        onDone?.();
+      } else {
+        goTo(2);
+      }
+    }, 380);
   };
 
   return (
@@ -105,44 +89,7 @@ export function Onboarding({ redo = false, onDone }: { redo?: boolean; onDone?: 
         {step === 1 && (
           <>
             <SectionTitle first="Di cosa" second="TI VA DI PARLARE?" color="yellow" />
-            <div className="flex justify-between text-xs mb-5">
-              <span>I tuoi interessi, il tuo feed.</span>
-              <span>
-                {index + 1} / {topics.length}
-              </span>
-            </div>
-            <motion.div
-              key={index}
-              className="swipe-card pop-bg"
-              style={{ x: dragX, rotate }}
-              drag={reduced ? false : "x"}
-              dragConstraints={{ left: 0, right: 0 }}
-              dragElastic={0.8}
-              onDragEnd={(_, info) => {
-                if (info.offset.x > 70) choose(true);
-                if (info.offset.x < -70) choose(false);
-              }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              aria-label={`Tema: ${topic}`}
-            >
-              {topic && <CategoryIcon topic={topic} className="swipe-art" />}
-              <motion.span className="swipe-stamp" style={{ opacity: yesOpacity }}>
-                SÌ
-              </motion.span>
-              <motion.span className="swipe-stamp reject" style={{ opacity: noOpacity }}>
-                NO
-              </motion.span>
-            </motion.div>
-            <div className="swipe-actions">
-              <Button variant="facta" aria-label="Non mi interessa" onClick={() => choose(false)}>
-                <X className="text-magenta" />
-              </Button>
-              <Button variant="facta" aria-label="Mi interessa" onClick={() => choose(true)}>
-                <Heart className="text-primary" />
-              </Button>
-            </div>
-            <p className="hand text-center">(segui quello che ti accende)</p>
+            <SwipeDeck topics={topics} onChoose={choose} />
           </>
         )}
 
