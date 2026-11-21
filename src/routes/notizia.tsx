@@ -61,7 +61,14 @@ function Article() {
           <span className="topic-tag">{article.topic.toUpperCase()}</span>
         </div>
         <PageTitle>{article.title}</PageTitle>
-        <TopicCover topic={article.topic} className="article-cover" />
+        {article.image ? (
+          <figure className="article-photo">
+            <img src={article.image} alt="" />
+            {article.imageCredit && <figcaption>Immagine: {article.imageCredit}</figcaption>}
+          </figure>
+        ) : (
+          <TopicCover topic={article.topic} className="article-cover" />
+        )}
 
         <div
           className="article-slide"
@@ -130,6 +137,16 @@ function Article() {
             <ChevronRight />
           </Button>
         </div>
+        {article.body && (
+          <section className="article-body" aria-labelledby="article-body-title">
+            <h2 id="article-body-title" className="subsection-title">
+              L’articolo completo
+            </h2>
+            {article.body.map((paragraph) => (
+              <p key={paragraph.slice(0, 40)}>{paragraph}</p>
+            ))}
+          </section>
+        )}
         <Button variant="facta" className="w-full" onClick={share}>
           <Share2 />
           Condividi la notizia

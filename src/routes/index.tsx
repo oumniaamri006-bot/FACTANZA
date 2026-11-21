@@ -6,7 +6,6 @@ import { AppShell, SectionTitle, pageHead } from "@/components/factanza/shared";
 import { Onboarding } from "@/components/factanza/onboarding";
 import { useFactanza } from "@/components/factanza/context";
 import { NewsCard } from "@/components/factanza/news-card";
-import { InstagramFeed } from "@/components/factanza/instagram-feed";
 import { dailyResults } from "@/data/factanza";
 import { news } from "@/data/news";
 import { allCategory, categories } from "@/data/categories";
@@ -120,8 +119,6 @@ function Index() {
         {displayed.map((item) => (
           <NewsCard key={item.id} item={item} />
         ))}
-
-        <InstagramFeed />
 
         <div className="live-banner">
           <div className="flex-1">
