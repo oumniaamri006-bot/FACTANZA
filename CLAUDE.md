@@ -56,7 +56,9 @@ src/
     profilo.tsx           profilo (?tab=impostazioni): schede "Il mio profilo" e "Impostazioni"
                           (formati, notifiche, privacy, cambio password, dati, esci, elimina)
     privacy.tsx           informativa privacy (leggibile senza account)
-    sfida.tsx             FactaChallenge (pubblica, ?da=&punti= per sfidare un amico); domande in
+    sfida.tsx             FactaChallenge (pubblica, ?da=&punti= per sfidare un amico): cursore del
+                          prezzo, abbinamento frasi-volti, swipe vero/falso (challenge-rounds.tsx);
+                          prove in
                           src/data/challenges.ts: solo fatti verificati con fonte, `unverified` se no
   components/factanza/    componenti dell'app
     shared.tsx            AppShell (avatar con iniziale + rotellina in alto a destra → profilo),

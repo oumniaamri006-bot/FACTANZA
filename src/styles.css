@@ -2211,6 +2211,273 @@
   font-family: var(--font-label);
   font-size: 44px;
 }
+.challenge-squares span.mid {
+  background: var(--yellow);
+}
+.challenge-squares span {
+  font-family: var(--font-label);
+  font-size: 20px;
+}
+.challenge-result {
+  position: relative;
+  overflow: hidden;
+}
+.challenge-confetti i {
+  position: absolute;
+  top: 0;
+  width: 8px;
+  height: 14px;
+  border: 1.5px solid var(--ink);
+  background: var(--yellow);
+}
+.challenge-confetti i:nth-child(3n) {
+  background: var(--magenta);
+}
+.challenge-confetti i:nth-child(3n + 1) {
+  background: var(--lime);
+}
+/* Prezzo: cursore */
+.price-display {
+  text-align: center;
+  margin: 8px 0 14px;
+}
+.price-display strong {
+  display: block;
+  font-family: var(--font-label);
+  font-size: 52px;
+  line-height: 1;
+}
+.price-display span {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.price-track {
+  position: relative;
+  margin: 10px 4px 34px;
+  padding-top: 26px;
+}
+.price-track input {
+  width: 100%;
+  height: 34px;
+  accent-color: var(--magenta);
+}
+.price-answer {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-family: var(--font-label);
+  font-size: 14px;
+  padding: 1px 8px;
+  background: var(--lime);
+  border: var(--line);
+  box-shadow: var(--shadow-sm);
+}
+.price-gap {
+  position: absolute;
+  top: 40px;
+  height: 6px;
+  background: var(--magenta);
+  border-radius: 3px;
+  pointer-events: none;
+}
+.price-scale {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted-foreground);
+}
+/* Chi l'ha detto: abbinamenti */
+.match-quotes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.match-quote {
+  text-align: left;
+  padding: 10px 12px;
+  font-family: var(--font-hand);
+  font-size: 21px;
+  line-height: 1.15;
+  background: var(--paper);
+  border: var(--line);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+}
+.match-quote em {
+  display: block;
+  margin-top: 4px;
+  font-family: var(--font-sans);
+  font-style: normal;
+  font-size: 12px;
+  font-weight: 800;
+}
+.match-quote em.fix {
+  color: var(--magenta);
+}
+.match-quote.selected {
+  background: var(--yellow);
+  transform: rotate(-1deg);
+}
+.match-quote.matched {
+  background: var(--lilac);
+}
+.match-quote.right {
+  background: var(--lime);
+}
+.match-quote.wrong {
+  background: color-mix(in oklch, var(--magenta) 25%, var(--paper));
+}
+.match-hint {
+  margin: 12px 0 8px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+}
+.match-faces {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.match-face {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--paper);
+  border: var(--line);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+}
+.match-face img {
+  aspect-ratio: 1;
+  object-fit: cover;
+  object-position: 20% 30%;
+}
+.match-face span {
+  padding: 4px;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+.match-face:disabled {
+  cursor: default;
+}
+.match-face.used {
+  opacity: 0.4;
+}
+/* Vero o falso: carte */
+.tf-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.tf-dots span {
+  width: 26px;
+  height: 8px;
+  border-radius: 999px;
+  border: 1.5px solid var(--ink);
+  background: var(--paper);
+}
+.tf-dots span.current {
+  background: var(--yellow);
+}
+.tf-dots span.ok {
+  background: var(--lime);
+}
+.tf-dots span.ko {
+  background: var(--magenta);
+}
+.tf-stage {
+  position: relative;
+  height: 240px;
+  margin-bottom: 14px;
+  perspective: 800px;
+}
+.tf-card {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px;
+  background: var(--halftone), var(--lilac);
+  border: var(--line);
+  border-radius: 14px;
+  box-shadow: 6px 6px 0 var(--ink);
+  touch-action: pan-y;
+  cursor: grab;
+}
+.tf-card p {
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+.tf-card.back {
+  cursor: default;
+  background: var(--paper);
+}
+.tf-card.back p {
+  font-size: 15px;
+  font-weight: 500;
+}
+.tf-card.back.ok strong {
+  color: var(--brand-green);
+  font-size: 20px;
+}
+.tf-card.back.ko strong {
+  color: var(--magenta);
+  font-size: 20px;
+}
+.tf-stamp {
+  position: absolute;
+  top: 14px;
+  font-family: var(--font-label);
+  font-size: 32px;
+  padding: 0 12px;
+  border: 3px solid var(--ink);
+  pointer-events: none;
+}
+.tf-stamp.yes {
+  left: 14px;
+  background: var(--lime);
+  transform: rotate(-10deg);
+}
+.tf-stamp.no {
+  right: 14px;
+  background: var(--magenta);
+  color: var(--paper);
+  transform: rotate(10deg);
+}
+.tf-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.tf-buttons .tf-yes {
+  background: var(--lime);
+}
+.tf-buttons .tf-no {
+  background: color-mix(in oklch, var(--magenta) 20%, var(--paper));
+}
+.tf-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 13px;
+}
+.tf-summary svg {
+  display: inline;
+  width: 14px;
+  height: 14px;
+  vertical-align: -2px;
+}
 .challenge-join {
   margin-top: 18px;
   display: flex;

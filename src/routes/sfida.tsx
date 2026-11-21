@@ -1,16 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, Check, Share2, Timer, X, Zap } from "lucide-react";
+import { motion } from "framer-motion";
+import { ArrowLeft, ArrowRight, Share2, Timer, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo, pageHead } from "@/components/factanza/shared";
 import { useFactanza } from "@/components/factanza/context";
+import { MatchGame, PriceGame, SwipeGame } from "@/components/factanza/challenge-rounds";
 import {
   challengeFor,
   challengeScore,
   challengeSeconds,
   kindLabel,
   shareText,
-  type ChallengeQuestion,
 } from "@/data/challenges";
 import { demoToday } from "@/data/agenda";
 import { longDate } from "@/lib/dates";
@@ -18,12 +19,13 @@ import { longDate } from "@/lib/dates";
 type Search = { da?: string; punti?: number };
 
 export const Route = createFileRoute("/sfida")({
-  validateSearch: (search: Record<string, unknown>): Search => ({
-    ...(typeof search["da"] === "string" && { da: search["da"].slice(0, 30) }),
-    ...(typeof search["punti"] === "number" && { punti: Math.round(search["punti"]) }),
-    ...(typeof search["punti"] === "string" &&
-      !Number.isNaN(Number(search["punti"])) && { punti: Math.round(Number(search["punti"])) }),
-  }),
+  validateSearch: (search: Record<string, unknown>): Search => {
+    const points = Number(search["punti"]);
+    return {
+      ...(typeof search["da"] === "string" && { da: search["da"].slice(0, 30) }),
+      ...(search["punti"] !== undefined && !Number.isNaN(points) && { punti: Math.round(points) }),
+    };
+  },
   head: () =>
     pageHead(
       "FactaChallenge — La sfida del giorno",
@@ -34,30 +36,22 @@ export const Route = createFileRoute("/sfida")({
 
 type Phase = "intro" | "play" | "end";
 
-function isCorrect(question: ChallengeQuestion, answer: number | boolean) {
-  return question.kind === "verofalso" ? answer === question.answer : answer === question.answer;
-}
-
 function Challenge() {
   const { da, punti } = Route.useSearch();
   const { session, user, track } = useFactanza();
   const challenge = challengeFor(demoToday);
-  const questions = challenge?.questions ?? [];
+  const rounds = challenge?.rounds ?? [];
   const [phase, setPhase] = useState<Phase>("intro");
   const [index, setIndex] = useState(0);
-  const [answers, setAnswers] = useState<(number | boolean | null)[]>([]);
+  const [scores, setScores] = useState<number[]>([]);
   const [secondsLeft, setSecondsLeft] = useState(challengeSeconds);
   const [copied, setCopied] = useState(false);
   const startedAt = useRef(0);
 
-  const question = questions[index];
-  const current = answers[index];
-  const revealed = current !== undefined && current !== null;
-  const correct = questions.map((q, i) => {
-    const answer = answers[i];
-    return answer !== undefined && answer !== null && isCorrect(q, answer);
-  });
-  const score = challengeScore(correct, secondsLeft);
+  const round = rounds[index];
+  const allScores = rounds.map((_, i) => scores[i] ?? 0);
+  const score = challengeScore(allScores, secondsLeft);
+  const last = index === rounds.length - 1;
 
   // Timer unico da 60 secondi per tutta la sfida.
   useEffect(() => {
@@ -79,7 +73,7 @@ function Challenge() {
     if (phase !== "end" || !challenge) return;
     track("challenge_done", {
       day: challenge.date,
-      right: correct.filter(Boolean).length,
+      round_scores: allScores.join("-"),
       score,
       seconds: Math.round((Date.now() - startedAt.current) / 1000),
       ...(da && { from_friend: true }),
@@ -87,29 +81,22 @@ function Challenge() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase]);
 
-  if (!challenge || !question) return null;
+  if (!challenge || !round) return null;
 
-  const answer = (value: number | boolean) => {
-    if (revealed) return;
-    const next = [...answers];
+  const finishRound = (value: number) => {
+    const next = [...scores];
     next[index] = value;
-    setAnswers(next);
-    track("challenge_answer", {
-      day: challenge.date,
-      kind: question.kind,
-      correct: isCorrect(question, value),
-    });
-  };
-  const nextQuestion = () => {
-    if (index < questions.length - 1) setIndex(index + 1);
-    else setPhase("end");
+    setScores(next);
+    track("challenge_answer", { day: challenge.date, kind: round.kind, score: value });
+    if (last) setPhase("end");
+    else setIndex(index + 1);
   };
 
   const share = async () => {
     const name = session ? user.name : "";
     const params = new URLSearchParams({ punti: String(score), ...(name && { da: name }) });
     const url = `${window.location.origin}/sfida?${params.toString()}`;
-    const text = shareText(challenge.date, correct, score, url);
+    const text = shareText(challenge.date, allScores, score, url);
     track("challenge_share", { day: challenge.date, score });
     try {
       if (navigator.share) {
@@ -119,9 +106,12 @@ function Challenge() {
       await navigator.clipboard.writeText(text);
       setCopied(true);
     } catch {
-      // condivisione annullata dall'utente
+      // condivisione annullata
     }
   };
+
+  const verdict =
+    score >= 250 ? "Fact-checker natə." : score >= 150 ? "Sul pezzo!" : "Domani ti rifai.";
 
   return (
     <div className="phone challenge">
@@ -160,13 +150,13 @@ function Challenge() {
             )}
             <ol className="challenge-steps">
               <li>
-                <span className="sticker small yellow">1</span> Indovina il prezzo
+                <span className="sticker small yellow">1</span> Indovina il prezzo col cursore
               </li>
               <li>
-                <span className="sticker small lilac">2</span> Chi l’ha detto?
+                <span className="sticker small lilac">2</span> Abbina le frasi ai volti
               </li>
               <li>
-                <span className="sticker small">3</span> Vero o falso?
+                <span className="sticker small">3</span> Swipe: vero o falso?
               </li>
             </ol>
             <Button
@@ -187,59 +177,22 @@ function Challenge() {
         {phase === "play" && (
           <>
             <div className="challenge-progress">
-              {questions.map((q, i) => (
-                <span key={q.kind} className={i < index ? "done" : i === index ? "current" : ""} />
+              {rounds.map((r, i) => (
+                <span key={r.kind} className={i < index ? "done" : i === index ? "current" : ""} />
               ))}
             </div>
-            <span className="sticker small yellow">{kindLabel[question.kind]}</span>
-            <h2 className="challenge-prompt">{question.prompt}</h2>
-            {question.kind === "citazione" && (
-              <blockquote className="challenge-quote">{question.quote}</blockquote>
+            <span className="sticker small yellow">
+              {index + 1}/3 · {kindLabel[round.kind]}
+            </span>
+            <h2 className="challenge-prompt">{round.prompt}</h2>
+            {round.kind === "prezzo" && (
+              <PriceGame key={index} round={round} onDone={finishRound} last={last} />
             )}
-            {question.kind === "verofalso" && (
-              <p className="challenge-statement">{question.statement}</p>
+            {round.kind === "citazione" && (
+              <MatchGame key={index} round={round} onDone={finishRound} last={last} />
             )}
-
-            <div className={`challenge-options ${question.kind === "verofalso" ? "two" : ""}`}>
-              {(question.kind === "verofalso" ? ["Vero", "Falso"] : question.options).map(
-                (label, i) => {
-                  const value = question.kind === "verofalso" ? i === 0 : i;
-                  const right =
-                    question.kind === "verofalso"
-                      ? value === question.answer
-                      : i === question.answer;
-                  const chosen = current === value;
-                  return (
-                    <Button
-                      key={label}
-                      variant="facta"
-                      className={revealed ? (right ? "right" : chosen ? "wrong" : "dim") : ""}
-                      aria-pressed={chosen}
-                      disabled={revealed}
-                      onClick={() => answer(value)}
-                    >
-                      {revealed && right && <Check />}
-                      {revealed && chosen && !right && <X />}
-                      {label}
-                    </Button>
-                  );
-                },
-              )}
-            </div>
-
-            {revealed && (
-              <div className={`challenge-explain ${correct[index] ? "ok" : "ko"}`} role="status">
-                <strong>{correct[index] ? "Giusto!" : "Non proprio."}</strong>
-                <p>{question.explanation}</p>
-                <span className="challenge-source">
-                  {question.unverified ? "⚠ " : "Fonte: "}
-                  {question.source}
-                </span>
-                <Button variant="sticker" className="w-full mt-3" onClick={nextQuestion}>
-                  {index < questions.length - 1 ? "Prossima prova" : "Vedi il risultato"}
-                  <ArrowRight />
-                </Button>
-              </div>
+            {round.kind === "verofalso" && (
+              <SwipeGame key={index} round={round} onDone={finishRound} last={last} />
             )}
           </>
         )}
@@ -248,19 +201,40 @@ function Challenge() {
           <>
             <span className="sticker yellow">IL TUO RISULTATO</span>
             <div className="challenge-result">
-              <div
-                className="challenge-squares"
-                aria-label={`${correct.filter(Boolean).length} risposte giuste su 3`}
-              >
-                {correct.map((ok, i) => (
-                  <span key={i} className={ok ? "ok" : "ko"}>
-                    {ok ? <Check /> : <X />}
-                  </span>
+              <div className="challenge-confetti" aria-hidden>
+                {Array.from({ length: 14 }, (_, i) => (
+                  <motion.i
+                    key={i}
+                    style={{ left: `${(i * 37) % 100}%` }}
+                    initial={{ y: -20, opacity: 0, rotate: 0 }}
+                    animate={{ y: 220, opacity: [0, 1, 1, 0], rotate: 360 }}
+                    transition={{ duration: 1.6, delay: (i % 5) * 0.12 }}
+                  />
                 ))}
               </div>
-              <strong className="challenge-score">{score} punti</strong>
+              <div className="challenge-squares" aria-label="Punti per prova">
+                {allScores.map((value, i) => (
+                  <motion.span
+                    key={i}
+                    className={value >= 70 ? "ok" : value >= 40 ? "mid" : "ko"}
+                    initial={{ scale: 0, rotate: -20 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    transition={{ delay: 0.15 * i, type: "spring" }}
+                  >
+                    {value}
+                  </motion.span>
+                ))}
+              </div>
+              <motion.strong
+                className="challenge-score"
+                initial={{ scale: 0.6, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.5, type: "spring" }}
+              >
+                {score} punti
+              </motion.strong>
               <p>
-                {correct.filter(Boolean).length}/3 giuste · {secondsLeft}s avanzati
+                {verdict} · {secondsLeft}s avanzati
               </p>
               {da && punti !== undefined && (
                 <p className="hand">
@@ -295,7 +269,7 @@ function Challenge() {
             <p className="hand text-center mt-4">(domani una sfida nuova)</p>
           </>
         )}
-        {questions.some((q) => q.unverified) && (
+        {rounds.some((r) => r.unverified) && (
           <p className="demo-label">Alcuni dati sono in attesa di verifica della redazione.</p>
         )}
       </div>
