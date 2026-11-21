@@ -5,9 +5,7 @@
  */
 export const instagramProfile = "factanza";
 
-export const instagramPosts: string[] = [
-  // "https://www.instagram.com/p/CODICE/",
-];
+export const instagramPosts: string[] = ["https://www.instagram.com/p/Df_wFfQgNt3/"];
 
 export const instagramProfileUrl = `https://www.instagram.com/${instagramProfile}/`;
 
