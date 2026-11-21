@@ -11,7 +11,8 @@ import { lookOf } from "@/components/games/tones";
 import { CluesGame, MapGame, OrderGame, SliderGame } from "@/components/games/other-games";
 import { contentFor } from "@/data/games/content";
 import { fetchWeekPlays, recordPlay } from "@/lib/games/api";
-import { addDays, gameInfo, gamesForDay, todayInRome } from "@/lib/games/schedule";
+import { addDays, gameInfo, gamesForVersion, todayInRome } from "@/lib/games/schedule";
+import { getQuizVersion } from "@/lib/games/version";
 import { dayCompleteBonus, gameScore, gameSeconds, streakBonus } from "@/lib/games/scoring";
 import { currentStreak, nextMilestone, type Streak } from "@/lib/games/streak";
 import type { Answer, GameKind } from "@/lib/games/types";
@@ -34,7 +35,8 @@ type Result = { kind: GameKind; score: number; error: string | null };
 function Session() {
   const { session } = useFactanza();
   const today = todayInRome();
-  const games = gamesForDay(today);
+  const [version, setVersion] = useState(0);
+  const games = gamesForVersion(today, version);
   const [queue, setQueue] = useState<GameKind[] | null>(null);
   const [streakBefore, setStreakBefore] = useState<Streak | null>(null);
   const [round, setRound] = useState(0);
@@ -43,9 +45,12 @@ function Session() {
 
   useEffect(() => {
     if (!session) return;
+    const current = getQuizVersion(today);
+    setVersion(current);
+    const quiz = gamesForVersion(today, current);
     void fetchWeekPlays(addDays(today, -60)).then((plays) => {
       const todays = plays.filter((p) => p.day === today);
-      setQueue(games.filter((game) => !todays.some((p) => p.game === game)));
+      setQueue(quiz.filter((game) => !todays.some((p) => p.game === game)));
       setDonePoints(todays.reduce((sum, p) => sum + p.score, 0));
       setStreakBefore(
         currentStreak(
@@ -54,7 +59,6 @@ function Session() {
         ),
       );
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, today]);
 
   const kind = queue?.[round];
@@ -114,6 +118,7 @@ function Session() {
             <Round
               key={kind}
               kind={kind}
+              version={version}
               index={done}
               total={games.length}
               onDone={(score, error) =>
@@ -230,17 +235,19 @@ function Finale({
 /** Un gioco: prima la carta che si gira (svela il gioco), poi la domanda con il timer. */
 function Round({
   kind,
+  version,
   index,
   total,
   onDone,
 }: {
   kind: GameKind;
+  version: number;
   index: number;
   total: number;
   onDone: (score: number, error: string | null) => void;
 }) {
   const { track } = useFactanza();
-  const content = contentFor(kind, todayInRome());
+  const content = contentFor(kind, todayInRome(), version);
   const seconds = gameSeconds(kind);
   const [started, setStarted] = useState(false);
   const [left, setLeft] = useState(seconds);

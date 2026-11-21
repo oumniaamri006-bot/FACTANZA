@@ -1073,10 +1073,11 @@ function mc(
  * Contenuto del gioco per una data: **una sola domanda** per gioco. Le domande di tutti i set
  * ruotano un giorno dopo l'altro, così si ripetono il più tardi possibile.
  */
-export function contentFor(kind: GameKind, day: string): GameContent | undefined {
+export function contentFor(kind: GameKind, day: string, version = 0): GameContent | undefined {
   const pool = gameCatalog[kind].flatMap((set) => set.items.map((_, index) => ({ set, index })));
   if (!pool.length) return undefined;
-  const n = dayNumber(day);
+  // Ogni versione del quiz (reset dell'MVP) pesca la domanda successiva.
+  const n = dayNumber(day) + version;
   const pick = pool[((n % pool.length) + pool.length) % pool.length];
   if (!pick) return undefined;
   return { ...pick.set, items: [pick.set.items[pick.index]] } as GameContent;

@@ -8,7 +8,15 @@ import { useFactanza } from "@/components/factanza/context";
 import { StreakFlame } from "@/components/games/look";
 import { lookOf } from "@/components/games/tones";
 import { fetchWeekPlays, resetMyGameDay, type GamePlay } from "@/lib/games/api";
-import { addDays, gameInfo, gamesForDay, todayInRome, weekStart } from "@/lib/games/schedule";
+import {
+  addDays,
+  gameInfo,
+  gamesForDay,
+  gamesForVersion,
+  todayInRome,
+  weekStart,
+} from "@/lib/games/schedule";
+import { bumpQuizVersion, getQuizVersion } from "@/lib/games/version";
 import {
   dayCompleteBonus,
   inviteBonus,
@@ -34,11 +42,13 @@ function PlayToday() {
   const { session, track } = useFactanza();
   const today = todayInRome();
   const monday = weekStart(today);
-  const games = gamesForDay(today);
+  const [version, setVersion] = useState(0);
+  const games = gamesForVersion(today, version);
   const [history, setHistory] = useState<GamePlay[] | null>(null);
   const [copied, setCopied] = useState<"share" | "invite" | null>(null);
 
   useEffect(() => {
+    setVersion(getQuizVersion(today));
     if (session) void fetchWeekPlays(addDays(today, -60)).then(setHistory);
   }, [session, today]);
 
@@ -70,10 +80,12 @@ function PlayToday() {
 
   // Solo per l'MVP: cancella le partite di oggi e ricarica, per rifare il quiz.
   const reset = async () => {
-    if (!window.confirm("Vuoi cancellare i punti di oggi e rifare il quiz?")) return;
+    if (!window.confirm("Vuoi cancellare i punti di oggi e giocare un quiz nuovo?")) return;
     setResetting(true);
-    track("game_reset", { done: doneCount });
     await resetMyGameDay();
+    const next = bumpQuizVersion(today);
+    track("game_reset", { done: doneCount, version: next });
+    setVersion(next);
     setHistory(await fetchWeekPlays(addDays(today, -60)));
     setResetting(false);
   };
@@ -221,7 +233,8 @@ function PlayToday() {
               disabled={resetting}
               onClick={() => void reset()}
             >
-              <RotateCcw /> {resetting ? "Resetto…" : "Reset quiz di oggi"}
+              <RotateCcw />{" "}
+              {resetting ? "Preparo il quiz nuovo…" : "Reset: nuovo quiz con altri giochi"}
             </Button>
             <span className="demo-label">Solo per l’MVP</span>
           </div>

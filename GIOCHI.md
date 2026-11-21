@@ -79,6 +79,14 @@ L'utente vede sempre la sua posizione ("Sei 128° su 5400: ti mancano 42 punti p
   svela con una carta che si gira, il timer è ad anello, le risposte giuste fanno coriandoli e
   la fine del quiz mostra la fiamma che cresce.
 
+## Reset (solo per l'MVP)
+
+In "Gioca oggi" il tasto **Reset** cancella i punti di oggi (`reset_my_game_day()`) e passa a
+una **versione nuova del quiz** (`gamesForVersion` in `schedule.ts`, versione salvata nel
+browser in `lib/games/version.ts`): stessa Notizia del giorno ma con un'altra domanda, e per
+ogni famiglia un minigioco diverso da quello originale, con altre domande. Le versioni nuove
+sono 3 e ruotano (1 → 2 → 3 → 1). Da togliere quando l'app non sarà più una demo.
+
 ## Immagini
 
 Solo asset Factanza (copertine delle notizie e degli episodi) o foto con licenza libera da

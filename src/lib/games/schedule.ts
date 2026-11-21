@@ -25,6 +25,36 @@ export function gamesForDay(day: string): GameKind[] {
   return ["notizia", ...(rotation[isoWeekday(day)] ?? [])];
 }
 
+/** Giochi di ogni famiglia, per costruire le versioni alternative del quiz. */
+const families: GameKind[][] = [
+  ["piu-grande", "cifra", "vero-falso"],
+  ["chi-l-ha-detto", "chi-e-chi", "cosa-significa", "clickbait"],
+  ["prima-dopo", "dove-succede", "metti-in-ordine", "collega"],
+];
+
+/** Numero di versioni del quiz di un giorno: l'originale (0) + 3 versioni nuove. */
+export const quizVersions = 4;
+
+/**
+ * Giochi del quiz per una versione. Versione 0 = rotazione del giorno; versioni 1–3 (dopo il
+ * reset dell'MVP) = un gioco diverso per ogni famiglia, sempre diverso da quello originale.
+ */
+export function gamesForVersion(day: string, version: number): GameKind[] {
+  if (version <= 0) return gamesForDay(day);
+  const base = gamesForDay(day);
+  return [
+    "notizia",
+    ...families.map((family) => {
+      const baseIndex = Math.max(
+        0,
+        family.findIndex((game) => base.includes(game)),
+      );
+      const step = 1 + ((version - 1) % (family.length - 1));
+      return family[(baseIndex + step) % family.length] as GameKind;
+    }),
+  ];
+}
+
 /** Lunedì della settimana di `day` (AAAA-MM-GG). */
 export function weekStart(day: string) {
   const date = new Date(`${day}T12:00:00Z`);

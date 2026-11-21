@@ -7,6 +7,7 @@ import {
   addDays,
   gameInfo,
   gamesForDay,
+  gamesForVersion,
   isoWeekday,
   todayInRome,
   weekStart,
@@ -28,6 +29,7 @@ import {
 } from "@/lib/games/scoring";
 import { shareSquares } from "@/lib/games/share";
 import { currentStreak, nextMilestone, streakMessage } from "@/lib/games/streak";
+import { nextQuizVersion } from "@/lib/games/version";
 import type { GameKind } from "@/lib/games/types";
 
 const ok = { correct: true };
@@ -289,6 +291,30 @@ describe("Serie di giorni", () => {
     expect(streakMessage({ count: 2, playedToday: false, atRisk: true })).toContain("mezzanotte");
     expect(streakMessage({ count: 4, playedToday: true, atRisk: false })).toBe(
       "Ancora 1 giorno per arrivare a 5!",
+    );
+  });
+});
+
+describe("Versioni del quiz (reset dell'MVP)", () => {
+  it("ogni versione nuova cambia i tre minigiochi, sempre uno per famiglia", () => {
+    for (let i = 0; i < 7; i++) {
+      const day = addDays("2026-11-16", i);
+      const base = gamesForDay(day);
+      for (const version of [1, 2, 3]) {
+        const games = gamesForVersion(day, version);
+        expect(games[0]).toBe("notizia");
+        expect(games).toHaveLength(4);
+        expect(new Set(games.map((g) => gameInfo[g].family)).size).toBe(4);
+        for (const game of games.slice(1)) expect(base).not.toContain(game);
+        for (const game of games) expect(contentFor(game, day, version)?.items).toHaveLength(1);
+      }
+      expect(gamesForVersion(day, 1)).not.toEqual(gamesForVersion(day, 2));
+    }
+  });
+  it("le versioni ruotano 1 → 2 → 3 → 1 e cambiano anche le domande", () => {
+    expect([0, 1, 2, 3].map(nextQuizVersion)).toEqual([1, 2, 3, 1]);
+    expect(contentFor("notizia", "2026-11-21", 1)?.items[0]).not.toEqual(
+      contentFor("notizia", "2026-11-21", 0)?.items[0],
     );
   });
 });
