@@ -56,9 +56,10 @@ src/
     profilo.tsx           profilo (?tab=impostazioni): schede "Il mio profilo" e "Impostazioni"
                           (formati, notifiche, privacy, cambio password, dati, esci, elimina)
     privacy.tsx           informativa privacy (leggibile senza account)
-    gioca.index.tsx       "Gioca oggi": i 4 minigiochi del giorno, avanzamento, settimana, bonus,
-                          condivisione e inviti (?invito=codice) · gioca.$game.tsx = un minigioco
-    classifica.tsx        classifica settimanale (Generale / Livello / Tema)
+    gioca.index.tsx       "Gioca oggi": riepilogo della sessione, settimana, bonus, condivisione e
+                          inviti (?invito=codice) · gioca.sessione.tsx = la sessione: un gioco per
+                          categoria, di fila (non si scelgono i singoli giochi)
+    classifica.tsx        classifica settimanale, solo generale (niente livelli né temi)
     sfida.tsx             vecchia FactaChallenge: rimanda a /gioca
   components/factanza/    componenti dell'app
     shared.tsx            AppShell (avatar con iniziale + rotellina in alto a destra → profilo),
@@ -118,7 +119,7 @@ src/
   `src/data/profile-options.ts`). Elenco eventi in `supabase/README.md`.
   Nuove tabelle: migrazione in `supabase/migrations/` con RLS attiva e `grant` espliciti
   (il progetto non concede permessi in automatico).
-- **Minigiochi** (vedi `GIOCHI.md`): 4 al giorno (domenica 2), un tentativo per gioco, 45 s;
+- **Minigiochi** (vedi `GIOCHI.md`): una sessione al giorno con un gioco per categoria, giocati di fila (domenica 2), un tentativo, 45 s;
   punteggi solo in `src/lib/games/scoring.ts` (replicati nel database per la classifica).
   Ogni domanda ha spiegazione e fonte; solo fatti verificati. Immagini: asset Factanza o foto
   con licenza libera (Wikimedia Commons) con autore e licenza in `credits.json`; mai minori,

@@ -1,6 +1,6 @@
 # Minigiochi Factanza — regole e ipotesi
 
-Sezione **Gioca oggi** (`/gioca`): 4 minigiochi al giorno, circa 3 minuti in tutto, ognuno di
+Sezione **Gioca oggi** (`/gioca`): una sessione al giorno di 4 minigiochi giocati di fila, circa 3 minuti in tutto, ognuno di
 45 secondi al massimo. Gioco individuale, **un solo tentativo per gioco al giorno**. Dopo ogni
 risposta c'è una spiegazione di 1–2 righe con la fonte: è la parte informativa del gioco.
 
@@ -44,8 +44,8 @@ Il tempo dà punti solo nella Notizia del giorno; altrove serve per gli spareggi
 **Bonus**: giornata completa +50 · costanza nella settimana 3 giorni +50, 5 giorni +100,
 7 giorni +200 (vale solo il più alto) · inviti +30 per amico (massimo 3).
 
-**Classifica settimanale** (lunedì–domenica): viste Generale, Livello (principiante, esperto) e
-Tema. Spareggi: più giorni giocati, meno tempo totale, più Notizie del giorno indovinate.
+**Classifica settimanale** (lunedì–domenica): una sola classifica generale (niente livelli né
+temi, su richiesta del team). Spareggi: più giorni giocati, meno tempo totale, più Notizie del giorno indovinate.
 L'utente vede sempre la sua posizione ("Sei 128° su 5400: ti mancano 42 punti per i primi 100").
 
 ## Ipotesi (dove il brief non era chiaro)
@@ -57,10 +57,10 @@ L'utente vede sempre la sua posizione ("Sei 128° su 5400: ti mancano 42 punti p
    bonus giornata completa alla domenica (in `scoring.ts` e nella funzione SQL).
 2. **Giornata completa la domenica** = Notizia + Quiz (2 giochi).
 3. **Quiz della settimana: 120 secondi** invece di 45 (10 domande in 45 s sono troppo poche).
-4. **Livello**: "esperto" chi ha giocato almeno 7 giorni nelle settimane precedenti, altrimenti
-   "principiante". Si può cambiare in `weekly_leaderboard()`.
-5. **Tema**: la vista per tema somma i punti delle partite di quel tema (ogni set di domande ha
-   un tema Factanza). Non c'è "Sport" perché non è un tema Factanza.
+4. **Una sola sessione**: i giochi non si scelgono uno per uno. `/gioca/sessione` li fa giocare
+   di fila, uno per categoria (Ogni giorno, Numeri, Persone e parole, Tempo e luoghi); la
+   domenica Notizia + Quiz. Se si esce a metà si riprende dal gioco successivo.
+5. **Livelli e temi tolti** dalla classifica (la funzione SQL li supporta ancora, non usati).
 6. **Bonus inviti**: 30 punti per ogni amico che si iscrive col link `?invito=codice` e gioca
    nella stessa settimana, massimo 3 (90 punti). La classifica resta individuale.
 7. **Antibaro**: il punteggio si calcola nell'app; il database controlla un tentativo al giorno,

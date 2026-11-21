@@ -4,10 +4,7 @@ import { ArrowLeft, Award, Medal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AppShell, Avatar, SectionTitle, pageHead } from "@/components/factanza/shared";
 import { useFactanza } from "@/components/factanza/context";
-import { categories } from "@/data/categories";
 import { fetchLeaderboard, positionMessage, type LeaderboardRow } from "@/lib/games/api";
-
-type Scope = "generale" | "livello" | "tema";
 
 export const Route = createFileRoute("/classifica")({
   head: () =>
@@ -18,30 +15,13 @@ export const Route = createFileRoute("/classifica")({
   component: Leaderboard,
 });
 
-const levels = [
-  { value: "principiante", label: "Principiante" },
-  { value: "esperto", label: "Esperto" },
-];
-
 function Leaderboard() {
   const { session, user } = useFactanza();
-  const [scope, setScope] = useState<Scope>("generale");
-  const [level, setLevel] = useState("principiante");
-  const [theme, setTheme] = useState<string>(categories[0]?.name ?? "Politica");
   const [rows, setRows] = useState<LeaderboardRow[] | null>(null);
 
-  const value = scope === "livello" ? level : scope === "tema" ? theme : undefined;
   useEffect(() => {
-    if (!session) return;
-    setRows(null);
-    void fetchLeaderboard(scope, value).then((data) => {
-      setRows(data);
-      // Alla prima apertura del livello si mostra quello dell'utente.
-      const me = data.find((row) => row.is_me);
-      if (scope === "generale" && me && me.level !== level) setLevel(me.level);
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session, scope, value]);
+    if (session) void fetchLeaderboard("generale").then(setRows);
+  }, [session]);
 
   const podium = (rows ?? []).filter((row) => row.rank <= 3);
   const rest = (rows ?? []).filter((row) => row.rank > 3);
@@ -58,50 +38,6 @@ function Leaderboard() {
           <span>Gioca oggi</span>
         </div>
         <SectionTitle first="La classifica" second="DELLA SETTIMANA" color="magenta" />
-
-        <div className="tabs" role="tablist" aria-label="Viste della classifica">
-          {(["generale", "livello", "tema"] as const).map((s) => (
-            <Button
-              key={s}
-              variant="ghost"
-              role="tab"
-              aria-selected={scope === s}
-              className={scope === s ? "selected" : ""}
-              onClick={() => setScope(s)}
-            >
-              {s === "generale" ? "Generale" : s === "livello" ? "Livello" : "Tema"}
-            </Button>
-          ))}
-        </div>
-
-        {scope !== "generale" && (
-          <div
-            className="rank-filters"
-            role="group"
-            aria-label={scope === "livello" ? "Livello" : "Tema"}
-          >
-            {(scope === "livello"
-              ? levels
-              : categories.map((c) => ({ value: c.name, label: c.name }))
-            ).map((option) => {
-              const active = option.value === value;
-              return (
-                <Button
-                  key={option.value}
-                  variant="facta"
-                  size="sm"
-                  className={active ? "picked" : ""}
-                  aria-pressed={active}
-                  onClick={() =>
-                    scope === "livello" ? setLevel(option.value) : setTheme(option.value)
-                  }
-                >
-                  {option.label}
-                </Button>
-              );
-            })}
-          </div>
-        )}
 
         {rows === null ? (
           <p className="body-copy mt-4">Carico la classifica…</p>
@@ -157,8 +93,7 @@ function Leaderboard() {
         </div>
         <p className="rank-note">
           A parità di punti vince chi ha giocato più giorni, poi chi ci ha messo meno tempo, poi chi
-          ha indovinato più Notizie del giorno. Livello esperto: almeno 7 giorni di gioco nelle
-          settimane precedenti. Non vuoi comparire col tuo nome?{" "}
+          ha indovinato più Notizie del giorno. Non vuoi comparire col tuo nome?{" "}
           <Link to="/profilo" search={{ tab: "impostazioni" }}>
             Cambialo nelle impostazioni
           </Link>

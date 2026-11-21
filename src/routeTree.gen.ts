@@ -23,7 +23,7 @@ import { Route as SfidaRouteImport } from './routes/sfida'
 import { Route as VideoRouteImport } from './routes/video'
 import { Route as CategoriaCategoryRouteImport } from './routes/categoria.$category'
 import { Route as GiocaIndexRouteImport } from './routes/gioca.index'
-import { Route as GiocaGameRouteImport } from './routes/gioca.$game'
+import { Route as GiocaSessioneRouteImport } from './routes/gioca.sessione'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -95,9 +95,9 @@ const GiocaIndexRoute = GiocaIndexRouteImport.update({
   path: '/gioca/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const GiocaGameRoute = GiocaGameRouteImport.update({
-  id: '/gioca/$game',
-  path: '/gioca/$game',
+const GiocaSessioneRoute = GiocaSessioneRouteImport.update({
+  id: '/gioca/sessione',
+  path: '/gioca/sessione',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -115,7 +115,7 @@ export interface FileRoutesByFullPath {
   '/sfida': typeof SfidaRoute
   '/video': typeof VideoRoute
   '/categoria/$category': typeof CategoriaCategoryRoute
-  '/gioca/$game': typeof GiocaGameRoute
+  '/gioca/sessione': typeof GiocaSessioneRoute
   '/gioca/': typeof GiocaIndexRoute
 }
 export interface FileRoutesByTo {
@@ -132,7 +132,7 @@ export interface FileRoutesByTo {
   '/sfida': typeof SfidaRoute
   '/video': typeof VideoRoute
   '/categoria/$category': typeof CategoriaCategoryRoute
-  '/gioca/$game': typeof GiocaGameRoute
+  '/gioca/sessione': typeof GiocaSessioneRoute
   '/gioca': typeof GiocaIndexRoute
 }
 export interface FileRoutesById {
@@ -150,7 +150,7 @@ export interface FileRoutesById {
   '/sfida': typeof SfidaRoute
   '/video': typeof VideoRoute
   '/categoria/$category': typeof CategoriaCategoryRoute
-  '/gioca/$game': typeof GiocaGameRoute
+  '/gioca/sessione': typeof GiocaSessioneRoute
   '/gioca/': typeof GiocaIndexRoute
 }
 export interface FileRouteTypes {
@@ -169,7 +169,7 @@ export interface FileRouteTypes {
     | '/sfida'
     | '/video'
     | '/categoria/$category'
-    | '/gioca/$game'
+    | '/gioca/sessione'
     | '/gioca/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -186,7 +186,7 @@ export interface FileRouteTypes {
     | '/sfida'
     | '/video'
     | '/categoria/$category'
-    | '/gioca/$game'
+    | '/gioca/sessione'
     | '/gioca'
   id:
     | '__root__'
@@ -203,7 +203,7 @@ export interface FileRouteTypes {
     | '/sfida'
     | '/video'
     | '/categoria/$category'
-    | '/gioca/$game'
+    | '/gioca/sessione'
     | '/gioca/'
   fileRoutesById: FileRoutesById
 }
@@ -221,7 +221,7 @@ export interface RootRouteChildren {
   SfidaRoute: typeof SfidaRoute
   VideoRoute: typeof VideoRoute
   CategoriaCategoryRoute: typeof CategoriaCategoryRoute
-  GiocaGameRoute: typeof GiocaGameRoute
+  GiocaSessioneRoute: typeof GiocaSessioneRoute
   GiocaIndexRoute: typeof GiocaIndexRoute
 }
 
@@ -325,11 +325,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GiocaIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/gioca/$game': {
-      id: '/gioca/$game'
-      path: '/gioca/$game'
-      fullPath: '/gioca/$game'
-      preLoaderRoute: typeof GiocaGameRouteImport
+    '/gioca/sessione': {
+      id: '/gioca/sessione'
+      path: '/gioca/sessione'
+      fullPath: '/gioca/sessione'
+      preLoaderRoute: typeof GiocaSessioneRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -349,7 +349,7 @@ const rootRouteChildren: RootRouteChildren = {
   SfidaRoute: SfidaRoute,
   VideoRoute: VideoRoute,
   CategoriaCategoryRoute: CategoriaCategoryRoute,
-  GiocaGameRoute: GiocaGameRoute,
+  GiocaSessioneRoute: GiocaSessioneRoute,
   GiocaIndexRoute: GiocaIndexRoute,
 }
 export const routeTree = rootRouteImport

@@ -59,12 +59,13 @@ export type LeaderboardRow = {
   level: string;
 };
 
-export async function fetchLeaderboard(scope: "generale" | "livello" | "tema", value?: string) {
+/** Classifica generale (la funzione SQL supporta anche livello e tema, non usati nell’app). */
+export async function fetchLeaderboard(scope: "generale" = "generale") {
   const supabase = getSupabase();
   if (!supabase) return [];
   const { data } = await supabase.rpc("weekly_leaderboard", {
     p_scope: scope,
-    p_value: value ?? null,
+    p_value: null,
     p_limit: 100,
   });
   return ((data as LeaderboardRow[] | null) ?? []).map((row) => ({

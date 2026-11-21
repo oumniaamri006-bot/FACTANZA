@@ -20,7 +20,7 @@ export const Route = createFileRoute("/gioca/")({
   head: () =>
     pageHead(
       "Gioca oggi",
-      "Quattro minigiochi al giorno sulle notizie, circa 3 minuti. Classifica settimanale.",
+      "Una sessione al giorno sulle notizie: un gioco per categoria, circa 3 minuti. Classifica settimanale.",
     ),
   component: PlayToday,
 });
@@ -88,7 +88,11 @@ function PlayToday() {
       <div className="page-content">
         <SectionTitle first="Gioca" second="OGGI" color="yellow" />
         <p className="body-copy">
-          {games.length} giochi, circa 3 minuti. Ogni risposta ti spiega una notizia.
+          Una sessione unica:{" "}
+          {games.length === 2
+            ? "la notizia del giorno e il quiz della settimana"
+            : "un gioco per ogni categoria"}
+          , uno dopo l’altro. Circa 3 minuti, e ogni risposta ti spiega una notizia.
         </p>
 
         <div
@@ -118,9 +122,7 @@ function PlayToday() {
             const info = gameInfo[game];
             return (
               <li key={game}>
-                <Link
-                  to="/gioca/$game"
-                  params={{ game }}
+                <div
                   className={`play-card ${play ? "done" : ""} ${game === nextGame ? "next" : ""}`}
                 >
                   <span className="play-number">{play ? <Check /> : i + 1}</span>
@@ -129,8 +131,8 @@ function PlayToday() {
                     <strong>{info.title}</strong>
                     <span>{info.blurb}</span>
                   </span>
-                  <span className="play-score">{play ? `${play.score}` : <ArrowRight />}</span>
-                </Link>
+                  {play && <span className="play-score">{play.score}</span>}
+                </div>
               </li>
             );
           })}
@@ -138,8 +140,8 @@ function PlayToday() {
 
         {nextGame && plays && (
           <Button variant="sticker" className="w-full" asChild>
-            <Link to="/gioca/$game" params={{ game: nextGame }}>
-              {doneCount === 0 ? "Inizia" : "Continua"}: {gameInfo[nextGame].title} <ArrowRight />
+            <Link to="/gioca/sessione">
+              {doneCount === 0 ? "Inizia la sessione" : "Riprendi la sessione"} <ArrowRight />
             </Link>
           </Button>
         )}
