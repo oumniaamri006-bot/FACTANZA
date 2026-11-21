@@ -25,6 +25,7 @@ email e password, con **conferma automatica** dell'email (`mailer_autoconfirm`).
 | `delete_my_account()`                     | l'utente elimina account e, a cascata, tutti i suoi dati (GDPR art. 17)                                                                                                         |
 | `record_game_play(...)`                   | salva una partita: un tentativo per gioco al giorno (ora di Roma), punti massimi e tempo minimo controllati                                                                     |
 | `weekly_leaderboard(scope, value, limit)` | classifica lun–dom (`generale`, `livello` principiante/esperto, `tema`) con bonus e spareggi; sempre anche la riga di chi chiama; nome nascosto se `leaderboard_opt_in` è falso |
+| `reset_my_game_day()`                     | solo per l'MVP: l'utente cancella le proprie partite di oggi e rifà il quiz                                                                                                     |
 
 Per **azzerare i sondaggi** prima di un lancio: `delete from public.votes;` (SQL Editor).
 
@@ -32,21 +33,21 @@ Per **azzerare i sondaggi** prima di un lancio: `delete from public.votes;` (SQL
 
 Solo con consenso e solo da 14 anni in su (controllato anche dalla policy del database).
 
-| Evento                                                                  | Dati                                                                                                                                |
-| ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `session_start`                                                         | tipo di dispositivo, sistema, browser (solo famiglie generiche), schermo, lingua, fuso orario, connessione, tema scuro, provenienza |
-| `page_view`, `page_time`                                                | pagina; secondi di uso attivo e scroll massimo (%)                                                                                  |
-| `tap`                                                                   | posizione del tocco (x in % della larghezza, y in px) ed etichetta dell'elemento: per la heatmap                                    |
-| `card_view`, `article_open`                                             | notizia vista nel feed (metà visibile per 1 s) / aperta, con feed e posizione                                                       |
-| `article_read`                                                          | articolo, tema, secondi di lettura attiva, scroll massimo (%), `read_id`                                                            |
-| `poll_vote`                                                             | quale sondaggio (mai la risposta: quella sta solo in `votes`)                                                                       |
-| `swipe`, `onboarding_step`, `onboarding_complete`                       | tema e sì/no; secondi per passaggio (inviati solo dopo il consenso)                                                                 |
-| `feed_tab`, `category_open`, `calendar_day`, `reminder`                 | scheda, categoria, giorno, promemoria acceso/spento                                                                                 |
-| `media_play`, `media_progress`, `video_open`                            | contenuto; percentuale ascoltata alla chiusura del player                                                                           |
-| `live_phase`, `chat_message`                                            | fase del live; lunghezza del messaggio (mai il testo)                                                                               |
-| `interests_change`, `share`, `offer_open`, `code_copy`, `profile_nudge` | tema o contenuto coinvolto                                                                                                          |
-| `games_open`, `game_start`, `game_done`, `game_share`, `game_invite`    | minigiochi: gioco, punti, risposte giuste, secondi (mai le singole risposte)                                                        |
-| `js_error`                                                              | messaggio d'errore (troncato)                                                                                                       |
+| Evento                                                                             | Dati                                                                                                                                |
+| ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `session_start`                                                                    | tipo di dispositivo, sistema, browser (solo famiglie generiche), schermo, lingua, fuso orario, connessione, tema scuro, provenienza |
+| `page_view`, `page_time`                                                           | pagina; secondi di uso attivo e scroll massimo (%)                                                                                  |
+| `tap`                                                                              | posizione del tocco (x in % della larghezza, y in px) ed etichetta dell'elemento: per la heatmap                                    |
+| `card_view`, `article_open`                                                        | notizia vista nel feed (metà visibile per 1 s) / aperta, con feed e posizione                                                       |
+| `article_read`                                                                     | articolo, tema, secondi di lettura attiva, scroll massimo (%), `read_id`                                                            |
+| `poll_vote`                                                                        | quale sondaggio (mai la risposta: quella sta solo in `votes`)                                                                       |
+| `swipe`, `onboarding_step`, `onboarding_complete`                                  | tema e sì/no; secondi per passaggio (inviati solo dopo il consenso)                                                                 |
+| `feed_tab`, `category_open`, `calendar_day`, `reminder`                            | scheda, categoria, giorno, promemoria acceso/spento                                                                                 |
+| `media_play`, `media_progress`, `video_open`                                       | contenuto; percentuale ascoltata alla chiusura del player                                                                           |
+| `live_phase`, `chat_message`                                                       | fase del live; lunghezza del messaggio (mai il testo)                                                                               |
+| `interests_change`, `share`, `offer_open`, `code_copy`, `profile_nudge`            | tema o contenuto coinvolto                                                                                                          |
+| `games_open`, `game_start`, `game_done`, `game_share`, `game_invite`, `game_reset` | minigiochi: gioco, punti, risposte giuste, secondi (mai le singole risposte)                                                        |
+| `js_error`                                                                         | messaggio d'errore (troncato)                                                                                                       |
 
 Il tempo conta solo con la scheda visibile e attività negli ultimi 30 secondi.
 **Non raccogliamo**: indirizzo IP, posizione GPS, impronta del dispositivo, testo scritto dagli

@@ -98,3 +98,11 @@ export function positionMessage(rows: LeaderboardRow[]) {
   }
   return me.rank === 1 ? `${base}: sei in testa!` : `${base}.`;
 }
+
+/** Solo per l'MVP: cancella le proprie partite di oggi per rifare il quiz. */
+export async function resetMyGameDay() {
+  const supabase = getSupabase();
+  if (!supabase) return { error: "Accesso non disponibile" };
+  const { error } = await supabase.rpc("reset_my_game_day");
+  return { error: error ? "Non sono riuscito a resettare il quiz." : null };
+}

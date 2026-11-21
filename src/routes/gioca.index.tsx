@@ -1,13 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Flame, Gift, Share2, Trophy, UserPlus } from "lucide-react";
+import { ArrowRight, Flame, Gift, RotateCcw, Share2, Trophy, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AppShell, pageHead } from "@/components/factanza/shared";
 import { useFactanza } from "@/components/factanza/context";
 import { StreakFlame } from "@/components/games/look";
 import { lookOf } from "@/components/games/tones";
-import { fetchWeekPlays, type GamePlay } from "@/lib/games/api";
+import { fetchWeekPlays, resetMyGameDay, type GamePlay } from "@/lib/games/api";
 import { addDays, gameInfo, gamesForDay, todayInRome, weekStart } from "@/lib/games/schedule";
 import {
   dayCompleteBonus,
@@ -66,6 +66,17 @@ function PlayToday() {
   const daysPlayed = week.filter((d) => d.gamesPlayed > 0).length;
   const total = weeklyTotal(week);
   const inviteCode = session?.user.id.slice(0, 8) ?? "";
+  const [resetting, setResetting] = useState(false);
+
+  // Solo per l'MVP: cancella le partite di oggi e ricarica, per rifare il quiz.
+  const reset = async () => {
+    if (!window.confirm("Vuoi cancellare i punti di oggi e rifare il quiz?")) return;
+    setResetting(true);
+    track("game_reset", { done: doneCount });
+    await resetMyGameDay();
+    setHistory(await fetchWeekPlays(addDays(today, -60)));
+    setResetting(false);
+  };
 
   const share = async (kind: "share" | "invite") => {
     const origin = window.location.origin;
@@ -195,6 +206,20 @@ function PlayToday() {
               })}
             </ol>
           </>
+        )}
+
+        {doneCount > 0 && (
+          <div className="play-reset">
+            <Button
+              variant="facta"
+              className="w-full"
+              disabled={resetting}
+              onClick={() => void reset()}
+            >
+              <RotateCcw /> {resetting ? "Resetto…" : "Reset quiz di oggi"}
+            </Button>
+            <span className="demo-label">Solo per l’MVP</span>
+          </div>
         )}
 
         <div className="play-total">
