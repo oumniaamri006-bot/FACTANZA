@@ -567,7 +567,7 @@
   box-shadow: var(--shadow-sm);
 }
 
-/* ---------- Calendario delle notizie (home) ---------- */
+/* ---------- Calendario eventi (pagina Eventi) ---------- */
 
 .news-calendar {
   display: flex;
@@ -625,10 +625,12 @@
   font-size: 28px;
   line-height: 1;
 }
-.calendar-all {
-  font-family: var(--font-label);
-  font-size: 17px;
-  line-height: 1;
+.calendar-day.empty {
+  opacity: 0.55;
+  box-shadow: none;
+}
+.calendar-day.empty.selected {
+  opacity: 1;
 }
 .calendar-count {
   position: absolute;
@@ -646,9 +648,69 @@
   font-size: 11px;
   font-weight: 700;
 }
-.calendar-label {
+.agenda {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.agenda-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--paper);
+  border: var(--line);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow);
+}
+.agenda-time {
+  font-family: var(--font-label);
+  font-size: 20px;
+  min-width: 52px;
+}
+.agenda-body {
+  flex: 1;
+  min-width: 0;
+}
+.agenda-body h3 {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 4px 0 2px;
+}
+.agenda-body p {
+  font-size: 11px;
+  color: var(--muted-foreground);
+}
+.agenda-kind {
+  display: inline-block;
+  font-family: var(--font-label);
+  font-size: 11px;
+  padding: 1px 6px;
+  border: 1.5px solid var(--ink);
+  background: var(--lilac);
+}
+.agenda-kind.live {
+  background: var(--magenta);
+  color: var(--paper);
+}
+.agenda-kind.podcast {
+  background: var(--lime);
+}
+.agenda-kind.video {
+  background: var(--yellow);
+}
+
+.feed-hint {
   font-size: 13px;
-  margin: 0 0 16px;
+  color: var(--muted-foreground);
+  margin: -8px 0 18px;
+}
+.feed-hint a {
+  color: var(--primary);
+  font-weight: 700;
+  text-decoration: underline;
 }
 
 /* ---------- Domanda del giorno e voti ---------- */

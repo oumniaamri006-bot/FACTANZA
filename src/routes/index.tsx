@@ -1,13 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Plus, Check, X, Users, CirclePlay } from "lucide-react";
+import { Plus, Check, X, Users, CirclePlay, Heart, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { AppShell, SectionTitle, pageHead } from "@/components/factanza/shared";
 import { Onboarding } from "@/components/factanza/onboarding";
 import { useFactanza } from "@/components/factanza/context";
 import { NewsCard } from "@/components/factanza/news-card";
-import { NewsCalendar } from "@/components/factanza/news-calendar";
-import { longDate, uniqueDaysDesc } from "@/lib/dates";
+import { suggestedNews } from "@/lib/recommend";
 import { useState } from "react";
 import { dailyResults } from "@/data/factanza";
 import { news } from "@/data/news";
@@ -24,7 +23,7 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const { user, ready, vote } = useFactanza();
-  const [day, setDay] = useState<string | null>(null);
+  const [feed, setFeed] = useState<"temi" | "perte">("temi");
   if (!ready) return <div className="phone" />;
   if (!user.onboarded) return <Onboarding />;
 
@@ -32,16 +31,14 @@ function Index() {
   // "Tutti" sempre per primo, poi solo i temi scelti (tutti, se non ne è stato scelto nessuno).
   const chosen = categories.filter((category) => user.interests.includes(category.name));
   const stories = [allCategory, ...(chosen.length ? chosen : categories)];
-  // Notizie dei temi scelti (tutte, se non ne è stato scelto nessuno), dalla più recente.
-  const forYou = news
-    .filter((item) => !user.interests.length || user.interests.includes(item.topic))
-    .sort((a, b) => b.date.localeCompare(a.date));
-  const days = uniqueDaysDesc(forYou.map((item) => item.date));
-  const counts = Object.fromEntries(
-    days.map((d) => [d, forYou.filter((item) => item.date === d).length]),
+  const byDate = [...news].sort((a, b) => b.date.localeCompare(a.date));
+  // "I tuoi temi": notizie degli argomenti scelti (tutte, se non ne è stato scelto nessuno).
+  const mine = byDate.filter(
+    (item) => !user.interests.length || user.interests.includes(item.topic),
   );
-  const selectedDay = day && days.includes(day) ? day : null;
-  const displayed = selectedDay ? forYou.filter((item) => item.date === selectedDay) : forYou;
+  // "Per te": suggerimenti su altri argomenti, dalle notizie più discusse.
+  const suggested = suggestedNews(byDate, user.interests);
+  const displayed = feed === "temi" ? mine : suggested;
 
   return (
     <AppShell>
@@ -116,20 +113,47 @@ function Index() {
           </div>
         </div>
 
-        <SectionTitle first="Scelto" second="PER TE" />
-        {days.length > 0 && (
-          <NewsCalendar days={days} counts={counts} selected={selectedDay} onSelect={setDay} />
-        )}
-        {selectedDay && (
-          <p className="calendar-label">
-            Le notizie del <strong>{longDate(selectedDay)}</strong> · {displayed.length}{" "}
-            {displayed.length === 1 ? "notizia" : "notizie"}
-          </p>
-        )}
+        <SectionTitle first="Le tue" second="NOTIZIE" />
+        <div className="tabs" role="tablist" aria-label="Notizie">
+          <Button
+            variant="ghost"
+            role="tab"
+            aria-selected={feed === "temi"}
+            className={feed === "temi" ? "selected" : ""}
+            onClick={() => setFeed("temi")}
+          >
+            <Heart />I tuoi temi
+          </Button>
+          <Button
+            variant="ghost"
+            role="tab"
+            aria-selected={feed === "perte"}
+            className={feed === "perte" ? "selected" : ""}
+            onClick={() => setFeed("perte")}
+          >
+            <Sparkles />
+            Per te
+          </Button>
+        </div>
+        <p className="feed-hint">
+          {feed === "temi" ? (
+            user.interests.length ? (
+              <>Le notizie degli argomenti che hai scelto.</>
+            ) : (
+              <>
+                Non hai ancora scelto argomenti: le vedi tutte.{" "}
+                <Link to="/profilo">Scegli i tuoi temi</Link>
+              </>
+            )
+          ) : (
+            <>Suggerite per te: le più discusse dalla community su altri argomenti.</>
+          )}
+        </p>
         {displayed.length === 0 && (
           <p className="body-copy">
-            Le prossime notizie su questo tema stanno arrivando. Nel frattempo, scopri tutti gli
-            aggiornamenti.
+            {feed === "temi"
+              ? "Le prossime notizie sui tuoi temi stanno arrivando. Intanto guarda la scheda «Per te»."
+              : "Hai scelto tutti gli argomenti: le notizie sono già nella scheda «I tuoi temi»."}
           </p>
         )}
         {displayed.map((item) => (

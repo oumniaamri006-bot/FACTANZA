@@ -45,10 +45,11 @@ src/
   routes/                 una route TanStack per pagina (vedi src/routes/README.md)
     __root.tsx            shell HTML, font, meta globali, pagine 404/errore in stile Factanza
   server.ts, start.ts     entry SSR e middleware (errori, CSRF); lib/error-page.ts = errore SSR statico
-    index.tsx             "Per te": storie categorie, domanda del giorno, calendario, feed, banner live
+    index.tsx             home: storie categorie, domanda del giorno, feed "I tuoi temi" / "Per te", banner live
     categoria.$category.tsx  notizie per categoria (`tutte` = tutte le notizie)
     notizia.tsx           notizia: immagine, testo (body o punti chiave) + sondaggio `poll` (?id=)
-    live.tsx, evento.tsx  dirette e dibattito con voto prima/dopo (?id=)
+    live.tsx              Eventi: diretta in corso, calendario appuntamenti, replay
+    evento.tsx            dibattito live con voto prima/dopo (?id=)
     contenuti.tsx, video.tsx  podcast/YouTube e player demo
     community.tsx, factafidelity.tsx, profilo.tsx
   components/factanza/    componenti dell'app
@@ -69,10 +70,14 @@ src/
 
 ## Regole di architettura
 
-- Ogni notizia ha una `date` (AAAA-MM-GG): la home la usa per il calendario (`NewsCalendar`,
-  formattazione in `src/lib/dates.ts`) e ordina il feed dalla più recente.
+- Ogni notizia ha una `date` (AAAA-MM-GG, mostrata nelle card); il feed è ordinato dalla più recente.
+- La home ha due schede: **"I tuoi temi"** (argomenti scelti) e **"Per te"** (suggerite: altri
+  argomenti, dalle più discusse — `src/lib/recommend.ts`).
+- Il **calendario** sta nella pagina **Eventi** (`/live`, tab in basso): dirette, uscite di podcast
+  e video, eventi, da `src/data/agenda.ts` (`demoToday` = giorno "oggi" della demo), con
+  `DayStrip` e le date di `src/lib/dates.ts`.
 - Ogni notizia (`src/data/news.ts`) ha un `poll` (domanda + risposte); le percentuali sono
-  simulate e stabili (`src/lib/poll.ts`). La home e la barra categorie mostrano solo i temi scelti
+  simulate e stabili (`src/lib/poll.ts`). La barra categorie mostra solo i temi scelti
   dall'utente (tutti, se non ne ha scelto nessuno).
 - Contenuti demo solo in `src/data`; scelte dell'utente solo nel contesto `useFactanza()`.
 - `localStorage` si legge/scrive solo dopo l'idratazione o negli event handler (SSR-safe).

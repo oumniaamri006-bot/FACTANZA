@@ -81,7 +81,7 @@ export function IconCollage({ className = "", label }: { className?: string; lab
 const tabs = [
   { path: "/", label: "Per te", icon: Home },
   { path: "/community", label: "Community", icon: Users },
-  { path: "/live", label: "Live", icon: CalendarDays },
+  { path: "/live", label: "Eventi", icon: CalendarDays },
   { path: "/contenuti", label: "Contenuti", icon: CirclePlay },
   { path: "/factafidelity", label: "FactaFidelity", icon: CreditCard },
 ] as const;

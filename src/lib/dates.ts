@@ -23,7 +23,12 @@ export function shortDate(iso: string) {
   return `${day} ${month}`;
 }
 
-/** Giorni distinti, dal più recente al più vecchio. */
-export function uniqueDaysDesc(dates: string[]) {
-  return [...new Set(dates)].sort((a, b) => b.localeCompare(a));
+/** `count` giorni consecutivi a partire da `start` (AAAA-MM-GG). */
+export function nextDays(start: string, count: number) {
+  const first = new Date(`${start}T12:00:00Z`);
+  return Array.from({ length: count }, (_, index) => {
+    const day = new Date(first);
+    day.setUTCDate(first.getUTCDate() + index);
+    return day.toISOString().slice(0, 10);
+  });
 }
