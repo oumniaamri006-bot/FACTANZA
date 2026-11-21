@@ -147,6 +147,7 @@ function Article() {
             ))}
           </section>
         )}
+        {article.source && <p className="demo-label mb-5">Fonte: {article.source}</p>}
         <Button variant="facta" className="w-full" onClick={share}>
           <Share2 />
           Condividi la notizia

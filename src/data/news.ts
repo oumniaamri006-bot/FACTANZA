@@ -1,6 +1,18 @@
 import costoDellaVita from "@/assets/notizie/costo-della-vita.jpg";
 import ricercaPrecariato from "@/assets/notizie/ricerca-precariato.jpg";
 import midtermUsa from "@/assets/notizie/midterm-usa.jpg";
+import guerraIbridaImg from "@/assets/notizie/guerra-ibrida.jpg";
+import therapyCultureImg from "@/assets/notizie/therapy-culture.jpg";
+import israeleAiImg from "@/assets/notizie/israele-ai.jpg";
+import mangiareSanoImg from "@/assets/notizie/mangiare-sano.jpg";
+import gadgetVitaAdultaImg from "@/assets/notizie/gadget-vita-adulta.jpg";
+import cerviStradaImg from "@/assets/notizie/cervi-strada.jpg";
+import evoluzioneUmanaImg from "@/assets/notizie/evoluzione-umana.jpg";
+import barbieCorpiImg from "@/assets/notizie/barbie-corpi.jpg";
+import asiloTrasferimentiImg from "@/assets/notizie/asilo-trasferimenti.jpg";
+import caldoEstateImg from "@/assets/notizie/caldo-estate.jpg";
+import confrontoImg from "@/assets/notizie/confronto.jpg";
+import nonSiPuoDireImg from "@/assets/notizie/non-si-puo-dire.jpg";
 
 export type NewsItem = {
   id: string;
@@ -18,9 +30,246 @@ export type NewsItem = {
   /** Immagine di copertina (facoltativa: senza, si usa l'icona della categoria). */
   image?: string;
   imageCredit?: string;
+  /** Da dove viene la notizia (mostrato in fondo all'articolo). */
+  source?: string;
 };
 
 export const news: NewsItem[] = [
+  {
+    id: "guerra-ibrida",
+    topic: "Esteri",
+    title: "Guerra ibrida: perché stanno arrivando allarmi bomba in tutta Europa?",
+    accent: "allarmi bomba",
+    minutes: 2,
+    opinions: "1.2k",
+    image: guerraIbridaImg,
+    imageCredit: "@factanza",
+    source: "Post Instagram di @factanza, 7 novembre 2026",
+    slides: [
+      "In tutta Europa stanno arrivando allarmi bomba. C’è chi la chiama «guerra ibrida».",
+      "Per guerra ibrida si intendono attacchi che non usano solo armi: sabotaggi, attacchi informatici, disinformazione.",
+      "L’obiettivo è creare paura e disordine senza un conflitto dichiarato.",
+      "Anche un falso allarme può bloccare scuole, stazioni e aeroporti e mettere sotto pressione i servizi di sicurezza.",
+      "Capire cos’è la guerra ibrida aiuta a non farsi trascinare dal panico.",
+    ],
+  },
+  {
+    id: "therapy-culture",
+    topic: "Salute",
+    title:
+      "Ghosting, trauma dumping, triggerato: la therapy culture ci sta rendendo amici peggiori?",
+    accent: "amici peggiori?",
+    minutes: 3,
+    opinions: "32",
+    image: therapyCultureImg,
+    imageCredit: "@factanza",
+    source: "Post Instagram di @factanza, 17 ottobre 2026 · testo di @ellaemme",
+    slides: [
+      "C’è una parola per quasi tutto: ghosting, trauma dumping, «sono stato triggerato».",
+      "Sono termini presi in prestito da un contesto preciso: il rapporto tra paziente e psicoterapeuta.",
+      "Portati nelle chat con gli amici, smettono di fare quello per cui erano nati.",
+      "Invece di aiutarci a capire perché reagiamo così, ci danno un modo per non chiederlo più.",
+      "Parlare di salute mentale senza tabù è un bene. Ma serve ancora mettersi in discussione con gli altri.",
+    ],
+    body: [
+      "C’è una parola per quasi tutto, ormai. Per il ritardo a rispondere a un messaggio. Per lo sfogo arrivato nel momento sbagliato. Per l’opinione che non volevamo sentire. Le prendiamo in prestito da un contesto preciso, quello tra paziente e psicoterapeuta, e le portiamo in una chat con le amic*, dove però smettono di fare quello per cui erano nate: invece di aiutarci a capire perché reagiamo così, ci danno un modo per non chiederlo più, né a noi stesse né all’altra persona.",
+      "Prova a pensare all’ultima volta che hai detto “mi ha ghostata”, “è tossico”, “mi ha fatto trauma dumping” in una chat, a qualcuno che ti ascoltava. E prova a ricordare se poi ne hai parlato anche con la persona in questione, o se ti sei fermata alla chat.",
+      "Parlare di salute mentale, senza tabù, è un bene, ma a forza di utilizzare il linguaggio terapeutico nella vita di tutti i giorni forse stiamo perdendo la capacità di entrare davvero in relazione con gli altri, anche mettendoci in discussione.",
+    ],
+  },
+  {
+    id: "israele-ai",
+    topic: "Esteri",
+    title:
+      "Secondo un nuovo studio, Israele usa l’AI per automatizzare demolizioni ed espulsioni dei palestinesi",
+    accent: "usa l’AI",
+    minutes: 2,
+    opinions: "18",
+    image: israeleAiImg,
+    imageCredit: "@factanza",
+    source: "Post Instagram di @factanza, 19 settembre 2026",
+    slides: [
+      "Secondo un nuovo studio, Israele sta sfruttando l’intelligenza artificiale per automatizzare demolizioni ed espulsioni dei palestinesi.",
+      "Lo studio riguarda la Striscia di Gaza e la Cisgiordania.",
+      "L’uso dell’AI in contesti militari e di sicurezza è al centro di un dibattito internazionale sempre più acceso.",
+      "La domanda centrale: chi risponde delle decisioni quando a suggerirle è un sistema automatico?",
+      "Per capire la notizia conviene leggere lo studio e le risposte delle parti coinvolte.",
+    ],
+  },
+  {
+    id: "mangiare-sano",
+    topic: "Salute",
+    title: "Mangiare sano è una questione di sbatti: tempo, possibilità e salute",
+    accent: "una questione di sbatti",
+    minutes: 3,
+    opinions: "99",
+    image: mangiareSanoImg,
+    imageCredit: "@factanza",
+    source:
+      "Post Instagram di @factanza in collaborazione con @airc.it (contenuto sponsorizzato), 17 settembre 2026",
+    slides: [
+      "Un’alimentazione sana viene spesso vista come un’abitudine estetica. In realtà è fondamentale soprattutto per la salute.",
+      "Abitudini alimentari squilibrate e sedentarietà aumentano il rischio di sovrappeso e obesità.",
+      "Sono condizioni associate a diabete di tipo 2, ipertensione, problemi cardiovascolari e respiratori, ma anche tumori.",
+      "Mangiare in modo equilibrato richiede tempo, impegno e soldi. E l’educazione alimentare non è accessibile a tutti.",
+      "Vegetali freschi e di stagione, pasti equilibrati e movimento ogni giorno: piccoli accorgimenti con benefici concreti.",
+    ],
+    body: [
+      "Spesso, la società tende a vedere un’alimentazione sana e uno stile di vita equilibrato come abitudini utili solamente all’estetica. In realtà, però, sono fondamentali soprattutto per la salute. Mangiare sano è tra le azioni più efficaci per prevenire l’insorgenza di malattie, compresi i tumori.",
+      "Abitudini alimentari squilibrate e sedentarietà, ad esempio, aumentano il rischio di sovrappeso e l’obesità. Si tratta di condizioni associate a una maggiore incidenza di malattie come il diabete di tipo 2, l’ipertensione, problemi cardiovascolari e respiratori, ma anche tumori.",
+      "Imparare a mangiare in modo equilibrato è qualcosa che si costruisce nel tempo e che, talvolta, richiede anche una corretta educazione alimentare (che, oggi, non è accessibile a chiunque).",
+      "A grandi linee – e sempre considerando che le esigenze nutrizionali non sono uguali per tutti – oggi le evidenze scientifiche suggeriscono che una corretta alimentazione si basa su un giusto equilibrio e una buona alternanza di cibi, prediligendo quelli di origine vegetale, freschi e di stagione. Un pasto equilibrato dovrebbe includere alimenti fonte di carboidrati, proteine e grassi, insieme a frutta e verdura. Il tutto dovrebbe poi essere accompagnato dal movimento giornaliero, per limitare il più possibile la sedentarietà.",
+      "Seguire uno stile di vita sano e un’alimentazione corretta e bilanciata con costanza, però, non è sempre facile: serve impegno, tempo e anche disponibilità economica. Tuttavia, con qualche consiglio e piccoli accorgimenti, è possibile e ha dei benefici concreti per la salute. Si può approfondire con il Manifesto della Prevenzione di AIRC (punti 2 e 3) o sul sito airc.it.",
+    ],
+  },
+  {
+    id: "gadget-vita-adulta",
+    topic: "AI & Tech",
+    title: "10 gadget di cui avremmo assolutamente bisogno per affrontare la vita adulta",
+    accent: "la vita adulta",
+    minutes: 2,
+    opinions: "11",
+    image: gadgetVitaAdultaImg,
+    imageCredit: "@factanza",
+    source: "Post Instagram di @factanza, 29 agosto 2026",
+    slides: [
+      "Bollette, scadenze, burocrazia: la vita adulta arriva senza istruzioni.",
+      "Factanza ha immaginato 10 gadget di cui avremmo assolutamente bisogno per affrontarla.",
+      "Il problema? Non esistono. E chissà se li inventeranno mai.",
+      "Alcuni di questi gadget ci farebbero davvero comodo.",
+      "E tu, cosa inventeresti per affrontare più serenamente la vita da adulto?",
+    ],
+    body: [
+      "Alcuni di questi gadget ci farebbero davvero comodo. E voi invece cosa inventereste per affrontare più serenamente la vita da adulti?",
+    ],
+  },
+  {
+    id: "cervi-strada",
+    topic: "Ambiente",
+    title:
+      "Non sono i cervi ad attraversare la nostra strada: è la strada che attraversa il loro bosco",
+    accent: "il loro bosco",
+    minutes: 2,
+    opinions: "387",
+    image: cerviStradaImg,
+    imageCredit: "@factanza",
+    source: "Post Instagram di @factanza, 27 agosto 2026",
+    slides: [
+      "Con l’estate aumentano gli avvistamenti di animali selvatici che scendono dalle aree montane verso i centri abitati.",
+      "Spesso viene raccontata come un’invasione. Ma il punto di vista si può ribaltare.",
+      "Non sono i cervi ad attraversare la nostra strada: è la nostra strada che attraversa il loro bosco.",
+      "Strade e città occupano spazi che erano habitat naturali, e gli animali si trovano a doverli attraversare.",
+      "Convivere con la fauna selvatica significa progettare il territorio pensando anche a chi lo abitava prima.",
+    ],
+  },
+  {
+    id: "evoluzione-umana",
+    topic: "Cultura",
+    title: "L’immagine dell’evoluzione umana che hai in testa è sbagliata",
+    accent: "è sbagliata",
+    minutes: 2,
+    opinions: "451",
+    image: evoluzioneUmanaImg,
+    imageCredit: "@factanza",
+    source: "Post Instagram di @factanza, 24 agosto 2026",
+    slides: [
+      "La fila di scimmie che diventano gradualmente uomini è un’immagine famosissima. Ma è sbagliata.",
+      "Non arriva da una scoperta scientifica: è un’illustrazione del 1965, disegnata per un libro.",
+      "L’uomo non discende dalle scimmie di oggi: esseri umani e altre grandi scimmie hanno antenati comuni.",
+      "L’evoluzione non è una linea retta verso un traguardo, ma un albero con tanti rami, molti dei quali estinti.",
+      "Un disegno può restare nella memoria collettiva più a lungo della scienza che dovrebbe spiegare.",
+    ],
+  },
+  {
+    id: "barbie-corpi",
+    topic: "Moda",
+    title: "Barbie e Ken oggi hanno corpi più realistici rispetto a 30 anni fa",
+    accent: "più realistici",
+    minutes: 2,
+    opinions: "26",
+    image: barbieCorpiImg,
+    imageCredit: "@factanza",
+    source: "Post Instagram di @factanza, 22 agosto 2026",
+    slides: [
+      "Oggi le Barbie rappresentano corpi femminili più realistici rispetto a trent’anni fa.",
+      "Per decenni la bambola ha proposto un solo modello di corpo, molto lontano da quello delle persone reali.",
+      "Il cambiamento riguarda anche Ken.",
+      "Entrambi, però, hanno ancora della strada da fare.",
+      "I giocattoli contribuiscono all’idea di corpo con cui si cresce: per questo la rappresentazione conta.",
+    ],
+  },
+  {
+    id: "asilo-trasferimenti",
+    topic: "Politica",
+    title: "Richiedenti asilo, diversi Paesi europei riprendono i trasferimenti verso l’Italia",
+    accent: "riprendono i trasferimenti",
+    minutes: 2,
+    opinions: "67",
+    image: asiloTrasferimentiImg,
+    imageCredit: "@factanza",
+    source: "Post Instagram di @factanza, 21 agosto 2026",
+    slides: [
+      "Diversi Paesi europei hanno deciso di riprendere i trasferimenti verso l’Italia di persone richiedenti asilo.",
+      "Sono persone che si trovano sul loro territorio, ma che sono arrivate in Europa passando dall’Italia.",
+      "L’Italia aveva sospeso questi trasferimenti nel 2022. Ora, secondo questi Paesi, la situazione è cambiata.",
+      "Le regole europee indicano quale Stato deve esaminare una domanda d’asilo: spesso è il primo Paese di ingresso.",
+      "Il tema riapre il confronto tra Italia ed Europa su come condividere la responsabilità dell’accoglienza.",
+    ],
+  },
+  {
+    id: "caldo-estate",
+    topic: "Ambiente",
+    title: "Il cambiamento climatico è anche non poter uscire di casa in estate",
+    accent: "non poter uscire di casa",
+    minutes: 2,
+    opinions: "860",
+    image: caldoEstateImg,
+    imageCredit: "@factanza",
+    source: "Post Instagram di @factanza",
+    slides: [
+      "Il cambiamento climatico non è solo un aumento della temperatura.",
+      "È anche non poter uscire di casa in estate, a causa del troppo caldo.",
+      "Le ondate di calore stanno diventando più frequenti e intense, soprattutto nelle città.",
+      "Asfalto e cemento trattengono il calore: chi vive in zone con poco verde lo sente di più.",
+      "Adattare città e abitudini al caldo è ormai una questione di salute, non di comodità.",
+    ],
+  },
+  {
+    id: "confronto",
+    topic: "Cultura",
+    title: "Il confronto con chi ha idee diverse dovrebbe essere la normalità",
+    accent: "la normalità",
+    minutes: 2,
+    opinions: "540",
+    image: confrontoImg,
+    imageCredit: "@factanza",
+    source: "Post Instagram di @factanza",
+    slides: [
+      "Il confronto con chi ha idee diverse dalle nostre dovrebbe essere la normalità.",
+      "Oggi, però, è diventato quasi insostenibile.",
+      "Online e offline, le discussioni si trasformano spesso in scontri tra schieramenti.",
+      "Ascoltare chi la pensa diversamente non vuol dire cambiare idea, ma capire meglio la propria.",
+      "Come si ricostruisce lo spazio per un disaccordo civile?",
+    ],
+  },
+  {
+    id: "non-si-puo-dire",
+    topic: "Politica",
+    title: "A forza di dire «non si può più dire niente», stiamo dicendo di tutto",
+    accent: "stiamo dicendo di tutto",
+    minutes: 2,
+    opinions: "1.9k",
+    image: nonSiPuoDireImg,
+    imageCredit: "@factanza",
+    source: "Post Instagram di @factanza",
+    slides: [
+      "«Non si può più dire niente» è diventata una frase ricorrente nel dibattito pubblico.",
+      "La ripetono spesso anche personaggi pubblici con enorme visibilità.",
+      "Eppure, a forza di dirla, si finisce per dire di tutto.",
+      "La libertà di parola non coincide con l’assenza di critiche a ciò che si dice.",
+      "Il punto è capire dove finisce un’opinione e dove comincia l’offesa.",
+    ],
+  },
   {
     id: "costo-della-vita",
     topic: "Economia",
