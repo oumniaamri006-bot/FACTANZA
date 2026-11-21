@@ -27,6 +27,7 @@ import {
   weeklyTotal,
 } from "@/lib/games/scoring";
 import { shareSquares } from "@/lib/games/share";
+import { currentStreak, nextMilestone, streakMessage } from "@/lib/games/streak";
 import type { GameKind } from "@/lib/games/types";
 
 const ok = { correct: true };
@@ -259,5 +260,35 @@ describe("Contenuti dei giochi", () => {
       if (gameCatalog[kind].flatMap((set) => set.items as unknown[]).length > 1)
         expect(day1?.items[0]).not.toEqual(day2?.items[0]);
     }
+  });
+});
+
+describe("Serie di giorni", () => {
+  it("conta i giorni consecutivi fino a oggi", () => {
+    expect(currentStreak(["2026-11-19", "2026-11-20", "2026-11-21"], "2026-11-21")).toEqual({
+      count: 3,
+      playedToday: true,
+      atRisk: false,
+    });
+  });
+  it("se oggi non hai giocato la serie è a rischio", () => {
+    expect(currentStreak(["2026-11-19", "2026-11-20"], "2026-11-21")).toEqual({
+      count: 2,
+      playedToday: false,
+      atRisk: true,
+    });
+  });
+  it("un giorno saltato azzera la serie", () => {
+    expect(currentStreak(["2026-11-18", "2026-11-19"], "2026-11-21").count).toBe(0);
+    expect(currentStreak(["2026-11-15", "2026-11-21"], "2026-11-21").count).toBe(1);
+  });
+  it("traguardi e messaggi", () => {
+    expect(nextMilestone(0)).toBe(3);
+    expect(nextMilestone(5)).toBe(7);
+    expect(nextMilestone(9)).toBeNull();
+    expect(streakMessage({ count: 2, playedToday: false, atRisk: true })).toContain("mezzanotte");
+    expect(streakMessage({ count: 4, playedToday: true, atRisk: false })).toBe(
+      "Ancora 1 giorno per arrivare a 5!",
+    );
   });
 });

@@ -1,9 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowRight, Check, Flame, Gift, Share2, Trophy, UserPlus } from "lucide-react";
+import { motion } from "framer-motion";
+import { ArrowRight, Flame, Gift, Share2, Trophy, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { AppShell, SectionTitle, pageHead } from "@/components/factanza/shared";
+import { AppShell, pageHead } from "@/components/factanza/shared";
 import { useFactanza } from "@/components/factanza/context";
+import { StreakFlame } from "@/components/games/look";
+import { lookOf } from "@/components/games/tones";
 import { fetchWeekPlays, type GamePlay } from "@/lib/games/api";
 import { addDays, gameInfo, gamesForDay, todayInRome, weekStart } from "@/lib/games/schedule";
 import {
@@ -14,13 +17,13 @@ import {
   weeklyTotal,
 } from "@/lib/games/scoring";
 import { shareSquares } from "@/lib/games/share";
-import type { GameKind } from "@/lib/games/types";
+import { currentStreak, streakMessage, streakMilestones } from "@/lib/games/streak";
 
 export const Route = createFileRoute("/gioca/")({
   head: () =>
     pageHead(
       "Gioca oggi",
-      "Una sessione al giorno sulle notizie: un gioco per categoria, circa 3 minuti. Classifica settimanale.",
+      "Il quiz quotidiano sulle notizie: 4 giochi, circa 3 minuti. Tieni viva la tua serie.",
     ),
   component: PlayToday,
 });
@@ -32,16 +35,19 @@ function PlayToday() {
   const today = todayInRome();
   const monday = weekStart(today);
   const games = gamesForDay(today);
-  const [plays, setPlays] = useState<GamePlay[] | null>(null);
+  const [history, setHistory] = useState<GamePlay[] | null>(null);
   const [copied, setCopied] = useState<"share" | "invite" | null>(null);
 
   useEffect(() => {
-    if (session) void fetchWeekPlays(monday).then(setPlays);
-  }, [session, monday]);
+    if (session) void fetchWeekPlays(addDays(today, -60)).then(setHistory);
+  }, [session, today]);
 
-  const played = (day: string, game: GameKind) =>
-    plays?.find((p) => p.day === day && p.game === game);
-  const todayPlays = games.map((game) => played(today, game));
+  const plays = history?.filter((p) => p.day >= monday) ?? null;
+  const streak = currentStreak(
+    (history ?? []).map((p) => p.day),
+    today,
+  );
+  const todayPlays = games.map((game) => plays?.find((p) => p.day === today && p.game === game));
   const doneCount = todayPlays.filter(Boolean).length;
   const allDone = doneCount === games.length;
   const todayPoints = todayPlays.reduce((sum, play) => sum + (play?.score ?? 0), 0);
@@ -49,25 +55,23 @@ function PlayToday() {
 
   const week = Array.from({ length: 7 }, (_, i) => {
     const day = addDays(monday, i);
-    const inDay = gamesForDay(day);
     const dayPlays = (plays ?? []).filter((p) => p.day === day);
     return {
       day,
       gamesPlayed: dayPlays.length,
-      gamesInDay: inDay.length,
+      gamesInDay: gamesForDay(day).length,
       points: dayPlays.reduce((sum, p) => sum + p.score, 0),
     };
   });
   const daysPlayed = week.filter((d) => d.gamesPlayed > 0).length;
   const total = weeklyTotal(week);
-  const nextStreak = daysPlayed < 3 ? 3 : daysPlayed < 5 ? 5 : daysPlayed < 7 ? 7 : null;
   const inviteCode = session?.user.id.slice(0, 8) ?? "";
 
   const share = async (kind: "share" | "invite") => {
     const origin = window.location.origin;
     const text =
       kind === "share"
-        ? `Factanza · Gioca oggi ${today.slice(8, 10)}/${today.slice(5, 7)}\n${shareSquares(percents)} ${todayPoints} punti\nSfidami: ${origin}/?invito=${inviteCode}`
+        ? `Factanza · quiz del ${today.slice(8, 10)}/${today.slice(5, 7)}\n${shareSquares(percents)} ${todayPoints} punti · 🔥 ${streak.count} ${streak.count === 1 ? "giorno" : "giorni"} di fila\nSfidami: ${origin}/?invito=${inviteCode}`
         : `Gioco ogni giorno alle notizie su Factanza: 3 minuti, classifica settimanale. Entra anche tu: ${origin}/?invito=${inviteCode}`;
     track(kind === "share" ? "game_share" : "game_invite", { done: doneCount });
     try {
@@ -85,70 +89,106 @@ function PlayToday() {
   return (
     <AppShell>
       <div className="page-content">
-        <SectionTitle first="Gioca" second="OGGI" color="yellow" />
-        <p className="body-copy">
-          {games.length} domande, una per gioco, una dopo l’altra. Circa 3 minuti: i giochi li
-          scopri mentre giochi, e ogni risposta ti spiega una notizia.
-        </p>
+        {/* La serie: il cuore della pagina. */}
+        <section
+          className={`streak-hero ${streak.playedToday ? "lit" : streak.atRisk ? "risk" : ""}`}
+        >
+          <div className="streak-hero-top">
+            <StreakFlame count={streak.count} lit={streak.playedToday} />
+            <div>
+              <strong className="streak-hero-title">
+                {streak.count === 1 ? "giorno di fila" : "giorni di fila"}
+              </strong>
+              <p>{history ? streakMessage(streak) : "Un attimo…"}</p>
+            </div>
+          </div>
+          <div className="streak-week" aria-label="I tuoi giorni di gioco questa settimana">
+            {week.map((d, i) => (
+              <span
+                key={d.day}
+                className={`${d.gamesPlayed ? "on" : ""} ${d.day === today ? "today" : ""} ${d.day > today ? "future" : ""}`}
+              >
+                <Flame />
+                <em>{weekdays[i]}</em>
+              </span>
+            ))}
+          </div>
+          <div className="streak-goals" aria-label="Bonus della serie">
+            {streakMilestones.map((target) => (
+              <span key={target} className={daysPlayed >= target ? "reached" : ""}>
+                {target} giorni · +{streakBonus(target)}
+              </span>
+            ))}
+          </div>
+        </section>
 
         {plays && !allDone && (
           <>
-            {doneCount > 0 && (
-              <>
-                <div
-                  className="play-progress"
-                  aria-label={`${doneCount} giochi su ${games.length} completati`}
+            {/* Le carte coperte: i giochi si scoprono solo giocando. */}
+            <div className="mystery-cards" aria-hidden>
+              {games.map((game, i) => (
+                <motion.span
+                  key={game}
+                  className={`mystery-card tone-${lookOf(gameInfo[game].family).tone} ${todayPlays[i] ? "played" : ""}`}
+                  initial={{ y: 30, opacity: 0, rotate: 0 }}
+                  animate={{ y: 0, opacity: 1, rotate: [-8, 4, -3, 7][i] ?? 0 }}
+                  transition={{ delay: 0.1 * i, type: "spring" }}
                 >
-                  {games.map((game, i) => (
-                    <span key={game} className={todayPlays[i] ? "done" : ""} />
-                  ))}
-                </div>
-                <p className="play-progress-label">
-                  <strong>
-                    {doneCount}/{games.length}
-                  </strong>{" "}
-                  completati · {todayPoints} punti finora
-                </p>
-              </>
-            )}
-            <Button variant="sticker" size="lg" className="w-full play-start" asChild>
-              <Link to="/gioca/sessione">
-                {doneCount === 0 ? "Inizia il quiz" : "Riprendi il quiz"} <ArrowRight />
-              </Link>
-            </Button>
+                  {todayPlays[i] ? todayPlays[i]?.score : "?"}
+                </motion.span>
+              ))}
+            </div>
+            <motion.div
+              animate={{ scale: [1, 1.04, 1] }}
+              transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <Button variant="sticker" size="lg" className="w-full play-start" asChild>
+                <Link to="/gioca/sessione">
+                  {doneCount === 0 ? "GIOCA ORA" : `RIPRENDI · ${doneCount}/${games.length}`}{" "}
+                  <ArrowRight />
+                </Link>
+              </Button>
+            </motion.div>
+            <p className="hand text-center mt-3">
+              ({games.length} giochi a sorpresa · circa 3 minuti · +{dayCompleteBonus} se li finisci
+              tutti)
+            </p>
           </>
         )}
 
-        {/* I giochi del giorno si svelano solo a quiz finito, con il punteggio di ognuno. */}
+        {/* A quiz finito i giochi si svelano, con il punteggio di ognuno. */}
         {allDone && (
           <>
-            <div className="play-progress" aria-label="Quiz di oggi completato">
-              {games.map((game) => (
-                <span key={game} className="done" />
-              ))}
+            <div className="play-reward">
+              <span className="sticker yellow">SEMPRE SUL PEZZO</span>
+              <p>
+                Quiz di oggi fatto: <strong>{todayPoints + dayCompleteBonus} punti</strong> con il
+                bonus. Torna domani per non spegnere la fiamma.
+              </p>
+              <p className="play-share-preview" aria-hidden>
+                {shareSquares(percents)}
+              </p>
+              <Button variant="sticker" className="w-full" onClick={() => void share("share")}>
+                <Share2 />{" "}
+                {copied === "share" ? "Copiato! Incollalo a chi vuoi" : "Condividi il risultato"}
+              </Button>
             </div>
-            <p className="play-progress-label">
-              <strong>
-                {games.length}/{games.length}
-              </strong>{" "}
-              completati · {todayPoints} punti oggi · +{dayCompleteBonus} giornata completa
-            </p>
             <ol className="play-list">
               {games.map((game, i) => {
-                const play = todayPlays[i];
                 const info = gameInfo[game];
+                const look = lookOf(info.family);
                 return (
                   <li key={game}>
-                    <div className="play-card done">
+                    <div className={`play-card tone-${look.tone}`}>
                       <span className="play-number">
-                        <Check />
+                        <look.icon />
                       </span>
                       <span className="play-text">
                         <span className="play-family">{info.family}</span>
                         <strong>{info.title}</strong>
                         <span>{info.blurb}</span>
                       </span>
-                      <span className="play-score">{play?.score ?? 0}</span>
+                      <span className="play-score">{todayPlays[i]?.score ?? 0}</span>
                     </div>
                   </li>
                 );
@@ -157,40 +197,6 @@ function PlayToday() {
           </>
         )}
 
-        {allDone && (
-          <div className="play-reward">
-            <span className="sticker yellow">SEMPRE SUL PEZZO</span>
-            <p>
-              Hai finito i giochi di oggi: <strong>{todayPoints + dayCompleteBonus} punti</strong>{" "}
-              con il bonus. Torna domani per tenere viva la serie.
-            </p>
-            <p className="play-share-preview" aria-hidden>
-              {shareSquares(percents)}
-            </p>
-            <Button variant="sticker" className="w-full" onClick={() => void share("share")}>
-              <Share2 />{" "}
-              {copied === "share" ? "Copiato! Incollalo a chi vuoi" : "Condividi il risultato"}
-            </Button>
-          </div>
-        )}
-
-        <h2 className="subsection-title mt-8">La tua settimana</h2>
-        <div className="play-week">
-          {week.map((d, i) => (
-            <span
-              key={d.day}
-              className={`${d.gamesPlayed >= d.gamesInDay ? "full" : d.gamesPlayed ? "part" : ""} ${d.day === today ? "today" : ""}`}
-            >
-              <em>{weekdays[i]}</em>
-              {d.gamesPlayed ? d.points : d.day > today ? "" : "–"}
-            </span>
-          ))}
-        </div>
-        <p className="play-streak">
-          <Flame /> {daysPlayed} {daysPlayed === 1 ? "giorno" : "giorni"} di gioco · bonus costanza
-          +{streakBonus(daysPlayed)}
-          {nextStreak && ` (a ${nextStreak} giorni: +${streakBonus(nextStreak)})`}
-        </p>
         <div className="play-total">
           <span>Totale settimana</span>
           <strong>{total} punti</strong>
@@ -223,7 +229,7 @@ function PlayToday() {
           </p>
           <span className="demo-label">Premi in arrivo · demo</span>
         </div>
-        <p className="hand text-center mt-4">(la settimana si azzera ogni lunedì)</p>
+        <p className="hand text-center mt-4">(la classifica si azzera ogni lunedì)</p>
         <Link to="/community" className="play-community">
           Vuoi parlarne con gli altri? Vai alla community →
         </Link>

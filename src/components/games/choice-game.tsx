@@ -127,6 +127,11 @@ export function ChoiceGame({ kind, items, timeUp, onFinish }: GameProps<ChoiceIt
               {(versus || faces) && item.optionImages && (
                 <GameImage image={image} className="option-image" />
               )}
+              {!versus && !faces && (
+                <span className="option-letter" aria-hidden>
+                  {String.fromCharCode(65 + i)}
+                </span>
+              )}
               <span className="game-option-label">
                 {revealed && i === item.answer && <Check />}
                 {revealed && i === picked && i !== item.answer && <X />}

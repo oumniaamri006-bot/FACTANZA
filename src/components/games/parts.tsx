@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, ImageOff } from "lucide-react";
+import { ArrowRight, Check, ImageOff, X } from "lucide-react";
+import { Confetti } from "./look";
 import { Button } from "@/components/ui/button";
 import type { Credit } from "@/lib/games/types";
 
@@ -48,17 +49,32 @@ export function Explanation({
   onNext: () => void;
   nextLabel?: string;
 }) {
+  const great = points !== undefined ? points >= 60 : ok;
   return (
     <motion.div
-      className={`challenge-explain ${ok ? "ok" : "ko"}`}
+      className={`challenge-explain ${great ? "ok" : "ko"}`}
       role="status"
-      initial={{ y: 10, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
+      initial={great ? { y: 30, opacity: 0, scale: 0.9 } : { x: 0, opacity: 0 }}
+      animate={great ? { y: 0, opacity: 1, scale: 1 } : { x: [0, -10, 10, -6, 6, 0], opacity: 1 }}
+      transition={great ? { type: "spring", stiffness: 300, damping: 18 } : { duration: 0.45 }}
     >
-      <strong>
-        {title ?? (ok ? "Giusto!" : "Sbagliato")}
-        {points !== undefined && <span className="explain-points"> +{points}</span>}
-      </strong>
+      {great && <Confetti pieces={14} />}
+      <div className="explain-head">
+        <span className={`explain-verdict ${great ? "ok" : "ko"}`}>
+          {great ? <Check /> : <X />}
+        </span>
+        <strong>{title ?? (ok ? "Giusto!" : "Sbagliato")}</strong>
+        {points !== undefined && (
+          <motion.span
+            className={`explain-points sticker ${points > 0 ? "lime" : ""}`}
+            initial={{ scale: 0, rotate: -30 }}
+            animate={{ scale: 1, rotate: -6 }}
+            transition={{ type: "spring", delay: 0.15 }}
+          >
+            +{points}
+          </motion.span>
+        )}
+      </div>
       {extra}
       <p>{text}</p>
       <span className="challenge-source">Fonte: {source}</span>

@@ -69,6 +69,16 @@ L'utente vede sempre la sua posizione ("Sei 128° su 5400: ti mancano 42 punti p
 10. **Nome in classifica**: chi non vuole comparire lo disattiva in Impostazioni → Giochi e
     classifica e appare come "Utente anonimo".
 
+## Serie e grafica
+
+- **Serie** (`src/lib/games/streak.ts`): giorni consecutivi in cui hai giocato almeno un gioco,
+  anche a cavallo delle settimane. Se oggi non hai ancora giocato la serie è "a rischio" e la
+  pagina diventa magenta. La fiamma è il centro di "Gioca oggi"; i bonus in classifica restano
+  quelli settimanali (3/5/7 giorni).
+- **Quiz**: ogni famiglia ha un colore e un'icona (`components/games/tones.ts`); il gioco si
+  svela con una carta che si gira, il timer è ad anello, le risposte giuste fanno coriandoli e
+  la fine del quiz mostra la fiamma che cresce.
+
 ## Immagini
 
 Solo asset Factanza (copertine delle notizie e degli episodi) o foto con licenza libera da
