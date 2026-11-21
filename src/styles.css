@@ -545,9 +545,6 @@
   outline: 3px solid var(--primary);
   outline-offset: 2px;
 }
-.story.selected {
-  background: var(--halftone), var(--lilac);
-}
 .story-add {
   gap: 4px;
   align-content: center;

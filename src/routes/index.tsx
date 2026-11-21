@@ -44,7 +44,7 @@ function Index() {
             key={category.slug}
             to="/categoria/$category"
             params={{ category: category.slug }}
-            className={`story ${user.interests.includes(category.name) ? "selected" : ""}`}
+            className="story"
             aria-label={
               category.slug === allCategory.slug ? "Tutte le notizie" : `Notizie ${category.name}`
             }
