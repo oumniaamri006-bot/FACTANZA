@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Bell } from "lucide-react";
 import { AppShell, IconCollage, SectionTitle, pageHead } from "@/components/factanza/shared";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,12 @@ function Community() {
       <div className="page-content">
         <SectionTitle first="La community" second="STA ARRIVANDO" />
         <IconCollage className="empty-collage" label="I temi di cui parlerà la community" />
+        <Link to="/sfida" className="challenge-card mt-6">
+          <span className="sticker small yellow">FACTACHALLENGE</span>
+          <strong>Sfida i tuoi amici sulle notizie di oggi.</strong>
+          <span>60 secondi, 3 prove, un risultato da condividere.</span>
+          <span className="challenge-card-cta">Gioca ora →</span>
+        </Link>
         <p className="hand text-primary text-right mt-4">(e ci sarai anche tu) ↗</p>
         <p className="body-copy mt-5 mb-6">
           Presto potrai discutere e confrontarti con chi ha i tuoi stessi interessi.

@@ -56,6 +56,8 @@ src/
     profilo.tsx           profilo (?tab=impostazioni): schede "Il mio profilo" e "Impostazioni"
                           (formati, notifiche, privacy, cambio password, dati, esci, elimina)
     privacy.tsx           informativa privacy (leggibile senza account)
+    sfida.tsx             FactaChallenge (pubblica, ?da=&punti= per sfidare un amico); domande in
+                          src/data/challenges.ts: solo fatti verificati con fonte, `unverified` se no
   components/factanza/    componenti dell'app
     shared.tsx            AppShell (avatar con iniziale + rotellina in alto a destra → profilo),
                           Avatar, Logo, SectionTitle, PageTitle, CategoryIcon, TopicCover,
@@ -98,7 +100,7 @@ src/
   (`getSupabase()` restituisce `null` in SSR). La home mostra `<div className="phone" />` finché
   `ready` è `false`; senza sessione mostra `Welcome` (splash + `AuthScreen`), e `AppShell`
   rimanda alla home con un `useEffect` (non usare `<Navigate>`: con la sessione chiusa mentre la
-  pagina è aperta blocca il browser). `/privacy` è l'unica pagina leggibile senza account.
+  pagina è aperta blocca il browser). `/privacy` e `/sfida` sono le sole pagine usabili senza account.
   Registrazione solo con la casella "Ho almeno 14 anni… e ho letto l'informativa"; nel profilo
   c'è "Elimina il mio account" (`delete_my_account()`).
 - Statistiche: usa `track(nome, props)` dal contesto. Parte solo se l'utente ha dato il consenso

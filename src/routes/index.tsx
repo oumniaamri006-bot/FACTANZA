@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Plus, Check, X, Users, CirclePlay, Heart, Sparkles } from "lucide-react";
+import { Plus, Check, X, Users, CirclePlay, Heart, Sparkles, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { AppShell, SectionTitle, pageHead } from "@/components/factanza/shared";
@@ -139,6 +139,15 @@ function Index() {
             </Button>
           </div>
         )}
+
+        <Link to="/sfida" className="challenge-card" onClick={() => track("challenge_open", {})}>
+          <span className="sticker small yellow">FACTACHALLENGE</span>
+          <strong>La sfida di oggi: 60 secondi, 3 prove.</strong>
+          <span>Indovina il prezzo · Chi l’ha detto? · Vero o falso?</span>
+          <span className="challenge-card-cta">
+            Gioca <ArrowRight size={16} />
+          </span>
+        </Link>
 
         <SectionTitle first="Le tue" second="NOTIZIE" />
         <div className="tabs" role="tablist" aria-label="Notizie">

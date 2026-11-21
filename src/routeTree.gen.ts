@@ -18,6 +18,7 @@ import { Route as LiveRouteImport } from './routes/live'
 import { Route as NotiziaRouteImport } from './routes/notizia'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ProfiloRouteImport } from './routes/profilo'
+import { Route as SfidaRouteImport } from './routes/sfida'
 import { Route as VideoRouteImport } from './routes/video'
 import { Route as CategoriaCategoryRouteImport } from './routes/categoria.$category'
 
@@ -66,6 +67,11 @@ const ProfiloRoute = ProfiloRouteImport.update({
   path: '/profilo',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SfidaRoute = SfidaRouteImport.update({
+  id: '/sfida',
+  path: '/sfida',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const VideoRoute = VideoRouteImport.update({
   id: '/video',
   path: '/video',
@@ -87,6 +93,7 @@ export interface FileRoutesByFullPath {
   '/notizia': typeof NotiziaRoute
   '/privacy': typeof PrivacyRoute
   '/profilo': typeof ProfiloRoute
+  '/sfida': typeof SfidaRoute
   '/video': typeof VideoRoute
   '/categoria/$category': typeof CategoriaCategoryRoute
 }
@@ -100,6 +107,7 @@ export interface FileRoutesByTo {
   '/notizia': typeof NotiziaRoute
   '/privacy': typeof PrivacyRoute
   '/profilo': typeof ProfiloRoute
+  '/sfida': typeof SfidaRoute
   '/video': typeof VideoRoute
   '/categoria/$category': typeof CategoriaCategoryRoute
 }
@@ -114,6 +122,7 @@ export interface FileRoutesById {
   '/notizia': typeof NotiziaRoute
   '/privacy': typeof PrivacyRoute
   '/profilo': typeof ProfiloRoute
+  '/sfida': typeof SfidaRoute
   '/video': typeof VideoRoute
   '/categoria/$category': typeof CategoriaCategoryRoute
 }
@@ -129,6 +138,7 @@ export interface FileRouteTypes {
     | '/notizia'
     | '/privacy'
     | '/profilo'
+    | '/sfida'
     | '/video'
     | '/categoria/$category'
   fileRoutesByTo: FileRoutesByTo
@@ -142,6 +152,7 @@ export interface FileRouteTypes {
     | '/notizia'
     | '/privacy'
     | '/profilo'
+    | '/sfida'
     | '/video'
     | '/categoria/$category'
   id:
@@ -155,6 +166,7 @@ export interface FileRouteTypes {
     | '/notizia'
     | '/privacy'
     | '/profilo'
+    | '/sfida'
     | '/video'
     | '/categoria/$category'
   fileRoutesById: FileRoutesById
@@ -169,6 +181,7 @@ export interface RootRouteChildren {
   NotiziaRoute: typeof NotiziaRoute
   PrivacyRoute: typeof PrivacyRoute
   ProfiloRoute: typeof ProfiloRoute
+  SfidaRoute: typeof SfidaRoute
   VideoRoute: typeof VideoRoute
   CategoriaCategoryRoute: typeof CategoriaCategoryRoute
 }
@@ -238,6 +251,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfiloRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sfida': {
+      id: '/sfida'
+      path: '/sfida'
+      fullPath: '/sfida'
+      preLoaderRoute: typeof SfidaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/video': {
       id: '/video'
       path: '/video'
@@ -265,6 +285,7 @@ const rootRouteChildren: RootRouteChildren = {
   NotiziaRoute: NotiziaRoute,
   PrivacyRoute: PrivacyRoute,
   ProfiloRoute: ProfiloRoute,
+  SfidaRoute: SfidaRoute,
   VideoRoute: VideoRoute,
   CategoriaCategoryRoute: CategoriaCategoryRoute,
 }
