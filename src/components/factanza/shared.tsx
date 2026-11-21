@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import {
   Home,
-  Users,
+  Gamepad2,
   CalendarDays,
   CirclePlay,
   CreditCard,
@@ -99,11 +99,17 @@ export function IconCollage({ className = "", label }: { className?: string; lab
 
 const tabs = [
   { path: "/", label: "Per te", icon: Home },
-  { path: "/community", label: "Community", icon: Users },
+  { path: "/gioca", label: "Gioca", icon: Gamepad2 },
   { path: "/live", label: "Eventi", icon: CalendarDays },
   { path: "/contenuti", label: "Contenuti", icon: CirclePlay },
   { path: "/factafidelity", label: "FactaFidelity", icon: CreditCard },
 ] as const;
+
+/** La tab Gioca resta attiva anche nei singoli giochi e nella classifica. */
+const isActive = (pathname: string, path: string) =>
+  pathname === path ||
+  (path !== "/" && pathname.startsWith(`${path}/`)) ||
+  (path === "/gioca" && pathname === "/classifica");
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
@@ -137,8 +143,8 @@ export function AppShell({ children }: { children: ReactNode }) {
           <Link
             key={tab.path}
             to={tab.path}
-            className={`nav-item ${pathname === tab.path ? "active" : ""}`}
-            aria-current={pathname === tab.path ? "page" : undefined}
+            className={`nav-item ${isActive(pathname, tab.path) ? "active" : ""}`}
+            aria-current={isActive(pathname, tab.path) ? "page" : undefined}
           >
             <tab.icon />
             {tab.path === "/live" && <i className="notification-dot" />}

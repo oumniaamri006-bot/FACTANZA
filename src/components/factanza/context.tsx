@@ -56,6 +56,7 @@ const profileColumns = {
   occupation: "occupation",
   gender: "gender",
   referral: "referral",
+  leaderboardOptIn: "leaderboard_opt_in",
 } as const satisfies Partial<Record<keyof UserState, keyof ProfileRow>>;
 
 function fromRows(
@@ -78,6 +79,7 @@ function fromRows(
       occupation: profile.occupation,
       gender: profile.gender,
       referral: profile.referral,
+      leaderboardOptIn: profile.leaderboard_opt_in,
     }),
     votes: Object.fromEntries(votes.map((row) => [row.poll_id, row.choice])),
     reminders: reminders.map((row) => row.item_id),

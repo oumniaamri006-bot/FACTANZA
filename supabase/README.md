@@ -5,23 +5,26 @@ già applicate, in ordine di nome.
 
 ## Tabelle (schema `public`)
 
-| Tabella     | Contenuto                                                                      | Chi può leggere                                       |
-| ----------- | ------------------------------------------------------------------------------ | ----------------------------------------------------- |
-| `profiles`  | nome, interessi, formati, onboarding, consensi                                 | solo il proprietario                                  |
-| `votes`     | risposte a domanda del giorno, sondaggi degli articoli, voto prima/dopo i live | solo il proprietario (aggregati con `poll_results()`) |
-| `reminders` | promemoria del calendario eventi                                               | solo il proprietario                                  |
-| `events`    | statistiche d'uso, **solo con consenso** (`analytics_consent`)                 | nessuno dall'app (solo inserimento)                   |
+| Tabella      | Contenuto                                                                      | Chi può leggere                                              |
+| ------------ | ------------------------------------------------------------------------------ | ------------------------------------------------------------ |
+| `profiles`   | nome, interessi, formati, onboarding, consensi                                 | solo il proprietario                                         |
+| `votes`      | risposte a domanda del giorno, sondaggi degli articoli, voto prima/dopo i live | solo il proprietario (aggregati con `poll_results()`)        |
+| `reminders`  | promemoria del calendario eventi                                               | solo il proprietario                                         |
+| `game_plays` | una partita per gioco al giorno: punti, risposte giuste, durata (minigiochi)   | solo il proprietario (classifica con `weekly_leaderboard()`) |
+| `events`     | statistiche d'uso, **solo con consenso** (`analytics_consent`)                 | nessuno dall'app (solo inserimento)                          |
 
 Il profilo si crea da solo alla registrazione (trigger `on_auth_user_created`). L'accesso è con
 email e password, con **conferma automatica** dell'email (`mailer_autoconfirm`).
 
 ## Funzioni
 
-| Funzione                   | A cosa serve                                                                          |
-| -------------------------- | ------------------------------------------------------------------------------------- |
-| `poll_results(poll_id)`    | conteggi anonimi delle risposte di un sondaggio (tutti i risultati in app sono reali) |
-| `opinion_change(event_id)` | votanti prima/dopo un live e quanti hanno cambiato idea                               |
-| `delete_my_account()`      | l'utente elimina account e, a cascata, tutti i suoi dati (GDPR art. 17)               |
+| Funzione                                  | A cosa serve                                                                                                                                                                    |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `poll_results(poll_id)`                   | conteggi anonimi delle risposte di un sondaggio (tutti i risultati in app sono reali)                                                                                           |
+| `opinion_change(event_id)`                | votanti prima/dopo un live e quanti hanno cambiato idea                                                                                                                         |
+| `delete_my_account()`                     | l'utente elimina account e, a cascata, tutti i suoi dati (GDPR art. 17)                                                                                                         |
+| `record_game_play(...)`                   | salva una partita: un tentativo per gioco al giorno (ora di Roma), punti massimi e tempo minimo controllati                                                                     |
+| `weekly_leaderboard(scope, value, limit)` | classifica lun–dom (`generale`, `livello` principiante/esperto, `tema`) con bonus e spareggi; sempre anche la riga di chi chiama; nome nascosto se `leaderboard_opt_in` è falso |
 
 Per **azzerare i sondaggi** prima di un lancio: `delete from public.votes;` (SQL Editor).
 
@@ -29,21 +32,21 @@ Per **azzerare i sondaggi** prima di un lancio: `delete from public.votes;` (SQL
 
 Solo con consenso e solo da 14 anni in su (controllato anche dalla policy del database).
 
-| Evento                                                                                       | Dati                                                                                                                                |
-| -------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `session_start`                                                                              | tipo di dispositivo, sistema, browser (solo famiglie generiche), schermo, lingua, fuso orario, connessione, tema scuro, provenienza |
-| `page_view`, `page_time`                                                                     | pagina; secondi di uso attivo e scroll massimo (%)                                                                                  |
-| `tap`                                                                                        | posizione del tocco (x in % della larghezza, y in px) ed etichetta dell'elemento: per la heatmap                                    |
-| `card_view`, `article_open`                                                                  | notizia vista nel feed (metà visibile per 1 s) / aperta, con feed e posizione                                                       |
-| `article_read`                                                                               | articolo, tema, secondi di lettura attiva, scroll massimo (%), `read_id`                                                            |
-| `poll_vote`                                                                                  | quale sondaggio (mai la risposta: quella sta solo in `votes`)                                                                       |
-| `swipe`, `onboarding_step`, `onboarding_complete`                                            | tema e sì/no; secondi per passaggio (inviati solo dopo il consenso)                                                                 |
-| `feed_tab`, `category_open`, `calendar_day`, `reminder`                                      | scheda, categoria, giorno, promemoria acceso/spento                                                                                 |
-| `media_play`, `media_progress`, `video_open`                                                 | contenuto; percentuale ascoltata alla chiusura del player                                                                           |
-| `live_phase`, `chat_message`                                                                 | fase del live; lunghezza del messaggio (mai il testo)                                                                               |
-| `interests_change`, `share`, `offer_open`, `code_copy`, `profile_nudge`                      | tema o contenuto coinvolto                                                                                                          |
-| `challenge_open`, `challenge_start`, `challenge_answer`, `challenge_done`, `challenge_share` | FactaChallenge: giorno, tipo di prova, giusta/sbagliata, punti, arrivo da un amico                                                  |
-| `js_error`                                                                                   | messaggio d'errore (troncato)                                                                                                       |
+| Evento                                                                  | Dati                                                                                                                                |
+| ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `session_start`                                                         | tipo di dispositivo, sistema, browser (solo famiglie generiche), schermo, lingua, fuso orario, connessione, tema scuro, provenienza |
+| `page_view`, `page_time`                                                | pagina; secondi di uso attivo e scroll massimo (%)                                                                                  |
+| `tap`                                                                   | posizione del tocco (x in % della larghezza, y in px) ed etichetta dell'elemento: per la heatmap                                    |
+| `card_view`, `article_open`                                             | notizia vista nel feed (metà visibile per 1 s) / aperta, con feed e posizione                                                       |
+| `article_read`                                                          | articolo, tema, secondi di lettura attiva, scroll massimo (%), `read_id`                                                            |
+| `poll_vote`                                                             | quale sondaggio (mai la risposta: quella sta solo in `votes`)                                                                       |
+| `swipe`, `onboarding_step`, `onboarding_complete`                       | tema e sì/no; secondi per passaggio (inviati solo dopo il consenso)                                                                 |
+| `feed_tab`, `category_open`, `calendar_day`, `reminder`                 | scheda, categoria, giorno, promemoria acceso/spento                                                                                 |
+| `media_play`, `media_progress`, `video_open`                            | contenuto; percentuale ascoltata alla chiusura del player                                                                           |
+| `live_phase`, `chat_message`                                            | fase del live; lunghezza del messaggio (mai il testo)                                                                               |
+| `interests_change`, `share`, `offer_open`, `code_copy`, `profile_nudge` | tema o contenuto coinvolto                                                                                                          |
+| `games_open`, `game_start`, `game_done`, `game_share`, `game_invite`    | minigiochi: gioco, punti, risposte giuste, secondi (mai le singole risposte)                                                        |
+| `js_error`                                                              | messaggio d'errore (troncato)                                                                                                       |
 
 Il tempo conta solo con la scheda visibile e attività negli ultimi 30 secondi.
 **Non raccogliamo**: indirizzo IP, posizione GPS, impronta del dispositivo, testo scritto dagli
@@ -67,6 +70,7 @@ Viste aggregate, non esposte all'API: si leggono dal pannello Supabase (Table Ed
 | `user_activity`                                | **Cronologia per utente**: chi, quando, cosa ha fatto (articolo letto e per quanti secondi, video aperto, podcast, voti…); filtra per `utente` o `email` |
 | `users`                                        | **Scheda per utente**: dati dichiarati, provenienza, sessioni, minuti letti, tema preferito, voti, dispositivo                                           |
 | `age_groups`, `demographics`                   | Età, regione, occupazione, genere, come ci hanno conosciuto, campagne                                                                                    |
+| `game_stats`                                   | Partite, punteggio medio e tempo medio per gioco e giorno                                                                                                |
 | `devices`                                      | Dispositivi, sistemi e browser                                                                                                                           |
 | `feed_ctr`                                     | Notizie viste e aperte nel feed (tasso di click)                                                                                                         |
 | `page_time`, `sessions`                        | Tempo e scroll per pagina, durata delle sessioni                                                                                                         |

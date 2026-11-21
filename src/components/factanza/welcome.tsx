@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { ArrowRight } from "lucide-react";
-import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { AuthScreen } from "./auth";
 import { IconCollage, Logo } from "./shared";
@@ -30,9 +29,9 @@ export function Welcome() {
           <Button variant="sticker" onClick={() => setStep("auth")}>
             Inizia <ArrowRight />
           </Button>
-          <Link to="/sfida" className="splash-challenge">
-            Prima vuoi giocare? Prova la FactaChallenge di oggi →
-          </Link>
+          <p className="splash-challenge">
+            Dentro: 4 minigiochi al giorno e la classifica settimanale.
+          </p>
         </div>
       </div>
     </div>

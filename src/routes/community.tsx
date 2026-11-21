@@ -20,10 +20,10 @@ function Community() {
       <div className="page-content">
         <SectionTitle first="La community" second="STA ARRIVANDO" />
         <IconCollage className="empty-collage" label="I temi di cui parlerà la community" />
-        <Link to="/sfida" className="challenge-card mt-6">
-          <span className="sticker small yellow">FACTACHALLENGE</span>
+        <Link to="/gioca" className="challenge-card mt-6">
+          <span className="sticker small yellow">GIOCA OGGI</span>
           <strong>Sfida i tuoi amici sulle notizie di oggi.</strong>
-          <span>60 secondi, 3 prove, un risultato da condividere.</span>
+          <span>4 minigiochi al giorno e una classifica settimanale.</span>
           <span className="challenge-card-cta">Gioca ora →</span>
         </Link>
         <p className="hand text-primary text-right mt-4">(e ci sarai anche tu) ↗</p>

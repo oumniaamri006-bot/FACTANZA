@@ -351,6 +351,22 @@ function Profile() {
               </div>
             </SettingsGroup>
 
+            <SettingsGroup title="Giochi e classifica">
+              <div className="settings-row">
+                <label htmlFor="leaderboard">
+                  Mostra il mio nome nella classifica settimanale
+                  <span className="block text-xs mt-1">
+                    Se lo spegni giochi lo stesso e compari come “Utente anonimo”.
+                  </span>
+                </label>
+                <Switch
+                  id="leaderboard"
+                  checked={user.leaderboardOptIn}
+                  onCheckedChange={(leaderboardOptIn) => update({ leaderboardOptIn })}
+                />
+              </div>
+            </SettingsGroup>
+
             <SettingsGroup title="Notifiche">
               <div className="settings-row">
                 <label htmlFor="notifications">Avvisi su live, eventi e community</label>

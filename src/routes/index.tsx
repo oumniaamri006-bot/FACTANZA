@@ -140,10 +140,14 @@ function Index() {
           </div>
         )}
 
-        <Link to="/sfida" className="challenge-card" onClick={() => track("challenge_open", {})}>
-          <span className="sticker small yellow">FACTACHALLENGE</span>
-          <strong>La sfida di oggi: 60 secondi, 3 prove.</strong>
-          <span>Indovina il prezzo · Chi l’ha detto? · Vero o falso?</span>
+        <Link
+          to="/gioca"
+          className="challenge-card"
+          onClick={() => track("games_open", { from: "home" })}
+        >
+          <span className="sticker small yellow">GIOCA OGGI</span>
+          <strong>4 minigiochi sulle notizie, circa 3 minuti.</strong>
+          <span>Punti, serie di giorni e classifica settimanale.</span>
           <span className="challenge-card-cta">
             Gioca <ArrowRight size={16} />
           </span>

@@ -56,21 +56,27 @@ src/
     profilo.tsx           profilo (?tab=impostazioni): schede "Il mio profilo" e "Impostazioni"
                           (formati, notifiche, privacy, cambio password, dati, esci, elimina)
     privacy.tsx           informativa privacy (leggibile senza account)
-    sfida.tsx             FactaChallenge (pubblica, ?da=&punti= per sfidare un amico): cursore del
-                          prezzo, abbinamento frasi-volti, swipe vero/falso (challenge-rounds.tsx);
-                          prove in
-                          src/data/challenges.ts: solo fatti verificati con fonte, `unverified` se no
+    gioca.index.tsx       "Gioca oggi": i 4 minigiochi del giorno, avanzamento, settimana, bonus,
+                          condivisione e inviti (?invito=codice) · gioca.$game.tsx = un minigioco
+    classifica.tsx        classifica settimanale (Generale / Livello / Tema)
+    sfida.tsx             vecchia FactaChallenge: rimanda a /gioca
   components/factanza/    componenti dell'app
     shared.tsx            AppShell (avatar con iniziale + rotellina in alto a destra → profilo),
                           Avatar, Logo, SectionTitle, PageTitle, CategoryIcon, TopicCover,
                           IconCollage, Back, pageHead
     context.tsx           FactanzaProvider / useFactanza (sessione, dati utente su Supabase, track)
     auth.tsx, welcome.tsx accesso (registrazione/login) e splash iniziale
+  components/games/       minigiochi: choice-game (scelta multipla), other-games (cursore, indizi,
+                          ordine, mappa), parts (immagine con crediti, spiegazione, timer)
     news-card.tsx, onboarding.tsx, swipe-deck.tsx (mazzo di carte dei temi), about-you.tsx
   components/ui/          primitive shadcn (non modificarle per lo stile dell'app)
   data/                   contenuti demo: categories.ts, news.ts, factanza.ts
   lib/factanza-state.ts   tipo UserState, toggleValue
   lib/supabase.ts         client Supabase, messaggi di errore dell'accesso in italiano
+  lib/games/              minigiochi: scoring.ts (punteggi e bonus, funzioni pure), schedule.ts
+                          (rotazione per giorno), api.ts (Supabase), share.ts · regole in GIOCHI.md
+  data/games/             content.ts (domande con fonte), images.ts + credits.json (foto con
+                          crediti), world-map.json (mappa per "Dove succede")
   lib/analytics.ts        coda degli eventi d'uso · lib/reading.ts tempo di lettura e sondaggi reali
   assets/categorie/       le 10 icone pop-art (9 categorie + Tutti, PNG trasparenti 320×320)
   assets/factanza-logo.png  logo: la "F" 3D con i cubetti colorati (anche public/favicon.png);
@@ -102,7 +108,7 @@ src/
   (`getSupabase()` restituisce `null` in SSR). La home mostra `<div className="phone" />` finché
   `ready` è `false`; senza sessione mostra `Welcome` (splash + `AuthScreen`), e `AppShell`
   rimanda alla home con un `useEffect` (non usare `<Navigate>`: con la sessione chiusa mentre la
-  pagina è aperta blocca il browser). `/privacy` e `/sfida` sono le sole pagine usabili senza account.
+  pagina è aperta blocca il browser). `/privacy` è la sola pagina usabile senza account (i giochi richiedono l'accesso).
   Registrazione solo con la casella "Ho almeno 14 anni… e ho letto l'informativa"; nel profilo
   c'è "Elimina il mio account" (`delete_my_account()`).
 - Statistiche: usa `track(nome, props)` dal contesto. Parte solo se l'utente ha dato il consenso
@@ -112,6 +118,11 @@ src/
   `src/data/profile-options.ts`). Elenco eventi in `supabase/README.md`.
   Nuove tabelle: migrazione in `supabase/migrations/` con RLS attiva e `grant` espliciti
   (il progetto non concede permessi in automatico).
+- **Minigiochi** (vedi `GIOCHI.md`): 4 al giorno (domenica 2), un tentativo per gioco, 45 s;
+  punteggi solo in `src/lib/games/scoring.ts` (replicati nel database per la classifica).
+  Ogni domanda ha spiegazione e fonte; solo fatti verificati. Immagini: asset Factanza o foto
+  con licenza libera (Wikimedia Commons) con autore e licenza in `credits.json`; mai minori,
+  persone solo con foto ufficiali/pubbliche, altrimenti icona neutra.
 - Variabili `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY` (chiave pubblica): su Vercel e in
   `.env.local` (non committato).
 - Ogni pagina ha la sua route e il suo `head: () => pageHead(titolo, descrizione)`.

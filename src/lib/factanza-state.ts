@@ -13,6 +13,8 @@ export type UserState = {
   occupation: string | null;
   gender: string | null;
   referral: string | null;
+  /** Mostra il nome nella classifica settimanale (altrimenti "Utente anonimo"). */
+  leaderboardOptIn: boolean;
 };
 export const storageKey = "factanza-user";
 export const initialUser: UserState = {
@@ -30,6 +32,7 @@ export const initialUser: UserState = {
   occupation: null,
   gender: null,
   referral: null,
+  leaderboardOptIn: true,
 };
 export function parseUser(raw: string | null): UserState {
   if (!raw) return { ...initialUser };

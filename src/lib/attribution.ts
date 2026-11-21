@@ -1,7 +1,8 @@
 /** Provenienza della prima visita e contesto del dispositivo (senza dati identificativi). */
 
 const firstTouchKey = "factanza-first-touch";
-const utmKeys = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"];
+// "invito" = codice di chi ha invitato (primi 8 caratteri del suo id): vale il bonus inviti.
+const utmKeys = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "invito"];
 
 export type FirstTouch = Record<string, string>;
 

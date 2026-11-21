@@ -32,6 +32,7 @@ export type ProfileRow = {
   gender: string | null;
   referral: string | null;
   last_seen_at: string | null;
+  leaderboard_opt_in: boolean;
 };
 
 /** Traduce gli errori di Supabase Auth in messaggi in italiano. */

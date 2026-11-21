@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ClassificaRouteImport } from './routes/classifica'
 import { Route as CommunityRouteImport } from './routes/community'
 import { Route as ContenutiRouteImport } from './routes/contenuti'
 import { Route as EventoRouteImport } from './routes/evento'
@@ -21,10 +22,17 @@ import { Route as ProfiloRouteImport } from './routes/profilo'
 import { Route as SfidaRouteImport } from './routes/sfida'
 import { Route as VideoRouteImport } from './routes/video'
 import { Route as CategoriaCategoryRouteImport } from './routes/categoria.$category'
+import { Route as GiocaIndexRouteImport } from './routes/gioca.index'
+import { Route as GiocaGameRouteImport } from './routes/gioca.$game'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClassificaRoute = ClassificaRouteImport.update({
+  id: '/classifica',
+  path: '/classifica',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CommunityRoute = CommunityRouteImport.update({
@@ -82,9 +90,20 @@ const CategoriaCategoryRoute = CategoriaCategoryRouteImport.update({
   path: '/categoria/$category',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GiocaIndexRoute = GiocaIndexRouteImport.update({
+  id: '/gioca/',
+  path: '/gioca/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GiocaGameRoute = GiocaGameRouteImport.update({
+  id: '/gioca/$game',
+  path: '/gioca/$game',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/classifica': typeof ClassificaRoute
   '/community': typeof CommunityRoute
   '/contenuti': typeof ContenutiRoute
   '/evento': typeof EventoRoute
@@ -96,9 +115,12 @@ export interface FileRoutesByFullPath {
   '/sfida': typeof SfidaRoute
   '/video': typeof VideoRoute
   '/categoria/$category': typeof CategoriaCategoryRoute
+  '/gioca/$game': typeof GiocaGameRoute
+  '/gioca/': typeof GiocaIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/classifica': typeof ClassificaRoute
   '/community': typeof CommunityRoute
   '/contenuti': typeof ContenutiRoute
   '/evento': typeof EventoRoute
@@ -110,10 +132,13 @@ export interface FileRoutesByTo {
   '/sfida': typeof SfidaRoute
   '/video': typeof VideoRoute
   '/categoria/$category': typeof CategoriaCategoryRoute
+  '/gioca/$game': typeof GiocaGameRoute
+  '/gioca': typeof GiocaIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/classifica': typeof ClassificaRoute
   '/community': typeof CommunityRoute
   '/contenuti': typeof ContenutiRoute
   '/evento': typeof EventoRoute
@@ -125,11 +150,14 @@ export interface FileRoutesById {
   '/sfida': typeof SfidaRoute
   '/video': typeof VideoRoute
   '/categoria/$category': typeof CategoriaCategoryRoute
+  '/gioca/$game': typeof GiocaGameRoute
+  '/gioca/': typeof GiocaIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/classifica'
     | '/community'
     | '/contenuti'
     | '/evento'
@@ -141,9 +169,12 @@ export interface FileRouteTypes {
     | '/sfida'
     | '/video'
     | '/categoria/$category'
+    | '/gioca/$game'
+    | '/gioca/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/classifica'
     | '/community'
     | '/contenuti'
     | '/evento'
@@ -155,9 +186,12 @@ export interface FileRouteTypes {
     | '/sfida'
     | '/video'
     | '/categoria/$category'
+    | '/gioca/$game'
+    | '/gioca'
   id:
     | '__root__'
     | '/'
+    | '/classifica'
     | '/community'
     | '/contenuti'
     | '/evento'
@@ -169,10 +203,13 @@ export interface FileRouteTypes {
     | '/sfida'
     | '/video'
     | '/categoria/$category'
+    | '/gioca/$game'
+    | '/gioca/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ClassificaRoute: typeof ClassificaRoute
   CommunityRoute: typeof CommunityRoute
   ContenutiRoute: typeof ContenutiRoute
   EventoRoute: typeof EventoRoute
@@ -184,6 +221,8 @@ export interface RootRouteChildren {
   SfidaRoute: typeof SfidaRoute
   VideoRoute: typeof VideoRoute
   CategoriaCategoryRoute: typeof CategoriaCategoryRoute
+  GiocaGameRoute: typeof GiocaGameRoute
+  GiocaIndexRoute: typeof GiocaIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -193,6 +232,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/classifica': {
+      id: '/classifica'
+      path: '/classifica'
+      fullPath: '/classifica'
+      preLoaderRoute: typeof ClassificaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/community': {
@@ -272,11 +318,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CategoriaCategoryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/gioca/': {
+      id: '/gioca/'
+      path: '/gioca'
+      fullPath: '/gioca/'
+      preLoaderRoute: typeof GiocaIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gioca/$game': {
+      id: '/gioca/$game'
+      path: '/gioca/$game'
+      fullPath: '/gioca/$game'
+      preLoaderRoute: typeof GiocaGameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ClassificaRoute: ClassificaRoute,
   CommunityRoute: CommunityRoute,
   ContenutiRoute: ContenutiRoute,
   EventoRoute: EventoRoute,
@@ -288,6 +349,8 @@ const rootRouteChildren: RootRouteChildren = {
   SfidaRoute: SfidaRoute,
   VideoRoute: VideoRoute,
   CategoriaCategoryRoute: CategoriaCategoryRoute,
+  GiocaGameRoute: GiocaGameRoute,
+  GiocaIndexRoute: GiocaIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
