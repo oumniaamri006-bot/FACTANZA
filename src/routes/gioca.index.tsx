@@ -183,6 +183,11 @@ function PlayToday() {
                 <Share2 />{" "}
                 {copied === "share" ? "Copiato! Incollalo a chi vuoi" : "Condividi il risultato"}
               </Button>
+              <Button variant="facta" className="w-full" asChild>
+                <Link to="/classifica">
+                  <Trophy /> Classifica settimanale
+                </Link>
+              </Button>
             </div>
             <ol className="play-list">
               {games.map((game, i) => {
@@ -226,11 +231,6 @@ function PlayToday() {
           <span>Totale settimana</span>
           <strong>{total} punti</strong>
         </div>
-        <Button variant="facta" className="w-full mt-3" asChild>
-          <Link to="/classifica">
-            <Trophy /> Classifica settimanale
-          </Link>
-        </Button>
 
         <div className="play-invite">
           <UserPlus />
