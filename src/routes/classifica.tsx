@@ -23,8 +23,9 @@ function Leaderboard() {
     if (session) void fetchLeaderboard("generale").then(setRows);
   }, [session]);
 
-  const podium = (rows ?? []).filter((row) => row.rank <= 3);
-  const rest = (rows ?? []).filter((row) => row.rank > 3);
+  // Sul podio solo chi ha punti; chi non ha ancora giocato resta in elenco con 0.
+  const podium = (rows ?? []).filter((row) => row.rank <= 3 && row.points > 0).slice(0, 3);
+  const rest = (rows ?? []).filter((row) => !podium.includes(row));
 
   return (
     <AppShell>
@@ -73,7 +74,7 @@ function Leaderboard() {
                   <span className="rank-number">{row.rank}</span>
                   <span className="rank-name">
                     {row.is_me ? "Tu" : row.name}
-                    {row.rank <= 10 && <span className="rank-badge">TOP 10</span>}
+                    {row.rank <= 10 && row.points > 0 && <span className="rank-badge">TOP 10</span>}
                   </span>
                   <span className="rank-days">{row.days} gg</span>
                   <strong>{row.points}</strong>

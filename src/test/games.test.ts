@@ -156,6 +156,9 @@ describe("Bonus e classifica", () => {
     ];
     expect(positionMessage(rows)).toBe("Sei 128° su 5400: ti mancano 42 punti per i primi 100.");
     expect(positionMessage([row(1, 50, true)])).toBe("Sei 1° su 5400: sei in testa!");
+    expect(positionMessage([row(1, 0, true)])).toBe(
+      "Sei in classifica con altre 5399 persone: fai il quiz di oggi per salire.",
+    );
     expect(positionMessage([])).toBe("Gioca oggi per entrare in classifica.");
   });
 

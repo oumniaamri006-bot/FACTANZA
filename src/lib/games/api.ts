@@ -83,6 +83,8 @@ export async function fetchLeaderboard(scope: "generale" = "generale") {
 export function positionMessage(rows: LeaderboardRow[]) {
   const me = rows.find((row) => row.is_me);
   if (!me) return "Gioca oggi per entrare in classifica.";
+  if (me.points === 0)
+    return `Sei in classifica con altre ${me.players - 1} persone: fai il quiz di oggi per salire.`;
   const players = me.players.toLocaleString("it-IT");
   const base = `Sei ${me.rank}° su ${players}`;
   for (const target of [100, 10, 3, 1]) {
